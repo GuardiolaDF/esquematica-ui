@@ -1,0 +1,1631 @@
+{
+  "metadata": {
+    "exportedAt": "2026-09-12T18:44:53.581Z",
+    "componentName": "Frame 11",
+    "totalElements": 118,
+    "nestingDepth": 3,
+    "plugin": "Figma to JSON Exporter"
+  },
+  "designTokens": {
+    "colors": {
+      "color-rgb(38, 38, 38)": "rgb(38, 38, 38)",
+      "color-rgb(217, 217, 217)": "rgb(217, 217, 217)",
+      "color-rgb(254, 254, 254)": "rgb(254, 254, 254)",
+      "color-rgb(74, 74, 74)": "rgb(74, 74, 74)",
+      "color-rgb(18, 18, 18)": "rgb(18, 18, 18)",
+      "color-rgb(243, 243, 243)": "rgb(243, 243, 243)",
+      "color-rgb(111, 111, 111)": "rgb(111, 111, 111)"
+    },
+    "fonts": {
+      "inter": {
+        "family": "Inter",
+        "sizes": {
+          "size-8": "8px",
+          "size-6": "6px"
+        },
+        "weights": {
+          "weight-100": "100",
+          "weight-700": "700",
+          "weight-400": "400"
+        }
+      }
+    },
+    "spacing": {},
+    "effects": {}
+  },
+  "structure": {
+    "name": "frame-11",
+    "type": "FRAME",
+    "size": {
+      "w": 419,
+      "h": 205
+    },
+    "styles": {
+      "bg": "rgb(38, 38, 38)",
+      "radius": 16,
+      "layout": {
+        "direction": "row",
+        "gap": 0,
+        "align": {
+          "main": "start",
+          "cross": "start"
+        }
+      }
+    },
+    "children": [
+      {
+        "name": "ellipse-54",
+        "type": "ELLIPSE",
+        "size": {
+          "w": 18,
+          "h": 18
+        },
+        "styles": {
+          "bg": "rgb(217, 217, 217)"
+        }
+      },
+      {
+        "name": "ellipse-55",
+        "type": "ELLIPSE",
+        "size": {
+          "w": 18,
+          "h": 18
+        },
+        "styles": {
+          "bg": "rgb(217, 217, 217)"
+        }
+      },
+      {
+        "name": "ellipse-56",
+        "type": "ELLIPSE",
+        "size": {
+          "w": 18,
+          "h": 18
+        },
+        "styles": {
+          "bg": "rgb(217, 217, 217)"
+        }
+      },
+      {
+        "name": "ellipse-57",
+        "type": "ELLIPSE",
+        "size": {
+          "w": 18,
+          "h": 18
+        },
+        "styles": {
+          "bg": "rgb(217, 217, 217)"
+        }
+      },
+      {
+        "name": "ellipse-58",
+        "type": "ELLIPSE",
+        "size": {
+          "w": 18,
+          "h": 18
+        },
+        "styles": {
+          "bg": "rgb(217, 217, 217)"
+        }
+      },
+      {
+        "name": "ellipse-1",
+        "type": "ELLIPSE",
+        "size": {
+          "w": 36,
+          "h": 36
+        },
+        "styles": {
+          "bg": "rgb(217, 217, 217)"
+        }
+      },
+      {
+        "name": "medio",
+        "type": "TEXT",
+        "size": {
+          "w": 23,
+          "h": 10
+        },
+        "content": "Medio",
+        "styles": {
+          "bg": "rgb(254, 254, 254)",
+          "text": {
+            "family": "Inter",
+            "size": 8,
+            "weight": "100",
+            "align": "left"
+          }
+        }
+      },
+      {
+        "name": "largo",
+        "type": "TEXT",
+        "size": {
+          "w": 21,
+          "h": 10
+        },
+        "content": "Largo",
+        "styles": {
+          "bg": "rgb(254, 254, 254)",
+          "text": {
+            "family": "Inter",
+            "size": 8,
+            "weight": "100",
+            "align": "left"
+          }
+        }
+      },
+      {
+        "name": "youtube",
+        "type": "TEXT",
+        "size": {
+          "w": 24,
+          "h": 7
+        },
+        "content": "YouTube",
+        "styles": {
+          "bg": "rgb(254, 254, 254)",
+          "text": {
+            "family": "Inter",
+            "size": 6,
+            "weight": "100",
+            "align": "left"
+          }
+        }
+      },
+      {
+        "name": "tik-tok",
+        "type": "TEXT",
+        "size": {
+          "w": 20,
+          "h": 7
+        },
+        "content": "Tik Tok",
+        "styles": {
+          "bg": "rgb(254, 254, 254)",
+          "text": {
+            "family": "Inter",
+            "size": 6,
+            "weight": "100",
+            "align": "left"
+          }
+        }
+      },
+      {
+        "name": "stremio",
+        "type": "TEXT",
+        "size": {
+          "w": 21,
+          "h": 7
+        },
+        "content": "Stremio",
+        "styles": {
+          "bg": "rgb(254, 254, 254)",
+          "text": {
+            "family": "Inter",
+            "size": 6,
+            "weight": "100",
+            "align": "left"
+          }
+        }
+      },
+      {
+        "name": "hbo",
+        "type": "TEXT",
+        "size": {
+          "w": 13,
+          "h": 7
+        },
+        "content": "HBO",
+        "styles": {
+          "bg": "rgb(254, 254, 254)",
+          "text": {
+            "family": "Inter",
+            "size": 6,
+            "weight": "100",
+            "align": "left"
+          }
+        }
+      },
+      {
+        "name": "twich",
+        "type": "TEXT",
+        "size": {
+          "w": 17,
+          "h": 7
+        },
+        "content": "Twich",
+        "styles": {
+          "bg": "rgb(254, 254, 254)",
+          "text": {
+            "family": "Inter",
+            "size": 6,
+            "weight": "100",
+            "align": "left"
+          }
+        }
+      },
+      {
+        "name": "mubi",
+        "type": "TEXT",
+        "size": {
+          "w": 14,
+          "h": 7
+        },
+        "content": "Mubi",
+        "styles": {
+          "bg": "rgb(254, 254, 254)",
+          "text": {
+            "family": "Inter",
+            "size": 6,
+            "weight": "100",
+            "align": "left"
+          }
+        }
+      },
+      {
+        "name": "instagram",
+        "type": "TEXT",
+        "size": {
+          "w": 27,
+          "h": 7
+        },
+        "content": "Instagram",
+        "styles": {
+          "bg": "rgb(254, 254, 254)",
+          "text": {
+            "family": "Inter",
+            "size": 6,
+            "weight": "100",
+            "align": "left"
+          }
+        }
+      },
+      {
+        "name": "kick",
+        "type": "TEXT",
+        "size": {
+          "w": 12,
+          "h": 7
+        },
+        "content": "Kick",
+        "styles": {
+          "bg": "rgb(254, 254, 254)",
+          "text": {
+            "family": "Inter",
+            "size": 6,
+            "weight": "100",
+            "align": "left"
+          }
+        }
+      },
+      {
+        "name": "netflix",
+        "type": "TEXT",
+        "size": {
+          "w": 18,
+          "h": 7
+        },
+        "content": "Netflix",
+        "styles": {
+          "bg": "rgb(254, 254, 254)",
+          "text": {
+            "family": "Inter",
+            "size": 6,
+            "weight": "100",
+            "align": "left"
+          }
+        }
+      },
+      {
+        "name": "disney-",
+        "type": "TEXT",
+        "size": {
+          "w": 23,
+          "h": 7
+        },
+        "content": "Disney+",
+        "styles": {
+          "bg": "rgb(254, 254, 254)",
+          "text": {
+            "family": "Inter",
+            "size": 6,
+            "weight": "100",
+            "align": "left"
+          }
+        }
+      },
+      {
+        "name": "prime",
+        "type": "TEXT",
+        "size": {
+          "w": 16,
+          "h": 7
+        },
+        "content": "Prime",
+        "styles": {
+          "bg": "rgb(254, 254, 254)",
+          "text": {
+            "family": "Inter",
+            "size": 6,
+            "weight": "100",
+            "align": "left"
+          }
+        }
+      },
+      {
+        "name": "spotify",
+        "type": "TEXT",
+        "size": {
+          "w": 20,
+          "h": 7
+        },
+        "content": "Spotify",
+        "styles": {
+          "bg": "rgb(254, 254, 254)",
+          "text": {
+            "family": "Inter",
+            "size": 6,
+            "weight": "100",
+            "align": "left"
+          }
+        }
+      },
+      {
+        "name": "corto",
+        "type": "TEXT",
+        "size": {
+          "w": 21,
+          "h": 10
+        },
+        "content": "Corto",
+        "styles": {
+          "bg": "rgb(254, 254, 254)",
+          "text": {
+            "family": "Inter",
+            "size": 8,
+            "weight": "100",
+            "align": "left"
+          }
+        }
+      },
+      {
+        "name": "formato",
+        "type": "TEXT",
+        "size": {
+          "w": 33,
+          "h": 10
+        },
+        "content": "Formato",
+        "styles": {
+          "bg": "rgb(254, 254, 254)",
+          "text": {
+            "family": "Inter",
+            "size": 8,
+            "weight": "700",
+            "align": "left"
+          }
+        }
+      },
+      {
+        "name": "formato",
+        "type": "TEXT",
+        "size": {
+          "w": 33,
+          "h": 10
+        },
+        "content": "Formato",
+        "styles": {
+          "bg": "rgb(254, 254, 254)",
+          "text": {
+            "family": "Inter",
+            "size": 8,
+            "weight": "700",
+            "align": "left"
+          }
+        }
+      },
+      {
+        "name": "formato",
+        "type": "TEXT",
+        "size": {
+          "w": 33,
+          "h": 10
+        },
+        "content": "Formato",
+        "styles": {
+          "bg": "rgb(254, 254, 254)",
+          "text": {
+            "family": "Inter",
+            "size": 8,
+            "weight": "700",
+            "align": "left"
+          }
+        }
+      },
+      {
+        "name": "polygon-7",
+        "type": "POLYGON",
+        "size": {
+          "w": 9,
+          "h": 9
+        },
+        "styles": {
+          "bg": "rgb(74, 74, 74)"
+        }
+      },
+      {
+        "name": "hrs-x-d-a",
+        "type": "TEXT",
+        "size": {
+          "w": 34,
+          "h": 10
+        },
+        "content": "Hrs x día",
+        "styles": {
+          "bg": "rgb(217, 217, 217)",
+          "text": {
+            "family": "Inter",
+            "size": 8,
+            "weight": "700",
+            "align": "left"
+          }
+        }
+      },
+      {
+        "name": "medios",
+        "type": "TEXT",
+        "size": {
+          "w": 29,
+          "h": 10
+        },
+        "content": "Medios",
+        "styles": {
+          "bg": "rgb(217, 217, 217)",
+          "text": {
+            "family": "Inter",
+            "size": 8,
+            "weight": "700",
+            "align": "left"
+          }
+        }
+      },
+      {
+        "name": "group-5",
+        "type": "GROUP",
+        "size": {
+          "w": 236,
+          "h": 20
+        },
+        "children": [
+          {
+            "name": "rectangle-1",
+            "type": "RECTANGLE",
+            "size": {
+              "w": 235,
+              "h": 11
+            },
+            "styles": {
+              "bg": "rgb(18, 18, 18)",
+              "radius": 6
+            }
+          },
+          {
+            "name": "1hr",
+            "type": "TEXT",
+            "size": {
+              "w": 9,
+              "h": 7
+            },
+            "content": "1hr",
+            "styles": {
+              "bg": "rgb(217, 217, 217)",
+              "text": {
+                "family": "Inter",
+                "size": 6,
+                "weight": "400",
+                "align": "left"
+              }
+            }
+          },
+          {
+            "name": "2hr",
+            "type": "TEXT",
+            "size": {
+              "w": 10,
+              "h": 7
+            },
+            "content": "2hr",
+            "styles": {
+              "bg": "rgb(217, 217, 217)",
+              "text": {
+                "family": "Inter",
+                "size": 6,
+                "weight": "400",
+                "align": "left"
+              }
+            }
+          },
+          {
+            "name": "3hr",
+            "type": "TEXT",
+            "size": {
+              "w": 10,
+              "h": 7
+            },
+            "content": "3hr",
+            "styles": {
+              "bg": "rgb(217, 217, 217)",
+              "text": {
+                "family": "Inter",
+                "size": 6,
+                "weight": "400",
+                "align": "left"
+              }
+            }
+          },
+          {
+            "name": "4hr",
+            "type": "TEXT",
+            "size": {
+              "w": 10,
+              "h": 7
+            },
+            "content": "4hr",
+            "styles": {
+              "bg": "rgb(217, 217, 217)",
+              "text": {
+                "family": "Inter",
+                "size": 6,
+                "weight": "400",
+                "align": "left"
+              }
+            }
+          },
+          {
+            "name": "5hr",
+            "type": "TEXT",
+            "size": {
+              "w": 10,
+              "h": 7
+            },
+            "content": "5hr",
+            "styles": {
+              "bg": "rgb(217, 217, 217)",
+              "text": {
+                "family": "Inter",
+                "size": 6,
+                "weight": "400",
+                "align": "left"
+              }
+            }
+          },
+          {
+            "name": "6hr--",
+            "type": "TEXT",
+            "size": {
+              "w": 16,
+              "h": 7
+            },
+            "content": "6hr +",
+            "styles": {
+              "bg": "rgb(217, 217, 217)",
+              "text": {
+                "family": "Inter",
+                "size": 6,
+                "weight": "400",
+                "align": "left"
+              }
+            }
+          },
+          {
+            "name": "ellipse-2",
+            "type": "ELLIPSE",
+            "size": {
+              "w": 11,
+              "h": 11
+            },
+            "styles": {
+              "bg": "rgb(254, 254, 254)"
+            }
+          }
+        ]
+      },
+      {
+        "name": "group-35",
+        "type": "GROUP",
+        "size": {
+          "w": 14,
+          "h": 8
+        },
+        "children": [
+          {
+            "name": "line-18",
+            "type": "LINE",
+            "size": {
+              "w": 14,
+              "h": 0
+            },
+            "styles": {
+              "border": {
+                "width": 8,
+                "color": "rgb(18, 18, 18)"
+              }
+            }
+          },
+          {
+            "name": "ellipse-57",
+            "type": "ELLIPSE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(217, 217, 217)"
+            }
+          }
+        ]
+      },
+      {
+        "name": "group-37",
+        "type": "GROUP",
+        "size": {
+          "w": 14,
+          "h": 8
+        },
+        "children": [
+          {
+            "name": "line-18",
+            "type": "LINE",
+            "size": {
+              "w": 14,
+              "h": 0
+            },
+            "styles": {
+              "border": {
+                "width": 8,
+                "color": "rgb(18, 18, 18)"
+              }
+            }
+          },
+          {
+            "name": "ellipse-57",
+            "type": "ELLIPSE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(217, 217, 217)"
+            }
+          }
+        ]
+      },
+      {
+        "name": "group-39",
+        "type": "GROUP",
+        "size": {
+          "w": 14,
+          "h": 8
+        },
+        "children": [
+          {
+            "name": "line-18",
+            "type": "LINE",
+            "size": {
+              "w": 14,
+              "h": 0
+            },
+            "styles": {
+              "border": {
+                "width": 8,
+                "color": "rgb(18, 18, 18)"
+              }
+            }
+          },
+          {
+            "name": "ellipse-57",
+            "type": "ELLIPSE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(217, 217, 217)"
+            }
+          }
+        ]
+      },
+      {
+        "name": "group-41",
+        "type": "GROUP",
+        "size": {
+          "w": 14,
+          "h": 8
+        },
+        "children": [
+          {
+            "name": "line-18",
+            "type": "LINE",
+            "size": {
+              "w": 14,
+              "h": 0
+            },
+            "styles": {
+              "border": {
+                "width": 8,
+                "color": "rgb(18, 18, 18)"
+              }
+            }
+          },
+          {
+            "name": "ellipse-57",
+            "type": "ELLIPSE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(217, 217, 217)"
+            }
+          }
+        ]
+      },
+      {
+        "name": "group-43",
+        "type": "GROUP",
+        "size": {
+          "w": 14,
+          "h": 8
+        },
+        "children": [
+          {
+            "name": "line-18",
+            "type": "LINE",
+            "size": {
+              "w": 14,
+              "h": 0
+            },
+            "styles": {
+              "border": {
+                "width": 8,
+                "color": "rgb(18, 18, 18)"
+              }
+            }
+          },
+          {
+            "name": "ellipse-57",
+            "type": "ELLIPSE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(217, 217, 217)"
+            }
+          }
+        ]
+      },
+      {
+        "name": "group-45",
+        "type": "GROUP",
+        "size": {
+          "w": 14,
+          "h": 8
+        },
+        "children": [
+          {
+            "name": "line-18",
+            "type": "LINE",
+            "size": {
+              "w": 14,
+              "h": 0
+            },
+            "styles": {
+              "border": {
+                "width": 8,
+                "color": "rgb(18, 18, 18)"
+              }
+            }
+          },
+          {
+            "name": "ellipse-57",
+            "type": "ELLIPSE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(217, 217, 217)"
+            }
+          }
+        ]
+      },
+      {
+        "name": "group-36",
+        "type": "GROUP",
+        "size": {
+          "w": 14,
+          "h": 8
+        },
+        "children": [
+          {
+            "name": "line-18",
+            "type": "LINE",
+            "size": {
+              "w": 14,
+              "h": 0
+            },
+            "styles": {
+              "border": {
+                "width": 8,
+                "color": "rgb(18, 18, 18)"
+              }
+            }
+          },
+          {
+            "name": "ellipse-57",
+            "type": "ELLIPSE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(217, 217, 217)"
+            }
+          }
+        ]
+      },
+      {
+        "name": "group-38",
+        "type": "GROUP",
+        "size": {
+          "w": 14,
+          "h": 8
+        },
+        "children": [
+          {
+            "name": "line-18",
+            "type": "LINE",
+            "size": {
+              "w": 14,
+              "h": 0
+            },
+            "styles": {
+              "border": {
+                "width": 8,
+                "color": "rgb(18, 18, 18)"
+              }
+            }
+          },
+          {
+            "name": "ellipse-57",
+            "type": "ELLIPSE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(217, 217, 217)"
+            }
+          }
+        ]
+      },
+      {
+        "name": "group-40",
+        "type": "GROUP",
+        "size": {
+          "w": 14,
+          "h": 8
+        },
+        "children": [
+          {
+            "name": "line-18",
+            "type": "LINE",
+            "size": {
+              "w": 14,
+              "h": 0
+            },
+            "styles": {
+              "border": {
+                "width": 8,
+                "color": "rgb(18, 18, 18)"
+              }
+            }
+          },
+          {
+            "name": "ellipse-57",
+            "type": "ELLIPSE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(217, 217, 217)"
+            }
+          }
+        ]
+      },
+      {
+        "name": "group-42",
+        "type": "GROUP",
+        "size": {
+          "w": 14,
+          "h": 8
+        },
+        "children": [
+          {
+            "name": "line-18",
+            "type": "LINE",
+            "size": {
+              "w": 14,
+              "h": 0
+            },
+            "styles": {
+              "border": {
+                "width": 8,
+                "color": "rgb(18, 18, 18)"
+              }
+            }
+          },
+          {
+            "name": "ellipse-57",
+            "type": "ELLIPSE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(217, 217, 217)"
+            }
+          }
+        ]
+      },
+      {
+        "name": "group-44",
+        "type": "GROUP",
+        "size": {
+          "w": 14,
+          "h": 8
+        },
+        "children": [
+          {
+            "name": "line-18",
+            "type": "LINE",
+            "size": {
+              "w": 14,
+              "h": 0
+            },
+            "styles": {
+              "border": {
+                "width": 8,
+                "color": "rgb(18, 18, 18)"
+              }
+            }
+          },
+          {
+            "name": "ellipse-57",
+            "type": "ELLIPSE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(217, 217, 217)"
+            }
+          }
+        ]
+      },
+      {
+        "name": "group-46",
+        "type": "GROUP",
+        "size": {
+          "w": 14,
+          "h": 8
+        },
+        "children": [
+          {
+            "name": "line-18",
+            "type": "LINE",
+            "size": {
+              "w": 14,
+              "h": 0
+            },
+            "styles": {
+              "border": {
+                "width": 8,
+                "color": "rgb(18, 18, 18)"
+              }
+            }
+          },
+          {
+            "name": "ellipse-57",
+            "type": "ELLIPSE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(217, 217, 217)"
+            }
+          }
+        ]
+      },
+      {
+        "name": "group-47",
+        "type": "GROUP",
+        "size": {
+          "w": 17,
+          "h": 63
+        },
+        "children": [
+          {
+            "name": "peliculas",
+            "type": "TEXT",
+            "size": {
+              "w": 32,
+              "h": 9
+            },
+            "content": "Peliculas",
+            "styles": {
+              "bg": "rgb(243, 243, 243)",
+              "text": {
+                "family": "Inter",
+                "size": 8,
+                "weight": "100",
+                "align": "left"
+              }
+            }
+          },
+          {
+            "name": "rectangle-8",
+            "type": "RECTANGLE",
+            "size": {
+              "w": 8,
+              "h": 52
+            },
+            "styles": {
+              "bg": "rgb(217, 217, 217)",
+              "radius": 8
+            }
+          },
+          {
+            "name": "ellipse-12",
+            "type": "ELLIPSE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(111, 111, 111)"
+            }
+          },
+          {
+            "name": "rectangle-19",
+            "type": "RECTANGLE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(74, 74, 74)",
+              "radius": 2
+            }
+          }
+        ]
+      },
+      {
+        "name": "group-48",
+        "type": "GROUP",
+        "size": {
+          "w": 17,
+          "h": 63
+        },
+        "children": [
+          {
+            "name": "series",
+            "type": "TEXT",
+            "size": {
+              "w": 23,
+              "h": 9
+            },
+            "content": "Series",
+            "styles": {
+              "bg": "rgb(243, 243, 243)",
+              "text": {
+                "family": "Inter",
+                "size": 8,
+                "weight": "100",
+                "align": "left"
+              }
+            }
+          },
+          {
+            "name": "rectangle-9",
+            "type": "RECTANGLE",
+            "size": {
+              "w": 8,
+              "h": 52
+            },
+            "styles": {
+              "bg": "rgb(217, 217, 217)",
+              "radius": 8
+            }
+          },
+          {
+            "name": "ellipse-13",
+            "type": "ELLIPSE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(111, 111, 111)"
+            }
+          },
+          {
+            "name": "rectangle-20",
+            "type": "RECTANGLE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(74, 74, 74)",
+              "radius": 2
+            }
+          }
+        ]
+      },
+      {
+        "name": "group-49",
+        "type": "GROUP",
+        "size": {
+          "w": 17,
+          "h": 63
+        },
+        "children": [
+          {
+            "name": "videojuegos",
+            "type": "TEXT",
+            "size": {
+              "w": 45,
+              "h": 8
+            },
+            "content": "Videojuegos",
+            "styles": {
+              "bg": "rgb(243, 243, 243)",
+              "text": {
+                "family": "Inter",
+                "size": 8,
+                "weight": "100",
+                "align": "left"
+              }
+            }
+          },
+          {
+            "name": "rectangle-10",
+            "type": "RECTANGLE",
+            "size": {
+              "w": 8,
+              "h": 52
+            },
+            "styles": {
+              "bg": "rgb(217, 217, 217)",
+              "radius": 8
+            }
+          },
+          {
+            "name": "ellipse-14",
+            "type": "ELLIPSE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(111, 111, 111)"
+            }
+          },
+          {
+            "name": "rectangle-21",
+            "type": "RECTANGLE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(74, 74, 74)",
+              "radius": 2
+            }
+          }
+        ]
+      },
+      {
+        "name": "group-50",
+        "type": "GROUP",
+        "size": {
+          "w": 17,
+          "h": 63
+        },
+        "children": [
+          {
+            "name": "cine",
+            "type": "TEXT",
+            "size": {
+              "w": 17,
+              "h": 9
+            },
+            "content": "Cine",
+            "styles": {
+              "bg": "rgb(243, 243, 243)",
+              "text": {
+                "family": "Inter",
+                "size": 8,
+                "weight": "100",
+                "align": "left"
+              }
+            }
+          },
+          {
+            "name": "rectangle-11",
+            "type": "RECTANGLE",
+            "size": {
+              "w": 8,
+              "h": 52
+            },
+            "styles": {
+              "bg": "rgb(217, 217, 217)",
+              "radius": 8
+            }
+          },
+          {
+            "name": "ellipse-15",
+            "type": "ELLIPSE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(111, 111, 111)"
+            }
+          },
+          {
+            "name": "rectangle-22",
+            "type": "RECTANGLE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(74, 74, 74)",
+              "radius": 2
+            }
+          }
+        ]
+      },
+      {
+        "name": "group-51",
+        "type": "GROUP",
+        "size": {
+          "w": 17,
+          "h": 63
+        },
+        "children": [
+          {
+            "name": "podcats",
+            "type": "TEXT",
+            "size": {
+              "w": 32,
+              "h": 8
+            },
+            "content": "Podcats",
+            "styles": {
+              "bg": "rgb(243, 243, 243)",
+              "text": {
+                "family": "Inter",
+                "size": 8,
+                "weight": "100",
+                "align": "left"
+              }
+            }
+          },
+          {
+            "name": "rectangle-12",
+            "type": "RECTANGLE",
+            "size": {
+              "w": 8,
+              "h": 52
+            },
+            "styles": {
+              "bg": "rgb(217, 217, 217)",
+              "radius": 8
+            }
+          },
+          {
+            "name": "ellipse-16",
+            "type": "ELLIPSE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(111, 111, 111)"
+            }
+          },
+          {
+            "name": "rectangle-23",
+            "type": "RECTANGLE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(74, 74, 74)",
+              "radius": 2
+            }
+          }
+        ]
+      },
+      {
+        "name": "group-52",
+        "type": "GROUP",
+        "size": {
+          "w": 17,
+          "h": 63
+        },
+        "children": [
+          {
+            "name": "recitales",
+            "type": "TEXT",
+            "size": {
+              "w": 36,
+              "h": 9
+            },
+            "content": "Recitales",
+            "styles": {
+              "bg": "rgb(243, 243, 243)",
+              "text": {
+                "family": "Inter",
+                "size": 8,
+                "weight": "100",
+                "align": "left"
+              }
+            }
+          },
+          {
+            "name": "rectangle-13",
+            "type": "RECTANGLE",
+            "size": {
+              "w": 8,
+              "h": 52
+            },
+            "styles": {
+              "bg": "rgb(217, 217, 217)",
+              "radius": 8
+            }
+          },
+          {
+            "name": "ellipse-17",
+            "type": "ELLIPSE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(111, 111, 111)"
+            }
+          },
+          {
+            "name": "rectangle-24",
+            "type": "RECTANGLE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(74, 74, 74)",
+              "radius": 2
+            }
+          }
+        ]
+      },
+      {
+        "name": "group-53",
+        "type": "GROUP",
+        "size": {
+          "w": 17,
+          "h": 63
+        },
+        "children": [
+          {
+            "name": "m-sica",
+            "type": "TEXT",
+            "size": {
+              "w": 30,
+              "h": 9
+            },
+            "content": "Música",
+            "styles": {
+              "bg": "rgb(243, 243, 243)",
+              "text": {
+                "family": "Inter",
+                "size": 8,
+                "weight": "100",
+                "align": "left"
+              }
+            }
+          },
+          {
+            "name": "rectangle-14",
+            "type": "RECTANGLE",
+            "size": {
+              "w": 8,
+              "h": 52
+            },
+            "styles": {
+              "bg": "rgb(217, 217, 217)",
+              "radius": 8
+            }
+          },
+          {
+            "name": "ellipse-18",
+            "type": "ELLIPSE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(111, 111, 111)"
+            }
+          },
+          {
+            "name": "rectangle-25",
+            "type": "RECTANGLE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(74, 74, 74)",
+              "radius": 2
+            }
+          }
+        ]
+      },
+      {
+        "name": "group-54",
+        "type": "GROUP",
+        "size": {
+          "w": 18,
+          "h": 63
+        },
+        "children": [
+          {
+            "name": "rrss",
+            "type": "TEXT",
+            "size": {
+              "w": 20,
+              "h": 9
+            },
+            "content": "RRSS",
+            "styles": {
+              "bg": "rgb(243, 243, 243)",
+              "text": {
+                "family": "Inter",
+                "size": 8,
+                "weight": "100",
+                "align": "left"
+              }
+            }
+          },
+          {
+            "name": "rectangle-15",
+            "type": "RECTANGLE",
+            "size": {
+              "w": 8,
+              "h": 52
+            },
+            "styles": {
+              "bg": "rgb(217, 217, 217)",
+              "radius": 8
+            }
+          },
+          {
+            "name": "ellipse-19",
+            "type": "ELLIPSE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(111, 111, 111)"
+            }
+          },
+          {
+            "name": "rectangle-26",
+            "type": "RECTANGLE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(74, 74, 74)",
+              "radius": 2
+            }
+          }
+        ]
+      },
+      {
+        "name": "group-55",
+        "type": "GROUP",
+        "size": {
+          "w": 17,
+          "h": 63
+        },
+        "children": [
+          {
+            "name": "otros",
+            "type": "TEXT",
+            "size": {
+              "w": 20,
+              "h": 9
+            },
+            "content": "Otros",
+            "styles": {
+              "bg": "rgb(243, 243, 243)",
+              "text": {
+                "family": "Inter",
+                "size": 8,
+                "weight": "100",
+                "align": "left"
+              }
+            }
+          },
+          {
+            "name": "rectangle-16",
+            "type": "RECTANGLE",
+            "size": {
+              "w": 8,
+              "h": 52
+            },
+            "styles": {
+              "bg": "rgb(217, 217, 217)",
+              "radius": 8
+            }
+          },
+          {
+            "name": "ellipse-20",
+            "type": "ELLIPSE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(111, 111, 111)"
+            }
+          },
+          {
+            "name": "rectangle-27",
+            "type": "RECTANGLE",
+            "size": {
+              "w": 8,
+              "h": 8
+            },
+            "styles": {
+              "bg": "rgb(74, 74, 74)",
+              "radius": 2
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "summary": {
+    "components": 0,
+    "instances": 0,
+    "frames": 1,
+    "texts": 35,
+    "hasAutoLayout": true,
+    "hasEffects": false
+  }
+}
