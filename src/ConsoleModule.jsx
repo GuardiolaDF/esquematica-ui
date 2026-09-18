@@ -8,13 +8,13 @@ import { useAppContext } from './contexts/AppContext';
 const LBL_UP = "absolute bottom-[100%] mb-[4px] left-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.2em] text-[#777] font-sans font-bold whitespace-nowrap pointer-events-none";
 
 const VerticalPads = ({ options, value, onChange, disabled }) => (
-  <div className={`flex flex-col gap-[7px] w-full ${disabled ? 'opacity-20 pointer-events-none' : ''}`}>
+  <div className={`flex flex-col gap-[7px] w-full ${disabled ? 'pointer-events-none' : ''}`}>
     {options.map(opt => {
       const isSelected = value === opt.value;
       return (
         <div key={opt.value} className="flex items-center gap-1.5 cursor-pointer" onClick={() => onChange(isSelected ? null : opt.value)}>
           <div className={`w-[10px] h-[10px] shrink-0 rounded-[2px] transition-all ${isSelected ? 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.5)]' : 'bg-[#555] border border-[#444]'}`}></div>
-          <span className={`text-[7.5px] font-sans whitespace-nowrap ${isSelected ? 'text-white font-bold' : 'text-[#999]'}`}>{opt.label}</span>
+          <span className={`text-[7.5px] font-sans whitespace-nowrap transition-colors ${isSelected ? 'text-white font-bold' : (disabled ? 'text-[#666]' : 'text-[#999]')}`}>{opt.label}</span>
         </div>
       );
     })}
@@ -84,11 +84,9 @@ export default function ConsoleModule({ isCol, saveToDb }) {
               <div 
                 key={m.id} 
                 style={{ gridColumnStart: m.col, gridRowStart: 1 }} 
-                className="flex flex-col items-center justify-end relative w-full h-full"
+                className="flex flex-col items-center justify-center relative w-full h-full z-20"
               >
-                <div className="absolute bottom-[100%] left-1/2 -translate-x-1/2 mb-[2px] text-[7px] uppercase tracking-[0.2em] text-[#777] font-sans font-bold whitespace-nowrap pointer-events-none z-20">
-                  {m.label}
-                </div>
+                <span className={`${HEADER_TXT} left-1/2 -translate-x-1/2`}>{m.label}</span>
                 <div 
                   className={`w-full aspect-square rounded-[20%] cursor-pointer flex items-center justify-center transition-all ${
                     mode === m.id 
@@ -181,19 +179,19 @@ export default function ConsoleModule({ isCol, saveToDb }) {
 
           {/* PROMEDIO (Rotary): Cols 2-3 */}
           <div style={{ gridColumnStart: 2, gridColumnEnd: 4, gridRowStart: 2 }} className="flex flex-col items-start justify-center relative w-full h-full">
-             <div className={`relative flex flex-col items-center justify-center w-[90%] ${!isCol || !filters.promedioActivo ? 'opacity-20 pointer-events-none' : ''}`}>
+             <div className={`relative flex flex-col items-center justify-center w-[90%] ${!filters.promedioActivo ? 'pointer-events-none' : ''}`}>
                 <RotarySwitch sizeClass="w-full aspect-square" angles={[45, 90, 135]} optionLabels={['zen', 'Promedio', 'estresado']} stepIndex={['zen', 'Promedio', 'estresado'].indexOf(filters.promedioNivel)} onChange={(idx) => setFilters(p => ({...p, promedioNivel: ['zen', 'Promedio', 'estresado'][idx]}))} />
              </div>
           </div>
 
           {/* EDAD (Pads): Col E = 5 */}
           <div style={{ gridColumnStart: 5, gridRowStart: 2, gridRowEnd: 4 }} className="flex flex-col items-start justify-start pt-[6px] w-full h-full">
-             <VerticalPads options={edadOptions.map(o=>({label:o, value:o}))} value={filters.edadGroup} onChange={(v) => setFilters(p => ({...p, edadActiva: v !== null, edadGroup: v !== null ? v : p.edadGroup}))} disabled={!isCol || !filters.edadActiva} />
+             <VerticalPads options={edadOptions.map(o=>({label:o, value:o}))} value={filters.edadGroup} onChange={(v) => setFilters(p => ({...p, edadActiva: v !== null, edadGroup: v !== null ? v : p.edadGroup}))} disabled={!filters.edadActiva} />
           </div>
 
           {/* GÉNERO (Switch en top de G2) + PAÍS LED (en bottom de G2): Col G = 7 */}
           <div style={{ gridColumnStart: 7, gridRowStart: 2 }} className="flex flex-col items-start justify-between relative w-full h-full">
-             <div className={`h-[12px] w-[90%] pt-[2px] ${!isCol || !filters.generoActivo ? 'opacity-20 pointer-events-none' : ''}`}>
+             <div className={`h-[12px] w-[90%] pt-[2px] ${!filters.generoActivo ? 'pointer-events-none' : ''}`}>
                 <ToggleSwitch sizeClass="h-full aspect-[2/1]" onLabel="F" offLabel="M" value={filters.genero === 'F'} onChange={(v) => setFilters(p => ({...p, genero: v ? 'F' : 'M'}))} />
              </div>
              <div className="flex flex-col items-start justify-end pb-0">
@@ -204,14 +202,14 @@ export default function ConsoleModule({ isCol, saveToDb }) {
 
           {/* PAÍS (Switch en top de G3): Col G = 7 */}
           <div style={{ gridColumnStart: 7, gridRowStart: 3 }} className="flex flex-col items-start justify-start pt-[2px] w-full h-full">
-             <div className={`h-[12px] w-[90%] ${!isCol || !filters.paisActivo ? 'opacity-20 pointer-events-none' : ''}`}>
+             <div className={`h-[12px] w-[90%] ${!filters.paisActivo ? 'pointer-events-none' : ''}`}>
                 <ToggleSwitch sizeClass="h-full aspect-[2/1]" onLabel="Otro" offLabel="Argentina" value={filters.nacionalidad === 'Extranjero'} onChange={(v) => setFilters(p => ({...p, nacionalidad: v ? 'Extranjero' : 'Argentino'}))} />
              </div>
           </div>
 
           {/* TRABAJO (Switch): Col I = 9 */}
           <div style={{ gridColumnStart: 9, gridRowStart: 2 }} className="flex flex-col items-start justify-start pt-[6px] relative w-full h-full">
-             <div className={`h-[12px] w-[90%] ${!isCol || !filters.trabajaActivo ? 'opacity-20 pointer-events-none' : ''}`}>
+             <div className={`h-[12px] w-[90%] ${!filters.trabajaActivo ? 'pointer-events-none' : ''}`}>
                 <ToggleSwitch sizeClass="h-full aspect-[2/1]" onLabel="si" offLabel="no" value={filters.trabaja === 'SÍ'} onChange={(v) => {
                   setFilters(p => {
                     let next = {...p, trabaja: v ? 'SÍ' : 'NO'};
@@ -228,7 +226,7 @@ export default function ConsoleModule({ isCol, saveToDb }) {
                 options={[{label:'< 4', value:'<4'}, {label:'4-6', value:'4-6'}, {label:'6-8', value:'6-8'}, {label:'>8', value:'>8'}]} 
                 value={filters.horasTrabajoActivo ? filters.horasTrabajo : null} 
                 onChange={(v) => setFilters(p => ({...p, horasTrabajoActivo: v !== null, horasTrabajo: v !== null ? v : p.horasTrabajo}))} 
-                disabled={!isCol || !filters.trabajaActivo || filters.trabaja !== 'SÍ'} 
+                disabled={!filters.trabajaActivo || filters.trabaja !== 'SÍ'} 
              />
           </div>
 
@@ -238,7 +236,7 @@ export default function ConsoleModule({ isCol, saveToDb }) {
                 options={[{label:'presencial', value:'Presencial'}, {label:'híbrido', value:'Híbrido'}, {label:'remoto', value:'Remoto'}]} 
                 value={filters.modalidadActiva ? filters.modalidad : null} 
                 onChange={(v) => setFilters(p => ({...p, modalidadActiva: v !== null, modalidad: v !== null ? v : p.modalidad}))} 
-                disabled={!isCol || !filters.trabajaActivo || filters.trabaja !== 'SÍ'} 
+                disabled={!filters.trabajaActivo || filters.trabaja !== 'SÍ'} 
              />
           </div>
 
@@ -248,7 +246,7 @@ export default function ConsoleModule({ isCol, saveToDb }) {
                 options={[{label:'<1hr', value:'<1H'}, {label:'1-2hra', value:'1-2H'}, {label:'>2hrs', value:'>2H'}]} 
                 value={filters.viajeActivo ? filters.tiempoViaje : null} 
                 onChange={(v) => setFilters(p => ({...p, viajeActivo: v !== null, tiempoViaje: v !== null ? v : p.tiempoViaje}))} 
-                disabled={!isCol || !filters.viajeActivo} 
+                disabled={!filters.viajeActivo} 
              />
           </div>
 
@@ -258,7 +256,7 @@ export default function ConsoleModule({ isCol, saveToDb }) {
                 options={[{label:'Familia', value:'Familia'}, {label:'Solo/a', value:'Solo'}, {label:'con pares', value:'Pares'}]} 
                 value={filters.convivenciaActiva ? filters.convivencia : null} 
                 onChange={(v) => setFilters(p => ({...p, convivenciaActiva: v !== null, convivencia: v !== null ? v : p.convivencia}))} 
-                disabled={!isCol || !filters.convivenciaActiva} 
+                disabled={!filters.convivenciaActiva} 
              />
           </div>
 
