@@ -179,7 +179,7 @@ export default function DataVisualizer() {
             processedVal = getZonedValue(compId, processedVal);
             
             // Ruido de Descuantización para romper bloques discretos ("Categorical Smear")
-            if (booleanTracks.includes(compId) || discreteTracks.includes(compId) || counterTracks.includes(compId)) {
+            if (booleanTracks.includes(compId) || zonedTracks.includes(compId) || counterTracks.includes(compId)) {
               // Deterministic uniform noise between -8% and +8%
               const smearSeed = ((idx * 17.345) % 1);
               const smearOffset = (smearSeed - 0.5) * 16;
