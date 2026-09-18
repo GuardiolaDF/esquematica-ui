@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useHover } from '../../contexts/HoverContext';
+import { useAppContext } from '../../contexts/AppContext';
 
 const RotarySwitch = ({ 
   sizeClass = "w-[85%]", 
@@ -9,17 +10,46 @@ const RotarySwitch = ({
   angles = [-90, -45, 0, 45, 90],
   optionLabels = [],
   className = "",
-  compId
+  compId,
+  onChange,
+  value,
+  stepIndex
 }) => {
   const startStep = initialStep !== undefined ? initialStep : Math.floor(angles.length / 2);
-  const [step, setStep] = useState(startStep);
+  const { mode, values, setValue: setGlobalValue, averages } = useAppContext();
+  const [localStep, setLocalStep] = useState(startStep);
   const { hoveredId, setHoveredId } = useHover();
   const [localHover, setLocalHover] = useState(false);
   
   const isHovered = (compId && hoveredId === compId) || localHover;
-  const glowClass = isHovered ? 'shadow-[0_0_15px_rgba(251,191,36,0.5)] border border-amber-400/30' : 'shadow-md border border-transparent';
+  const isMissing = useAppContext().missingFields?.includes(compId);
+  const glowClass = isHovered 
+    ? 'shadow-[0_0_15px_rgba(251,191,36,0.5)] border border-amber-400/30' 
+    : (isMissing ? 'shadow-[0_0_15px_rgba(239,68,68,0.5)] border border-red-500/50' : 'shadow-md border border-transparent');
+
+  const stepToValue = (step) => 100 - (step * 25);
+  const valueToStep = (val) => {
+    if (val === undefined || val === null) return startStep;
+    return Math.max(0, Math.min(4, 4 - Math.round(val / 25)));
+  };
+
+  // displayStep logic
+  let displayStep = localStep;
+  if (stepIndex !== undefined) {
+    displayStep = stepIndex;
+  } else if (value !== undefined) {
+    displayStep = valueToStep(value);
+  } else if (mode === 'colectivo' && compId) {
+    const avg = averages[compId];
+    if (avg !== undefined) {
+      displayStep = valueToStep(avg);
+    }
+  } else if (compId && values[compId] !== undefined) {
+    displayStep = valueToStep(values[compId]);
+  }
 
   const handleInteraction = useCallback((clientX, clientY, rect) => {
+    if (mode === 'colectivo' && compId) return;
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
     const dx = clientX - cx;
@@ -41,8 +71,10 @@ const RotarySwitch = ({
       }
     });
     
-    setStep(closestStep);
-  }, [angles]);
+    setLocalStep(closestStep);
+    if (compId) setGlobalValue(compId, stepToValue(closestStep));
+    if (onChange) onChange(closestStep, angles[closestStep]);
+  }, [angles, mode, compId, setGlobalValue, onChange]);
 
   const onMouseDown = (e) => {
     e.preventDefault();
@@ -71,16 +103,16 @@ const RotarySwitch = ({
     document.addEventListener('touchend', onTouchEnd);
   };
 
-  // Reducimos el radio para que los puntos y textos estén pegados a la perilla original
-  const dotRadius = 55; // % del centro
-  const textRadius = 70; // % del centro
+  // Aumentamos el radio para que los puntos y textos floten separados como en un círculo transparente más grande
+  const dotRadius = 60; // % del centro
+  const textRadius = 82; // % del centro
 
   const handleMouseEnter = () => { setLocalHover(true); if (compId) setHoveredId(compId); };
   const handleMouseLeave = () => { setLocalHover(false); if (compId) setHoveredId(null); };
 
   return (
     <div 
-      className={`relative flex items-center justify-center ${sizeClass} ${className} cursor-pointer touch-none transition-all duration-300`} 
+      className={`relative flex items-center justify-center ${sizeClass} ${className} ${isHovered ? 'ring-2 ring-yellow-400 rounded-full shadow-[0_0_15px_rgba(251,191,36,0.3)] z-50' : ''} cursor-pointer touch-none transition-all duration-300`} 
       onMouseDown={onMouseDown} 
       onTouchStart={onTouchStart}
       onMouseEnter={handleMouseEnter}
@@ -94,7 +126,7 @@ const RotarySwitch = ({
       {/* Cuerpo de la Perilla. Exactamente w-full y h-full del contenedor definido por sizeClass */}
       <div 
         className={`w-full h-full rounded-full bg-[#E5E5E5] ${glowClass} relative pointer-events-none transition-all duration-[150ms] ease-out`}
-        style={{ transform: `rotate(${angles[step]}deg)` }}
+        style={{ transform: `rotate(${angles[displayStep]}deg)` }}
       >
         <div className="absolute top-[4px] left-1/2 -translate-x-1/2 w-1.5 h-2.5 bg-[#444] rounded-sm"></div>
       </div>
@@ -111,7 +143,9 @@ const RotarySwitch = ({
         const textLeft = `calc(50% + ${dx * textRadius}%)`;
         const textTop = `calc(50% + ${dy * textRadius}%)`;
 
-        const isActive = step === i;
+        // En modo colectivo mostramos calor (opacidad o shadow dependiente de si es popular, pero por ahora solo resaltamos la ganadora)
+        // Podríamos hacer que brille según popularity, pero requeriría data de counts, que no tenemos.
+        const isActive = displayStep === i;
 
         return (
           <React.Fragment key={i}>

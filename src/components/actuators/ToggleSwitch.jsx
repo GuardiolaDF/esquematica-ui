@@ -1,22 +1,52 @@
 import React, { useState } from 'react';
 import { useHover } from '../../contexts/HoverContext';
+import { useAppContext } from '../../contexts/AppContext';
 
 const ToggleSwitch = ({ 
-  initialState = true, // Asumimos que UP (-rotate-45) es ON
+  initialState = true, 
   sizeClass = "w-[45%]", 
   label, 
   labelClass, 
   className = "",
-  compId 
+  compId,
+  value,
+  onChange,
+  onLabel = "SI",
+  offLabel = "NO"
 }) => {
-  const [isOn, setIsOn] = useState(initialState);
+  const { mode, values, setValue: setGlobalValue, averages } = useAppContext();
+  const [localIsOn, setLocalIsOn] = useState(initialState);
   const { hoveredId, setHoveredId } = useHover();
   const [localHover, setLocalHover] = useState(false);
   
   const isHovered = (compId && hoveredId === compId) || localHover;
-  const glowClass = isHovered ? 'shadow-[0_0_15px_rgba(251,191,36,0.5)] border border-amber-400/30' : 'shadow-md border border-transparent';
+  const isMissing = useAppContext().missingFields?.includes(compId);
+  const glowClass = isHovered 
+    ? 'shadow-[0_0_15px_rgba(251,191,36,0.5)] border border-amber-400/30' 
+    : (isMissing ? 'shadow-[0_0_15px_rgba(239,68,68,0.5)] border border-red-500/50' : 'shadow-md border border-transparent');
 
-  const toggle = () => setIsOn((prev) => !prev);
+  let isOn = localIsOn;
+  let averagePos = null;
+
+  if (value !== undefined) {
+    isOn = value === 100 || value === true;
+  } else if (mode === 'colectivo' && compId) {
+    const avg = averages[compId];
+    if (avg !== undefined) {
+      isOn = avg > 50; 
+      averagePos = avg; 
+    }
+  } else if (compId && values[compId] !== undefined) {
+    isOn = values[compId] === 100 || values[compId] === true;
+  }
+
+  const toggle = () => {
+    if (mode === 'colectivo' && compId) return;
+    const next = !isOn;
+    setLocalIsOn(next);
+    if (compId) setGlobalValue(compId, next ? 100 : 0);
+    if (onChange) onChange(next ? 100 : 0);
+  };
   
   const handleMouseEnter = () => { setLocalHover(true); if (compId) setHoveredId(compId); };
   const handleMouseLeave = () => { setLocalHover(false); if (compId) setHoveredId(null); };
@@ -32,8 +62,11 @@ const ToggleSwitch = ({
         <span className={labelClass}>{label}</span>
       )}
       
+      {/* SI / NO Labels (Alineados con la perilla a -45 y +45 grados) */}
+      {onLabel && <span className="absolute text-[4.5px] uppercase font-bold text-[#888] pointer-events-none" style={{ top: '-15%', right: '-40%' }}>{onLabel}</span>}
+      {offLabel && <span className="absolute text-[4.5px] uppercase font-bold text-[#888] pointer-events-none" style={{ bottom: '-15%', right: '-40%' }}>{offLabel}</span>}
+      
       {/* Palanca (Lever) */}
-      {/* Usamos transition-transform para que el cambio de ángulo sea fluido y mecánico */}
       <div 
         className={`absolute top-1/2 left-1/2 w-[110%] h-[35%] bg-[#888] rounded-full -translate-y-1/2 origin-left shadow-sm transition-transform duration-[150ms] ease-in-out ${
           isOn ? '-rotate-45' : 'rotate-45'

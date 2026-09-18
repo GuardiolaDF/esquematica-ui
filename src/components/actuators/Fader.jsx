@@ -1,20 +1,37 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useHover } from '../../contexts/HoverContext';
+import { useAppContext } from '../../contexts/AppContext';
 
-const Fader = ({
+const Fader = ({ 
   orientation = 'vertical',
   trackClass = '',
   thumbClass = '',
   label = '',
   labelClass = '',
-  initialValue = 0, // 0 to 100
+  initialValue = 50, // 0 to 100
   compId,
-  markers = []
+  markers = [],
+  value,
+  onChange
 }) => {
-  const [value, setValue] = useState(initialValue);
+  const { mode, values, setValue: setGlobalValue, averages } = useAppContext();
+  const [localValue, setLocalValue] = useState(initialValue);
   const trackRef = useRef(null);
 
+  // Sync with global store based on mode
+  let displayValue = localValue;
+  if (value !== undefined) {
+    displayValue = value;
+  } else if (mode === 'colectivo' && compId) {
+    displayValue = averages[compId] ?? initialValue;
+  } else if (compId) {
+    displayValue = values[compId] ?? initialValue;
+  }
+
+  const [isDragging, setIsDragging] = useState(false);
+  
   const handleMove = useCallback((clientX, clientY) => {
+    if (mode === 'colectivo') return; // Disabled in colectivo mode
     if (!trackRef.current) return;
     const rect = trackRef.current.getBoundingClientRect();
     let newVal = 0;
@@ -31,15 +48,22 @@ const Fader = ({
     }
 
     newVal = Math.max(0, Math.min(100, newVal));
-    setValue(newVal);
-  }, [orientation]);
+    setLocalValue(newVal);
+    if (onChange) {
+      onChange(newVal);
+    } else if (compId) {
+      setGlobalValue(compId, newVal);
+    }
+  }, [orientation, mode, compId, setGlobalValue, onChange]);
 
   const onMouseDown = (e) => {
     e.preventDefault(); // Previene selección de texto
+    setIsDragging(true);
     handleMove(e.clientX, e.clientY);
     
     const onMouseMove = (moveEvent) => handleMove(moveEvent.clientX, moveEvent.clientY);
     const onMouseUp = () => {
+      setIsDragging(false);
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
     };
@@ -49,12 +73,14 @@ const Fader = ({
   };
 
   const onTouchStart = (e) => {
+    setIsDragging(true);
     handleMove(e.touches[0].clientX, e.touches[0].clientY);
 
     const onTouchMove = (moveEvent) => {
       handleMove(moveEvent.touches[0].clientX, moveEvent.touches[0].clientY);
     };
     const onTouchEnd = () => {
+      setIsDragging(false);
       document.removeEventListener('touchmove', onTouchMove);
       document.removeEventListener('touchend', onTouchEnd);
     };
@@ -66,20 +92,27 @@ const Fader = ({
   const { hoveredId, setHoveredId } = useHover();
   const [localHover, setLocalHover] = useState(false);
   
-  const isHovered = (compId && hoveredId === compId) || localHover;
-  const glowClass = isHovered ? 'shadow-[0_0_15px_rgba(251,191,36,0.5)] border border-amber-400/30' : 'shadow-md border border-transparent';
+  const isHovered = (compId && hoveredId === compId) || localHover || isDragging;
+  const isMissing = useAppContext().missingFields?.includes(compId);
+  
+  const thumbGlowClass = isHovered 
+    ? 'shadow-[0_0_15px_rgba(251,191,36,0.8)] border border-yellow-400 bg-yellow-100' 
+    : (isMissing ? 'shadow-[0_0_15px_rgba(239,68,68,0.8)] border border-red-500 bg-red-100' : 'shadow-md border border-transparent');
+  const trackGlowClass = isHovered 
+    ? 'ring-2 ring-yellow-400 shadow-[0_0_15px_rgba(251,191,36,0.3)]' 
+    : (isMissing ? 'ring-2 ring-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)]' : '');
 
   const thumbStyle = orientation === 'vertical' 
-    ? { bottom: `${value}%`, transform: 'translateY(50%)' }
-    : { left: `${value}%`, transform: 'translateX(-50%)' };
+    ? { bottom: `${displayValue}%`, transform: 'translateY(50%)' }
+    : { left: `${displayValue}%`, transform: 'translateX(-50%)' };
 
   const handleMouseEnter = () => { setLocalHover(true); if (compId) setHoveredId(compId); };
-  const handleMouseLeave = () => { setLocalHover(false); if (compId) setHoveredId(null); };
+  const handleMouseLeave = () => { setLocalHover(false); if (compId && !isDragging) setHoveredId(null); };
 
   return (
     <div 
       ref={trackRef}
-      className={`${trackClass} cursor-pointer touch-none transition-all duration-300`}
+      className={`${trackClass} ${trackGlowClass} cursor-pointer touch-none transition-all duration-300`}
       onMouseDown={onMouseDown}
       onTouchStart={onTouchStart}
       onMouseEnter={handleMouseEnter}
@@ -97,25 +130,40 @@ const Fader = ({
         )
       )}
       
-      {orientation === 'horizontal' && markers && markers.length > 0 && (
-        <div className="absolute top-1/2 -translate-y-1/2 left-0 w-full h-full pointer-events-none z-10">
+      {/* Markers (Optional) */}
+      {markers && (
+        <div className="absolute w-full h-full pointer-events-none">
           {markers.map((m, i) => {
-            const pos = (i / (markers.length - 1)) * 100;
-            return (
-              <span 
-                key={i} 
-                className="absolute top-1/2 -translate-y-1/2 text-[6.5px] uppercase tracking-[0.1em] text-[#666] font-mono font-bold whitespace-nowrap drop-shadow-md"
-                style={{ left: `${pos}%`, transform: 'translate(-50%, -50%)' }}
-              >
-                {m}
-              </span>
-            );
+            if (orientation === 'vertical') {
+              const pos = (i / (markers.length - 1)) * 100;
+              return (
+                <span 
+                  key={i} 
+                  className="absolute left-[150%] text-[6px] text-[#777] font-bold"
+                  style={{ bottom: `${pos}%`, transform: 'translateY(50%)' }}
+                >
+                  {m}
+                </span>
+              );
+            } else {
+              // Horizontal markers: empujados un poco hacia adentro (del 4% al 96%) para que no se salgan de la barra
+              const pos = 4 + (i / (markers.length - 1)) * 92;
+              return (
+                <span 
+                  key={i} 
+                  className="absolute top-1/2 -translate-y-1/2 text-[6.5px] uppercase tracking-[0.1em] text-[#999] font-mono font-bold whitespace-nowrap drop-shadow-md"
+                  style={{ left: `${pos}%`, transform: 'translate(-50%, -50%)' }}
+                >
+                  {m}
+                </span>
+              );
+            }
           })}
         </div>
       )}
 
       <div 
-        className={`${thumbClass} ${glowClass} pointer-events-none transition-shadow duration-300`}
+        className={`${thumbClass} ${thumbGlowClass} pointer-events-none transition-all duration-300`}
         style={thumbStyle}
       ></div>
     </div>
