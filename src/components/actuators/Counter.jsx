@@ -20,9 +20,7 @@ const Counter = ({ label, labelClass, compId }) => {
     }
   }, [compId, values[compId]]);
 
-  const displayValue = mode === 'colectivo' 
-    ? Math.round(averages[compId] ?? 0) 
-    : localValue;
+  const displayValue = localValue;
 
   const increment = () => {
     if (mode === 'colectivo') return;

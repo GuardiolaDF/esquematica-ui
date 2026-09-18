@@ -21,19 +21,10 @@ const LedButton = ({
   const isHovered = (compId && hoveredId === compId) || localHover;
 
   let isOn = localIsOn;
-  let intensity = 1; // Para opacidad en modo colectivo
+  let intensity = 1;
 
   if (value !== undefined) {
     isOn = value === 100 || value === true;
-  } else if (mode === 'colectivo' && compId) {
-    const avg = averages[compId];
-    if (avg !== undefined) {
-      isOn = avg > 0; // Se enciende si tiene algo de porcentaje
-      intensity = avg / 100; // El brillo dependerá del porcentaje
-    } else {
-      isOn = false;
-      intensity = 0;
-    }
   } else if (compId && values[compId] !== undefined) {
     isOn = values[compId] === 100 || values[compId] === true;
   }

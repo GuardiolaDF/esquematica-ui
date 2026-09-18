@@ -21,14 +21,14 @@ const LBL_V = "absolute right-[100%] mr-[4px] top-1/2 -translate-y-1/2 -rotate-9
 const LBL_PAD = "absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.2em] text-[#777] font-sans font-bold whitespace-nowrap pointer-events-none z-20";
 
 const ControlModule = () => {
-  const { activePlatform, setActivePlatform, values, setValue, showGrid } = useAppContext();
+  const { activePlatform, setActivePlatform, values, setValue, showGrid, mode } = useAppContext();
   const { hoveredId } = useHover();
   
   // Determinamos si algún pad está siendo "hovered" para iluminar el fader vertical
   const isPadHovered = hoveredId && hoveredId.startsWith('mod1-') && parseInt(hoveredId.split('-')[1]) >= 10 && parseInt(hoveredId.split('-')[1]) <= 21;
 
   return (
-    <ModuleShell>
+    <ModuleShell disabled={mode === 'colectivo'}>
       {/* GRILLA DIRECTA 12x7. 8px padding, 2px gap */}
       <div className="w-full h-full grid grid-cols-12 grid-rows-7 p-[8px] gap-[2px] relative">
         

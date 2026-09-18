@@ -39,11 +39,6 @@ const RotarySwitch = ({
     displayStep = stepIndex;
   } else if (value !== undefined) {
     displayStep = valueToStep(value);
-  } else if (mode === 'colectivo' && compId) {
-    const avg = averages[compId];
-    if (avg !== undefined) {
-      displayStep = valueToStep(avg);
-    }
   } else if (compId && values[compId] !== undefined) {
     displayStep = valueToStep(values[compId]);
   }

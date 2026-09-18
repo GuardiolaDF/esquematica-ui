@@ -19,14 +19,17 @@ const Module3 = () => {
   // En modo colectivo, si el promedio es > 0, lo consideramos activo para iluminar el banco de pads
   const procIsOn = mode === 'colectivo' ? (averages['mod3-8'] > 0) : (values['mod3-8'] === 100 || values['mod3-8'] === true);
 
+  const cols = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+  const rows = [1, 2, 3, 4, 5, 6, 7];
+
   return (
-    <ModuleShell>
+    <ModuleShell disabled={mode === 'colectivo'}>
       {/* GRILLA DIRECTA 12x7 */}
       <div className="w-full h-full grid grid-cols-12 grid-rows-7 p-[8px] gap-[2px] relative">
         
         {/* GRILLA DE COORDENADAS */}
-        {showGrid && [1, 2, 3, 4, 5, 6, 7].map((row, rIdx) => 
-          ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].map((col, cIdx) => (
+        {showGrid && rows.map((row, rIdx) => 
+          cols.map((col, cIdx) => (
             <div 
               key={`coord-m3-${col}${row}`} 
               style={{ gridColumnStart: cIdx + 1, gridRowStart: rIdx + 1 }}

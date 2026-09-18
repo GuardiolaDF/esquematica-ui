@@ -22,8 +22,6 @@ const Fader = ({
   let displayValue = localValue;
   if (value !== undefined) {
     displayValue = value;
-  } else if (mode === 'colectivo' && compId) {
-    displayValue = averages[compId] ?? initialValue;
   } else if (compId) {
     displayValue = values[compId] ?? initialValue;
   }

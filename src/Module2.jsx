@@ -13,12 +13,12 @@ const LBL_DN = "absolute top-[100%] mt-[4px] left-1/2 -translate-x-1/2 text-[7px
 const LBL_V = "absolute right-[100%] mr-[4px] top-1/2 -translate-y-1/2 -rotate-90 origin-center text-[7px] uppercase tracking-[0.2em] text-[#777] font-sans font-bold whitespace-nowrap pointer-events-none";
 
 const Module2 = () => {
-  const { showGrid } = useAppContext();
+  const { showGrid, mode } = useAppContext();
   const cols = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
   const rows = [1, 2, 3, 4, 5, 6, 7];
 
   return (
-    <ModuleShell>
+    <ModuleShell disabled={mode === 'colectivo'}>
       {/* GRILLA DIRECTA 12x7. 8px padding, 2px gap (Igual que Módulo 1) */}
       <div className="w-full h-full grid grid-cols-12 grid-rows-7 p-[8px] gap-[2px] relative">
         

@@ -29,12 +29,9 @@ const Knob = ({
   const startVal = useRef(null);
 
   // Sync logic similar to Fader (using initialValue as fallback if unedited)
-  const displayValue = mode === 'colectivo' 
-    ? (averages[compId] ?? initialValue) 
-    : (compId ? (values[compId] ?? initialValue) : localValue);
+  const displayValue = compId ? (values[compId] ?? initialValue) : localValue;
 
   const handleMove = useCallback((clientY) => {
-    if (mode === 'colectivo') return;
     if (startY.current === null) return;
     const deltaY = startY.current - clientY;
     let newVal = startVal.current + (deltaY * 1.2);

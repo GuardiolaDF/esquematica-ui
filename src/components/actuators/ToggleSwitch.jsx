@@ -26,22 +26,14 @@ const ToggleSwitch = ({
     : (isMissing ? 'shadow-[0_0_15px_rgba(239,68,68,0.5)] border border-red-500/50' : 'shadow-md border border-transparent');
 
   let isOn = localIsOn;
-  let averagePos = null;
 
   if (value !== undefined) {
     isOn = value === 100 || value === true;
-  } else if (mode === 'colectivo' && compId) {
-    const avg = averages[compId];
-    if (avg !== undefined) {
-      isOn = avg > 50; 
-      averagePos = avg; 
-    }
   } else if (compId && values[compId] !== undefined) {
     isOn = values[compId] === 100 || values[compId] === true;
   }
 
   const toggle = () => {
-    if (mode === 'colectivo' && compId) return;
     const next = !isOn;
     setLocalIsOn(next);
     if (compId) setGlobalValue(compId, next ? 100 : 0);
