@@ -41,7 +41,6 @@ const RotarySwitch = ({
 
   // displayStep logic
   let displayStep = localStep;
-  const isReadOnly = mode === 'colectivo';
   
   if (stepIndex !== undefined) {
     displayStep = stepIndex;
