@@ -9,9 +9,10 @@ function App() {
   return (
     <HoverProvider>
       <div className="w-full h-screen bg-[#222] flex items-center justify-center p-8 overflow-hidden font-sans relative">
-        <RackGrid />
+        {/* <RackGrid /> */}
         
-        {/* Toggle Grid Button */}
+        {/* Toggle Grid Button (Oculto a pedido del usuario) */}
+        {/* 
         <button 
           onClick={() => setShowGrid(!showGrid)}
           className={`absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all z-[9999] ${
@@ -27,6 +28,7 @@ function App() {
             <line x1="15" y1="3" x2="15" y2="21"></line>
           </svg>
         </button>
+        */}
       </div>
     </HoverProvider>
   );

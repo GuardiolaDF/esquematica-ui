@@ -14,9 +14,15 @@ const Counter = ({ label, labelClass, compId }) => {
     ? 'shadow-[0_0_15px_rgba(251,191,36,0.5)] border border-amber-400/30' 
     : (isMissing ? 'shadow-[0_0_15px_rgba(239,68,68,0.5)] border border-red-500/50' : 'shadow-inner border border-transparent');
 
+  useEffect(() => {
+    if (compId && values[compId] !== undefined && values[compId] !== localValue) {
+      setLocalValue(Math.round(values[compId]));
+    }
+  }, [compId, values[compId]]);
+
   const displayValue = mode === 'colectivo' 
     ? Math.round(averages[compId] ?? 0) 
-    : (compId ? (values[compId] ?? localValue) : localValue);
+    : localValue;
 
   const increment = () => {
     if (mode === 'colectivo') return;

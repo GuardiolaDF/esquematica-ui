@@ -52,6 +52,7 @@ export default function ConsoleModule({ isCol, saveToDb }) {
       <div className="w-full h-full relative">
         
         {/* GRILLA DE COORDENADAS PARA LA CONSOLA - VINCULADA AL BOTON MAGENTA */}
+        {/*
         {showGrid && (
           <div className="absolute inset-0 grid grid-cols-[repeat(24,minmax(0,1fr))] grid-rows-3 p-[8px] gap-[2px] pointer-events-none z-0">
             {[1, 2, 3].map((row, rIdx) => 
@@ -72,6 +73,7 @@ export default function ConsoleModule({ isCol, saveToDb }) {
             )}
           </div>
         )}
+        */}
 
         {/* CONTENIDO PRINCIPAL EN GRILLA ESTRICTA 24x3 */}
         <div className="absolute inset-0 grid grid-cols-[repeat(24,minmax(0,1fr))] grid-rows-3 p-[8px] gap-[2px] z-10">

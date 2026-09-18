@@ -14,7 +14,7 @@ export const AppProvider = ({ children }) => {
   const [distributions, setDistributions] = useState({});
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [showGrid, setShowGrid] = useState(true);
+  const [showGrid, setShowGrid] = useState(false);
   const [allSetups, setAllSetups] = useState(null);
 
   // Carga inicial (una sola vez) para no tener latencia al filtrar
@@ -124,10 +124,14 @@ export const AppProvider = ({ children }) => {
 
   useEffect(() => {
     if (mode === 'individual') {
+      setValues({});
       setShowSavedOverlay(false);
       setMissingFields([]);
+    } else if (mode === 'sandbox') {
+      setValues({ ...averages });
+      setShowSavedOverlay(false);
     }
-  }, [mode]);
+  }, [mode, averages]);
 
   const validateAndSave = async () => {
     const requiredKeys = Object.keys(dbMap);

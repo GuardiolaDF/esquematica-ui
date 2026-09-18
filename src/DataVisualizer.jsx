@@ -130,7 +130,7 @@ export default function DataVisualizer() {
         const compId = `mod${modNumber}-${t}`;
         const isInverted = directInvertedTracks.includes(compId);
 
-        if (mode === 'sandbox' || mode === 'individual') {
+        if (mode === 'individual') {
           const rawVal = values[compId];
           
           let processedVal = rawVal !== undefined ? getRelativeValue(compId, rawVal) : (counterTracks.includes(compId) ? getRelativeValue(compId, 0) : 50);
@@ -155,43 +155,58 @@ export default function DataVisualizer() {
           
           d.push({ id: `${compId}-single`, compId, r, angle: currentAngle, opacity, color, isHovered: hoveredId === compId });
           
-        } else if (mode === 'colectivo') {
+        } else if (mode === 'colectivo' || mode === 'sandbox') {
           const dist = distributions[compId] || [];
+          
+          let visualShift = 0;
+          let visualAvg = getRelativeValue(compId, averages[compId] ?? 50);
+          if (isInverted) visualAvg = 100 - visualAvg;
+          visualAvg = getZonedValue(compId, visualAvg);
+
+          if (mode === 'sandbox') {
+            const rawUser = values[compId];
+            if (rawUser !== undefined) {
+              let visualUser = getRelativeValue(compId, rawUser);
+              if (isInverted) visualUser = 100 - visualUser;
+              visualUser = getZonedValue(compId, visualUser);
+              visualShift = visualUser - visualAvg;
+            }
+          }
+
           dist.forEach((entry, idx) => {
             let processedVal = getRelativeValue(compId, entry.val);
             if (isInverted) processedVal = 100 - processedVal;
             processedVal = getZonedValue(compId, processedVal);
             
+            if (mode === 'sandbox') {
+              processedVal = Math.max(0, Math.min(100, processedVal + visualShift));
+            }
+            
             let baseAngle = paddedStartAngle + (processedVal / 100) * (paddedEndAngle - paddedStartAngle);
             
             // --- ENJAMBRE ORGÁNICO (Organic Swarm) ---
-            // 1. Generador Pseudo-Gaussiano para concentrar la masa en el centro y difuminar los bordes (Box-Muller)
             const u = (Math.sin(idx * 13.456) + 1) / 2 || 0.001;
             const v = (Math.cos(idx * 8.765) + 1) / 2 || 0.001;
             const gaussX = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
             const gaussY = Math.sqrt(-2.0 * Math.log(u)) * Math.sin(2.0 * Math.PI * v);
             
-            // 2. Aplicar dispersión gaussiana
-            const angleJitter = gaussX * 0.9; // grados de dispersión horizontal
-            const radialJitter = gaussY * (trackStep * 0.28); // dispersión vertical (sin salir del carril excesivamente)
+            const angleJitter = gaussX * 0.9; 
+            const radialJitter = gaussY * (trackStep * 0.28); 
             
             const targetAngle = baseAngle + angleJitter;
             const currentAngle = isMounted ? targetAngle : paddedStartAngle;
             
-            // 3. Tamaño variable: Las partículas del enjambre varían levemente de tamaño (1.0 a 2.5)
             const rJitterScale = Math.abs(Math.sin(idx * 11.234));
             const size = 1.0 + rJitterScale * 1.5; 
             
-            // 4. Color termográfico leve (amarillo a naranja) para dar volumen visual al enjambre
-            const hue = 45 + (Math.sin(idx * 7.654) * 12); // HSL de 33 (naranja) a 57 (amarillo claro)
+            const hue = 45 + (Math.sin(idx * 7.654) * 12); 
             const color = `hsl(${hue}, 100%, 55%)`;
 
-            // 5. Opacidad con gradiente radial: más transparente hacia los bordes del clúster
             const distFromCenter = Math.sqrt(gaussX*gaussX + gaussY*gaussY);
             let opacity = Math.max(0.15, 0.65 - (distFromCenter * 0.12));
 
             if (processedVal === 0 || processedVal === 10) {
-              opacity = 0.03; // Mantener muy sutiles los valores nulos o "vacíos"
+              opacity = 0.03; 
             }
 
             d.push({ 
@@ -205,6 +220,12 @@ export default function DataVisualizer() {
               isHovered: hoveredId === compId 
             });
           });
+
+          // Average indicator
+          let aVal = visualAvg;
+          if (mode === 'sandbox') aVal = Math.max(0, Math.min(100, aVal + visualShift));
+          const aAngle = paddedStartAngle + (aVal / 100) * (paddedEndAngle - paddedStartAngle);
+          d.push({ id: `${compId}-avg`, compId, r, angle: isMounted ? aAngle : paddedStartAngle, opacity: 1, color: "#FFFFFF", isAvg: true, isHovered: hoveredId === compId });
           
           if (showSavedOverlay) {
             const rawVal = values[compId];
