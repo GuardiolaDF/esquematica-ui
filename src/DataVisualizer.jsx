@@ -190,20 +190,22 @@ export default function DataVisualizer() {
             const gaussX = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
             const gaussY = Math.sqrt(-2.0 * Math.log(u)) * Math.sin(2.0 * Math.PI * v);
             
-            const angleJitter = gaussX * 0.9; 
+            const angleJitter = gaussX * 1.4; // Ligeramente más esparcidos en el eje
             const radialJitter = gaussY * (trackStep * 0.28); 
             
             const targetAngle = baseAngle + angleJitter;
             const currentAngle = isMounted ? targetAngle : paddedStartAngle;
             
             const rJitterScale = Math.abs(Math.sin(idx * 11.234));
-            const size = 1.0 + rJitterScale * 1.5; 
+            // Puntos más pequeños como pidió el usuario
+            const size = 0.4 + rJitterScale * 0.7; 
             
             const hue = 45 + (Math.sin(idx * 7.654) * 12); 
             const color = `hsl(${hue}, 100%, 55%)`;
 
             const distFromCenter = Math.sqrt(gaussX*gaussX + gaussY*gaussY);
-            let opacity = Math.max(0.15, 0.65 - (distFromCenter * 0.12));
+            // Opacidad ligeramente más sutil para compensar aglomeraciones
+            let opacity = Math.max(0.1, 0.5 - (distFromCenter * 0.15));
 
             if (processedVal === 0 || processedVal === 10) {
               opacity = 0.03; 
