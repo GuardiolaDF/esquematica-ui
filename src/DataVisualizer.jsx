@@ -178,6 +178,14 @@ export default function DataVisualizer() {
             if (isInverted) processedVal = 100 - processedVal;
             processedVal = getZonedValue(compId, processedVal);
             
+            // Ruido de Descuantización para romper bloques discretos ("Categorical Smear")
+            if (booleanTracks.includes(compId) || discreteTracks.includes(compId) || counterTracks.includes(compId)) {
+              // Deterministic uniform noise between -8% and +8%
+              const smearSeed = ((idx * 17.345) % 1);
+              const smearOffset = (smearSeed - 0.5) * 16;
+              processedVal += smearOffset;
+            }
+            
             if (mode === 'sandbox') {
               processedVal = Math.max(0, Math.min(100, processedVal + visualShift));
             }

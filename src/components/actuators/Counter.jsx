@@ -8,6 +8,8 @@ const Counter = ({ label, labelClass, compId }) => {
   const { hoveredId, setHoveredId } = useHover();
   const [localHover, setLocalHover] = useState(false);
   
+  const isReadOnly = mode === 'colectivo';
+  
   const isHovered = (compId && hoveredId === compId) || localHover;
   const isMissing = useAppContext().missingFields?.includes(compId);
   const glowClass = isHovered 
@@ -15,10 +17,14 @@ const Counter = ({ label, labelClass, compId }) => {
     : (isMissing ? 'shadow-[0_0_15px_rgba(239,68,68,0.5)] border border-red-500/50' : 'shadow-inner border border-transparent');
 
   useEffect(() => {
-    if (compId && values[compId] !== undefined && values[compId] !== localValue) {
-      setLocalValue(Math.round(values[compId]));
+    if (compId) {
+      if (isReadOnly && averages[compId] !== undefined) {
+        setLocalValue(Math.round(averages[compId]));
+      } else if (!isReadOnly && values[compId] !== undefined) {
+        setLocalValue(Math.round(values[compId]));
+      }
     }
-  }, [compId, values[compId]]);
+  }, [compId, isReadOnly, values, averages]);
 
   const displayValue = localValue;
 

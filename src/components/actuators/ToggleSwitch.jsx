@@ -21,19 +21,31 @@ const ToggleSwitch = ({
   
   const isHovered = (compId && hoveredId === compId) || localHover;
   const isMissing = useAppContext().missingFields?.includes(compId);
-  const glowClass = isHovered 
-    ? 'shadow-[0_0_15px_rgba(251,191,36,0.5)] border border-amber-400/30' 
-    : (isMissing ? 'shadow-[0_0_15px_rgba(239,68,68,0.5)] border border-red-500/50' : 'shadow-md border border-transparent');
+  
+  const isReadOnly = mode === 'colectivo';
+  
+  let glowClass = 'shadow-md border border-transparent';
+  if (isReadOnly) {
+    glowClass = isHovered ? 'shadow-[0_0_15px_rgba(255,255,255,0.4)] border border-white' : 'shadow-md border border-[#333]';
+  } else {
+    glowClass = isHovered 
+      ? 'shadow-[0_0_15px_rgba(251,191,36,0.5)] border border-amber-400/30' 
+      : (isMissing ? 'shadow-[0_0_15px_rgba(239,68,68,0.5)] border border-red-500/50' : 'shadow-md border border-transparent');
+  }
 
   let isOn = localIsOn;
 
   if (value !== undefined) {
     isOn = value === 100 || value === true;
+  } else if (isReadOnly && compId) {
+    const avg = averages[compId];
+    if (avg !== undefined) isOn = avg > 50;
   } else if (compId && values[compId] !== undefined) {
     isOn = values[compId] === 100 || values[compId] === true;
   }
 
   const toggle = () => {
+    if (isReadOnly && compId) return;
     const next = !isOn;
     setLocalIsOn(next);
     if (compId) setGlobalValue(compId, next ? 100 : 0);

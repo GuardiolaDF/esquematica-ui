@@ -23,9 +23,15 @@ const RotarySwitch = ({
   
   const isHovered = (compId && hoveredId === compId) || localHover;
   const isMissing = useAppContext().missingFields?.includes(compId);
-  const glowClass = isHovered 
-    ? 'shadow-[0_0_15px_rgba(251,191,36,0.5)] border border-amber-400/30' 
-    : (isMissing ? 'shadow-[0_0_15px_rgba(239,68,68,0.5)] border border-red-500/50' : 'shadow-md border border-transparent');
+  const isReadOnly = mode === 'colectivo';
+  let glowClass = 'shadow-md border border-transparent';
+  if (isReadOnly) {
+    glowClass = isHovered ? 'shadow-[0_0_15px_rgba(255,255,255,0.4)] border border-white' : 'shadow-md border border-[#333]';
+  } else {
+    glowClass = isHovered 
+      ? 'shadow-[0_0_15px_rgba(251,191,36,0.5)] border border-amber-400' 
+      : (isMissing ? 'shadow-[0_0_15px_rgba(239,68,68,0.5)] border border-red-500/50' : 'shadow-md border border-[#333]');
+  }
 
   const stepToValue = (step) => 100 - (step * 25);
   const valueToStep = (val) => {
@@ -35,10 +41,15 @@ const RotarySwitch = ({
 
   // displayStep logic
   let displayStep = localStep;
+  const isReadOnly = mode === 'colectivo';
+  
   if (stepIndex !== undefined) {
     displayStep = stepIndex;
   } else if (value !== undefined) {
     displayStep = valueToStep(value);
+  } else if (isReadOnly && compId) {
+    const avg = averages[compId];
+    if (avg !== undefined) displayStep = valueToStep(avg);
   } else if (compId && values[compId] !== undefined) {
     displayStep = valueToStep(values[compId]);
   }

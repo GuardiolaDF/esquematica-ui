@@ -22,9 +22,13 @@ const Fader = ({
   let displayValue = localValue;
   if (value !== undefined) {
     displayValue = value;
+  } else if (mode === 'colectivo' && compId) {
+    displayValue = averages[compId] ?? initialValue;
   } else if (compId) {
     displayValue = values[compId] ?? initialValue;
   }
+
+  const isReadOnly = mode === 'colectivo';
 
   const [isDragging, setIsDragging] = useState(false);
   
@@ -93,12 +97,19 @@ const Fader = ({
   const isHovered = (compId && hoveredId === compId) || localHover || isDragging;
   const isMissing = useAppContext().missingFields?.includes(compId);
   
-  const thumbGlowClass = isHovered 
-    ? 'shadow-[0_0_15px_rgba(251,191,36,0.8)] border border-yellow-400 bg-yellow-100' 
-    : (isMissing ? 'shadow-[0_0_15px_rgba(239,68,68,0.8)] border border-red-500 bg-red-100' : 'shadow-md border border-transparent');
-  const trackGlowClass = isHovered 
-    ? 'ring-2 ring-yellow-400 shadow-[0_0_15px_rgba(251,191,36,0.3)]' 
-    : (isMissing ? 'ring-2 ring-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)]' : '');
+  let thumbGlowClass = 'shadow-md border border-transparent';
+  let trackGlowClass = '';
+  
+  if (isReadOnly) {
+    thumbGlowClass = isHovered ? 'shadow-[0_0_15px_rgba(255,255,255,0.6)] border border-white bg-gray-100' : 'shadow-[0_0_8px_rgba(255,255,255,0.2)] border border-transparent';
+  } else {
+    thumbGlowClass = isHovered 
+      ? 'shadow-[0_0_15px_rgba(251,191,36,0.8)] border border-yellow-400 bg-yellow-100' 
+      : (isMissing ? 'shadow-[0_0_15px_rgba(239,68,68,0.8)] border border-red-500 bg-red-100' : 'shadow-md border border-transparent');
+    trackGlowClass = isHovered 
+      ? 'ring-2 ring-yellow-400 shadow-[0_0_15px_rgba(251,191,36,0.3)]' 
+      : (isMissing ? 'ring-2 ring-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)]' : '');
+  }
 
   const thumbStyle = orientation === 'vertical' 
     ? { bottom: `${displayValue}%`, transform: 'translateY(50%)' }

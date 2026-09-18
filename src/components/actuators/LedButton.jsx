@@ -20,17 +20,22 @@ const LedButton = ({
   
   const isHovered = (compId && hoveredId === compId) || localHover;
 
+  const isReadOnly = mode === 'colectivo';
+
   let isOn = localIsOn;
   let intensity = 1;
 
   if (value !== undefined) {
     isOn = value === 100 || value === true;
+  } else if (isReadOnly && compId) {
+    const avg = averages[compId];
+    if (avg !== undefined) isOn = avg > 50;
   } else if (compId && values[compId] !== undefined) {
     isOn = values[compId] === 100 || values[compId] === true;
   }
 
   const toggle = () => {
-    if (mode === 'colectivo' && compId) return;
+    if (isReadOnly && compId) return;
     const next = !isOn;
     setLocalIsOn(next);
     if (onChange) {

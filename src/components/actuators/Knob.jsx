@@ -22,25 +22,31 @@ const Knob = ({
   const isHovered = (compId && hoveredId === compId) || localHover || isDragging;
   const isMissing = useAppContext().missingFields?.includes(compId);
   const glowClass = isHovered 
-    ? 'shadow-[0_0_15px_rgba(251,191,36,0.5)] border border-amber-400/30' 
-    : (isMissing ? 'shadow-[0_0_15px_rgba(239,68,68,0.5)] border border-red-500/50' : 'shadow-md border border-transparent');
-
-  const startY = useRef(null);
-  const startVal = useRef(null);
-
-  // Sync logic similar to Fader (using initialValue as fallback if unedited)
-  const displayValue = compId ? (values[compId] ?? initialValue) : localValue;
+  const isReadOnly = mode === 'colectivo';
+  
+  const displayValue = isReadOnly 
+    ? (averages[compId] ?? initialValue) 
+    : (compId ? (values[compId] ?? initialValue) : localValue);
 
   const handleMove = useCallback((clientY) => {
+    if (isReadOnly) return;
     if (startY.current === null) return;
     const deltaY = startY.current - clientY;
     let newVal = startVal.current + (deltaY * 1.2);
     newVal = Math.max(0, Math.min(100, newVal));
     setLocalValue(newVal);
-    if (compId) setGlobalValue(compId, newVal);
-  }, [mode, compId, setGlobalValue]);
+    if (onChange) {
+      onChange(newVal);
+    } else if (compId) {
+      setGlobalValue(compId, newVal);
+    }
+  }, [compId, setGlobalValue, onChange, isReadOnly]);
+
+  const startY = useRef(null);
+  const startVal = useRef(null);
 
   const onMouseDown = (e) => {
+    if (isReadOnly) return;
     e.preventDefault();
     startY.current = e.clientY;
     startVal.current = displayValue; // use displayValue so it doesn't jump
@@ -49,6 +55,7 @@ const Knob = ({
     const onMouseMove = (moveEvent) => handleMove(moveEvent.clientY);
     const onMouseUp = () => {
       setIsDragging(false);
+      startY.current = null;
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
     };
@@ -57,6 +64,7 @@ const Knob = ({
   };
 
   const onTouchStart = (e) => {
+    if (isReadOnly) return;
     startY.current = e.touches[0].clientY;
     startVal.current = displayValue;
     setIsDragging(true);
