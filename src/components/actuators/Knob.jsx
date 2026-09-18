@@ -11,7 +11,8 @@ const Knob = ({
   compId,
   startAngle = -120,
   endAngle = 120,
-  markers = [] // Array of objects: { angle: number, label?: string }
+  markers = [], // Array of objects: { angle: number, label?: string }
+  onChange
 }) => {
   const { mode, values, setValue: setGlobalValue, averages } = useAppContext();
   const [localValue, setLocalValue] = useState(initialValue);
@@ -21,12 +22,23 @@ const Knob = ({
   
   const isHovered = (compId && hoveredId === compId) || localHover || isDragging;
   const isMissing = useAppContext().missingFields?.includes(compId);
-  const glowClass = isHovered 
   const isReadOnly = mode === 'colectivo';
+  
+  let glowClass = 'shadow-md border border-[#333]';
+  if (isReadOnly) {
+    glowClass = isHovered ? 'shadow-[0_0_15px_rgba(255,255,255,0.4)] border border-white' : 'shadow-md border border-[#333]';
+  } else {
+    glowClass = isHovered 
+      ? 'shadow-[0_0_15px_rgba(251,191,36,0.5)] border border-amber-400' 
+      : (isMissing ? 'shadow-[0_0_15px_rgba(239,68,68,0.5)] border border-red-500' : 'shadow-md border border-[#333]');
+  }
   
   const displayValue = isReadOnly 
     ? (averages[compId] ?? initialValue) 
     : (compId ? (values[compId] ?? initialValue) : localValue);
+
+  const startY = useRef(null);
+  const startVal = useRef(null);
 
   const handleMove = useCallback((clientY) => {
     if (isReadOnly) return;
@@ -40,10 +52,7 @@ const Knob = ({
     } else if (compId) {
       setGlobalValue(compId, newVal);
     }
-  }, [compId, setGlobalValue, onChange, isReadOnly]);
-
-  const startY = useRef(null);
-  const startVal = useRef(null);
+  }, [compId, setGlobalValue, isReadOnly, onChange]);
 
   const onMouseDown = (e) => {
     if (isReadOnly) return;
