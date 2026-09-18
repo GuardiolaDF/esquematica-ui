@@ -9,7 +9,7 @@ function App() {
   return (
     <HoverProvider>
       <div className="w-full h-screen bg-[#222] flex items-center justify-center p-8 overflow-hidden font-sans relative">
-        {/* <RackGrid /> */}
+        <RackGrid />
         
         {/* Toggle Grid Button (Oculto a pedido del usuario) */}
         {/* 
