@@ -33,6 +33,7 @@ export default function DataVisualizer() {
 
   const { hoveredId, setHoveredId } = useHover();
   const { mode, values, distributions, averages, showSavedOverlay, visualizationMode, setVisualizationMode, routingOutputs } = useAppContext();
+  const { connections } = useCables();
   
   const [lastHoveredText, setLastHoveredText] = useState("");
   useEffect(() => {
