@@ -94,7 +94,10 @@ const ControlModule = () => {
         {/* 7 FADER TINY BUTTONS: Col 6-12, Row 4 */}
         {[6, 7, 8, 9, 10, 11, 12].map((col) => (
           <div key={`fader-btn-${col}`} style={{ gridColumnStart: col, gridRowStart: 4 }} className="flex items-start justify-start z-10 pt-[15%]">
-            <LedButton baseClass="w-[30%] aspect-square rounded-[20%]" />
+            <LedButton 
+              baseClass="w-[30%] aspect-square rounded-[20%]" 
+              compId={`mod1-${3 + (col - 6)}`}
+            />
           </div>
         ))}
 

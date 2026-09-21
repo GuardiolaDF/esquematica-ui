@@ -43,6 +43,10 @@ const LedButton = ({
   }
 
   const toggle = () => {
+    if (isRoutingMode && compId) { 
+      toggleRoutingSource(compId); 
+      return; 
+    }
     if (isReadOnly && compId) return;
     const next = !isOn;
     setLocalIsOn(next);
@@ -59,7 +63,11 @@ const LedButton = ({
   // Base background (apagado vs encendido)
   let bgClass = 'bg-[#444] shadow-sm border border-transparent';
   
-  if (isOn) {
+  if (routeColor) {
+    const isBlue = routeColor === 'blue-500';
+    const cColor = isBlue ? '59,130,246' : '249,115,22';
+    bgClass = `bg-[#444] shadow-[inset_0_0_6px_rgba(${cColor},0.2),0_0_12px_rgba(${cColor},0.8)] border border-${routeColor}/80`;
+  } else if (isOn) {
     if (ledColor === 'yellow') {
       bgClass = `bg-[#6b6b47] shadow-[inset_0_0_6px_rgba(250,204,21,0.2),0_0_12px_rgba(250,204,21,${0.5 * intensity})] border border-yellow-500/${Math.round(30 * intensity)}`;
     } else {
@@ -70,7 +78,7 @@ const LedButton = ({
   // Hover Override/Addition
   const isMissing = useAppContext().missingFields?.includes(compId);
   
-  if (isHovered && mode !== 'colectivo') {
+  if (isHovered && mode !== 'colectivo' && !isRoutingMode) {
     if (isOn) {
       bgClass = bgClass.replace(/shadow-\[.*\]/, 'shadow-[inset_0_0_6px_rgba(0,0,0,0.2),0_0_15px_rgba(251,191,36,0.6)] border-amber-400/50');
     } else {

@@ -34,8 +34,9 @@ const ToggleSwitch = ({
   
   let glowClass = 'shadow-md border border-transparent';
   if (routeColor) {
-    thumbGlow = `shadow-[0_0_10px_rgba(${routeColor === 'blue-500' ? '59,130,246' : '249,115,22'},0.8)] bg-${routeColor}`;
-    baseGlow = `ring-1 ring-${routeColor}/50`;
+    const isBlue = routeColor === 'blue-500';
+    const cColor = isBlue ? '59,130,246' : '249,115,22';
+    glowClass = `shadow-[0_0_10px_rgba(${cColor},0.8)] border border-${routeColor}`;
   } else if (isReadOnly) {
     glowClass = isHovered ? 'shadow-[0_0_15px_rgba(255,255,255,0.4)] border border-white' : 'shadow-md border border-[#333]';
   } else {
@@ -56,6 +57,7 @@ const ToggleSwitch = ({
   }
 
   const toggle = () => {
+    if (isRoutingMode && compId) { toggleRoutingSource(compId); return; }
     if (isReadOnly && compId) return;
     const next = !isOn;
     setLocalIsOn(next);
