@@ -5,7 +5,7 @@ const Jack = ({
   id, 
   type = 'output', // 'output' or 'input'
   label, 
-  activeColor = null, // 'orange-500', 'blue-500', or null
+  activeColor = null, // 'blue-500', 'orange-500', or null
   className = "" 
 }) => {
   const { registerJack, unregisterJack, startDrag } = useCables();
@@ -40,9 +40,9 @@ const Jack = ({
     }
   };
 
-  const isOrange = activeColor === 'orange-500';
-  const isBlue = activeColor === 'blue-500';
-  const rgb = isOrange ? '249,115,22' : '59,130,246';
+  const isOrange = activeColor === 'blue-500';
+  const isBlue = activeColor === 'orange-500';
+  const rgb = isOrange ? '59,130,246' : '249,115,22';
   const glowClass = activeColor 
     ? `bg-${activeColor} shadow-[0_0_20px_rgba(${rgb},1)] ring-2 ring-${activeColor}` 
     : 'bg-[#111]';

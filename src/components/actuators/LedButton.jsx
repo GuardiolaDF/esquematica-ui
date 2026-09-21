@@ -18,8 +18,8 @@ const LedButton = ({
   const isRoutingMode = mode === 'colectivo' && visualizationMode !== 'general';
   let routeColor = null;
   if (isRoutingMode && compId) {
-    if (routingOutputs.out1 === compId) routeColor = 'orange-500';
-    else if (routingOutputs.out2 === compId) routeColor = 'blue-500';
+    if (routingOutputs.out1 === compId) routeColor = 'blue-500';
+    else if (routingOutputs.out2 === compId) routeColor = 'orange-500';
   }
 
   const [localIsOn, setLocalIsOn] = useState(initialState);
@@ -66,8 +66,8 @@ const LedButton = ({
   let bgClass = 'bg-[#444] shadow-sm border border-transparent';
   
   if (routeColor) {
-    const isBlue = routeColor === 'blue-500';
-    const cColor = isBlue ? '59,130,246' : '249,115,22';
+    const isBlue = routeColor === 'orange-500';
+    const cColor = isBlue ? '249,115,22' : '59,130,246';
     bgClass = `bg-[#444] ring-4 ring-${routeColor} shadow-[inset_0_0_15px_rgba(${cColor},0.5),0_0_30px_rgba(${cColor},1)] border border-${routeColor} bg-${routeColor}/50`;
   } else if (isOn) {
     if (ledColor === 'yellow') {

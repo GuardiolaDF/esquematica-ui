@@ -19,8 +19,8 @@ const Knob = ({
   const isRoutingMode = mode === 'colectivo' && visualizationMode !== 'general';
   let routeColor = null;
   if (isRoutingMode && compId) {
-    if (routingOutputs.out1 === compId) routeColor = 'orange-500';
-    else if (routingOutputs.out2 === compId) routeColor = 'blue-500';
+    if (routingOutputs.out1 === compId) routeColor = 'blue-500';
+    else if (routingOutputs.out2 === compId) routeColor = 'orange-500';
   }
 
   const [localValue, setLocalValue] = useState(initialValue);
@@ -34,7 +34,7 @@ const Knob = ({
   
   let glowClass = 'shadow-md border border-[#333]';
   if (routeColor) {
-    glowClass = `ring-4 ring-${routeColor} shadow-[0_0_30px_rgba(${routeColor === 'blue-500' ? '59,130,246' : '249,115,22'},1)] bg-${routeColor}/30`;
+    glowClass = `ring-4 ring-${routeColor} shadow-[0_0_30px_rgba(${routeColor === 'orange-500' ? '249,115,22' : '59,130,246'},1)] bg-${routeColor}/30`;
   } else if (isReadOnly) {
     glowClass = isHovered ? 'shadow-[0_0_15px_rgba(255,255,255,0.4)] border border-white' : 'shadow-md border border-[#333]';
   } else {

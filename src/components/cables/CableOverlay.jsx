@@ -35,7 +35,7 @@ const CableOverlay = () => {
     const midX = (x1 + x2) / 2;
     const midY = ((y1 + y2) / 2) + sag;
     
-    const strokeColor = colorStr === 'orange-500' ? '#f97316' : '#3b82f6';
+    const strokeColor = colorStr === 'blue-500' ? '#3b82f6' : '#f97316';
     
     return (
       <path 
@@ -57,8 +57,8 @@ const CableOverlay = () => {
   
   for (const jack of Object.values(jackRefs)) {
     if (jack.type === 'output') {
-      if (jack.color === 'orange-500' && routingOutputs.out1) out1Jack = jack;
-      if (jack.color === 'blue-500' && routingOutputs.out2) out2Jack = jack;
+      if (jack.color === 'blue-500' && routingOutputs.out1) out1Jack = jack;
+      if (jack.color === 'orange-500' && routingOutputs.out2) out2Jack = jack;
     }
   }
 
@@ -71,8 +71,8 @@ const CableOverlay = () => {
       style={{ filter: 'drop-shadow(0 0 8px rgba(0,0,0,0.5))' }}
     >
       {/* Established Connections */}
-      {connections.out1 && out1Jack && in1Jack && renderCable(out1Jack.x, out1Jack.y, in1Jack.x, in1Jack.y, 'orange-500')}
-      {connections.out2 && out2Jack && in2Jack && renderCable(out2Jack.x, out2Jack.y, in2Jack.x, in2Jack.y, 'blue-500')}
+      {connections.out1 && out1Jack && in1Jack && renderCable(out1Jack.x, out1Jack.y, in1Jack.x, in1Jack.y, 'blue-500')}
+      {connections.out2 && out2Jack && in2Jack && renderCable(out2Jack.x, out2Jack.y, in2Jack.x, in2Jack.y, 'orange-500')}
 
       {/* Dragging Connection */}
       {dragging && renderCable(dragging.startX, dragging.startY, dragging.currentX, dragging.currentY, dragging.color)}

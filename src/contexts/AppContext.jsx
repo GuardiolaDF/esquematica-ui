@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { collection, addDoc, getDocs } from 'firebase/firestore';
+import { collection, addDoc, getDocs, setDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
-import { dbMap, reverseDbMap } from '../dbMap';
+import { dbMap, reverseDbMap, dbMetadata } from '../dbMap';
 
 const AppContext = createContext();
 
@@ -184,6 +184,9 @@ export const AppProvider = ({ children }) => {
   const [routingOutputs, setRoutingOutputs] = useState({ out1: null, out2: null });
 
   const toggleRoutingSource = (compId) => {
+    const meta = dbMetadata[compId];
+    if (!meta || !meta.routable) return;
+
     setRoutingOutputs(prev => {
       // If already selected, deselect it
       if (prev.out1 === compId) return { ...prev, out1: null };
@@ -197,6 +200,13 @@ export const AppProvider = ({ children }) => {
       return prev;
     });
   };
+
+  // Ensure routing clears when going back to 'general'
+  useEffect(() => {
+    if (visualizationMode === 'general') {
+      setRoutingOutputs({ out1: null, out2: null });
+    }
+  }, [visualizationMode]);
 
   // When switching modes, if we go to individual/sandbox, or visualization mode goes to 'general', we might want to reset routing.
   // Actually, the user says "Al volver a GENERAL, desaparecen los controles de routing y los módulos vuelven a mostrar el estado colectivo general."

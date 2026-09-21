@@ -165,7 +165,7 @@ const ControlModule = () => {
           const isOut1Active = routingOutputs?.out1?.startsWith('mod1-');
           const isOut2Active = routingOutputs?.out2?.startsWith('mod1-');
           const isActive = (i === 0 && isOut1Active) || (i === 1 && isOut2Active);
-          const activeColor = i === 0 ? 'orange-500' : 'blue-500';
+          const activeColor = i === 0 ? 'blue-500' : 'orange-500';
           
           return (
             <div key={`jack-mod1--${i}`} style={{ gridColumnStart: 11 + i, gridRowStart: 7 }} className="flex items-end justify-end z-10 w-full h-full">

@@ -19,8 +19,8 @@ const ToggleSwitch = ({
   const isRoutingMode = mode === 'colectivo' && visualizationMode !== 'general';
   let routeColor = null;
   if (isRoutingMode && compId) {
-    if (routingOutputs.out1 === compId) routeColor = 'orange-500';
-    else if (routingOutputs.out2 === compId) routeColor = 'blue-500';
+    if (routingOutputs.out1 === compId) routeColor = 'blue-500';
+    else if (routingOutputs.out2 === compId) routeColor = 'orange-500';
   }
 
   const [localIsOn, setLocalIsOn] = useState(initialState);
@@ -34,8 +34,8 @@ const ToggleSwitch = ({
   
   let glowClass = 'shadow-md border border-transparent';
   if (routeColor) {
-    const isBlue = routeColor === 'blue-500';
-    const cColor = isBlue ? '59,130,246' : '249,115,22';
+    const isBlue = routeColor === 'orange-500';
+    const cColor = isBlue ? '249,115,22' : '59,130,246';
     glowClass = `ring-4 ring-${routeColor} shadow-[0_0_30px_rgba(${cColor},1)] bg-${routeColor}/40 border border-${routeColor}`;
   } else if (isReadOnly) {
     glowClass = isHovered ? 'shadow-[0_0_15px_rgba(255,255,255,0.4)] border border-white' : 'shadow-md border border-[#333]';
