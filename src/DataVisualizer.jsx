@@ -1,6 +1,8 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { useHover } from './contexts/HoverContext';
 import { useAppContext } from './contexts/AppContext';
+import { useCables } from './contexts/CableContext';
+import Jack from './components/cables/Jack';
 import { dbMap } from './dbMap';
 
 // Math helpers for SVG arcs
@@ -317,19 +319,25 @@ export default function DataVisualizer() {
         
         <div className="flex gap-16 items-center justify-center w-full max-w-2xl">
           {/* OUTPUT 1 */}
-          <div className="flex flex-col items-center justify-center bg-[#1a1a1a] border-2 border-[#f97316] rounded-xl p-8 shadow-[0_0_30px_rgba(249,115,22,0.3)] w-1/2 min-h-[150px]">
-            <span className="text-[#f97316] text-xs font-bold uppercase tracking-widest mb-4">INPUT 1 (NARANJA)</span>
-            <span className="text-white text-lg font-medium text-center">
-              {routingOutputs.out1 && dbMap[routingOutputs.out1] ? dbMap[routingOutputs.out1] : "ESPERANDO SEÑAL..."}
+          <div className={`flex flex-col items-center justify-center bg-[#1a1a1a] border-2 ${connections.out1 ? 'border-[#f97316] shadow-[0_0_30px_rgba(249,115,22,0.3)]' : 'border-[#444]'} rounded-xl p-8 w-1/2 min-h-[150px] transition-all duration-300 relative`}>
+            <span className={`${connections.out1 ? 'text-[#f97316]' : 'text-[#666]'} text-xs font-bold uppercase tracking-widest mb-4`}>INPUT 1 (NARANJA)</span>
+            <span className={`${connections.out1 ? 'text-white' : 'text-[#555]'} text-lg font-medium text-center`}>
+              {routingOutputs.out1 ? (connections.out1 ? dbMap[routingOutputs.out1] : "ESPERANDO CONEXIÓN FÍSICA...") : "SIN SEÑAL..."}
             </span>
+            <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-12 h-12">
+              <Jack id="vis-in-1" type="input" activeColor={connections.out1 ? 'orange-500' : null} />
+            </div>
           </div>
 
           {/* OUTPUT 2 */}
-          <div className="flex flex-col items-center justify-center bg-[#1a1a1a] border-2 border-[#3b82f6] rounded-xl p-8 shadow-[0_0_30px_rgba(59,130,246,0.3)] w-1/2 min-h-[150px]">
-            <span className="text-[#3b82f6] text-xs font-bold uppercase tracking-widest mb-4">INPUT 2 (AZUL)</span>
-            <span className="text-white text-lg font-medium text-center">
-              {routingOutputs.out2 && dbMap[routingOutputs.out2] ? dbMap[routingOutputs.out2] : "ESPERANDO SEÑAL..."}
+          <div className={`flex flex-col items-center justify-center bg-[#1a1a1a] border-2 ${connections.out2 ? 'border-[#3b82f6] shadow-[0_0_30px_rgba(59,130,246,0.3)]' : 'border-[#444]'} rounded-xl p-8 w-1/2 min-h-[150px] transition-all duration-300 relative`}>
+            <span className={`${connections.out2 ? 'text-[#3b82f6]' : 'text-[#666]'} text-xs font-bold uppercase tracking-widest mb-4`}>INPUT 2 (AZUL)</span>
+            <span className={`${connections.out2 ? 'text-white' : 'text-[#555]'} text-lg font-medium text-center`}>
+              {routingOutputs.out2 ? (connections.out2 ? dbMap[routingOutputs.out2] : "ESPERANDO CONEXIÓN FÍSICA...") : "SIN SEÑAL..."}
             </span>
+            <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-12 h-12">
+              <Jack id="vis-in-2" type="input" activeColor={connections.out2 ? 'blue-500' : null} />
+            </div>
           </div>
         </div>
       </div>

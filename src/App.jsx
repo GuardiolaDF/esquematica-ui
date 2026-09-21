@@ -2,14 +2,18 @@ import React from 'react';
 import RackGrid from './RackGrid';
 import { HoverProvider } from './contexts/HoverContext';
 import { useAppContext } from './contexts/AppContext';
+import { CableProvider } from './contexts/CableContext';
+import CableOverlay from './components/cables/CableOverlay';
 
 function App() {
   const { showGrid, setShowGrid } = useAppContext();
 
   return (
     <HoverProvider>
+      <CableProvider>
       <div className="w-full h-screen bg-[#222] flex items-center justify-center p-8 overflow-hidden font-sans relative">
         <RackGrid />
+        <CableOverlay />
         
         {/* Toggle Grid Button (Oculto a pedido del usuario) */}
         {/* 
@@ -30,6 +34,7 @@ function App() {
         </button>
         */}
       </div>
+          </CableProvider>
     </HoverProvider>
   );
 }
