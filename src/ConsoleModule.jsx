@@ -5,21 +5,31 @@ import ToggleSwitch from './components/actuators/ToggleSwitch';
 import LedButton from './components/actuators/LedButton';
 import { useAppContext } from './contexts/AppContext';
 
+import { useHover } from './contexts/HoverContext';
+
 const LBL_UP = "absolute bottom-[100%] mb-[4px] left-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.2em] text-[#777] font-sans font-bold whitespace-nowrap pointer-events-none";
 
-const VerticalPads = ({ options, value, onChange, disabled }) => (
-  <div className={`flex flex-col gap-[7px] w-full ${disabled ? 'pointer-events-none' : ''}`}>
-    {options.map(opt => {
-      const isSelected = value === opt.value;
-      return (
-        <div key={opt.value} className="flex items-center gap-1.5 cursor-pointer" onClick={() => onChange(isSelected ? null : opt.value)}>
-          <div className={`w-[10px] h-[10px] shrink-0 rounded-[2px] transition-all ${isSelected ? 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.5)]' : 'bg-[#555] border border-[#444]'}`}></div>
-          <span className={`text-[7.5px] font-sans whitespace-nowrap transition-colors ${isSelected ? 'text-white font-bold' : (disabled ? 'text-[#666]' : 'text-[#999]')}`}>{opt.label}</span>
-        </div>
-      );
-    })}
-  </div>
-);
+const VerticalPads = ({ options, value, onChange, disabled, compId }) => {
+  const { setHoveredId } = useHover();
+  
+  return (
+    <div 
+      className={`flex flex-col gap-[7px] w-full ${disabled ? 'pointer-events-none' : ''}`}
+      onMouseEnter={() => { if (compId) setHoveredId(compId); }}
+      onMouseLeave={() => { if (compId) setHoveredId(null); }}
+    >
+      {options.map(opt => {
+        const isSelected = value === opt.value;
+        return (
+          <div key={opt.value} className="flex items-center gap-1.5 cursor-pointer" onClick={() => onChange(isSelected ? null : opt.value)}>
+            <div className={`w-[10px] h-[10px] shrink-0 rounded-[2px] transition-all ${isSelected ? 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.5)]' : 'bg-[#555] border border-[#444]'}`}></div>
+            <span className={`text-[7.5px] font-sans whitespace-nowrap transition-colors ${isSelected ? 'text-white font-bold' : (disabled ? 'text-[#666]' : 'text-[#999]')}`}>{opt.label}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 
 const BASE_TXT = "text-[7px] uppercase tracking-[0.2em] text-[#777] font-sans font-bold whitespace-nowrap pointer-events-none";
 const HEADER_TXT = `absolute top-[2px] ${BASE_TXT}`;
@@ -110,25 +120,25 @@ export default function ConsoleModule({ isCol, saveToDb }) {
           {/* PROMEDIO (Cols 2-3) */}
           <div style={{ gridColumnStart: 2, gridColumnEnd: 4, gridRowStart: 1 }} className="flex flex-col items-start justify-end pb-[4px] relative w-full h-full z-20">
              <span className={HEADER_TXT}>Promedio</span>
-             <LedButton baseClass="w-[12px] h-[12px] rounded-full" value={filters.promedioActivo} onChange={(v) => setFilters(p => ({...p, promedioActivo: v}))} />
+             <LedButton compId="demo-avg" baseClass="w-[12px] h-[12px] rounded-full" value={filters.promedioActivo} onChange={(v) => setFilters(p => ({...p, promedioActivo: v}))} />
           </div>
 
           {/* EDAD (Col E = 5) */}
           <div style={{ gridColumnStart: 5, gridRowStart: 1 }} className="flex flex-col items-start justify-end pb-[4px] relative w-full h-full z-20">
              <span className={`${HEADER_TXT} left-0`}>Edad</span>
-             <LedButton baseClass="w-[12px] h-[12px] rounded-full" value={filters.edadActiva} onChange={(v) => setFilters(p => ({...p, edadActiva: v}))} />
+             <LedButton compId="demo-age" baseClass="w-[12px] h-[12px] rounded-full" value={filters.edadActiva} onChange={(v) => setFilters(p => ({...p, edadActiva: v}))} />
           </div>
 
           {/* GÉNERO (Col G = 7) */}
           <div style={{ gridColumnStart: 7, gridRowStart: 1 }} className="flex flex-col items-start justify-end pb-[4px] relative w-full h-full z-20">
              <span className={`${HEADER_TXT} left-0`}>Género</span>
-             <LedButton baseClass="w-[12px] h-[12px] rounded-full" value={filters.generoActivo} onChange={(v) => setFilters(p => ({...p, generoActivo: v}))} />
+             <LedButton compId="demo-gender" baseClass="w-[12px] h-[12px] rounded-full" value={filters.generoActivo} onChange={(v) => setFilters(p => ({...p, generoActivo: v}))} />
           </div>
 
           {/* TRABAJO (Col I = 9) */}
           <div style={{ gridColumnStart: 9, gridRowStart: 1 }} className="flex flex-col items-start justify-end pb-[4px] relative w-full h-full z-20">
              <span className={`${HEADER_TXT} left-0`}>Trabajo</span>
-             <LedButton baseClass="w-[12px] h-[12px] rounded-full" value={filters.trabajaActivo} onChange={(v) => {
+             <LedButton compId="demo-work" baseClass="w-[12px] h-[12px] rounded-full" value={filters.trabajaActivo} onChange={(v) => {
                   setFilters(p => { let next = {...p, trabajaActivo: v}; if (!v || p.trabaja === 'NO') { next.horasTrabajoActivo = false; next.modalidadActiva = false; } return next; });
              }} />
           </div>
@@ -146,13 +156,13 @@ export default function ConsoleModule({ isCol, saveToDb }) {
           {/* VIAJE (Col O = 15) */}
           <div style={{ gridColumnStart: 15, gridRowStart: 1 }} className="flex flex-col items-start justify-end pb-[4px] relative w-full h-full z-20">
              <span className={`${HEADER_TXT} left-0`}>Viaje</span>
-             <LedButton baseClass="w-[12px] h-[12px] rounded-full" value={filters.viajeActivo} onChange={(v) => setFilters(p => ({...p, viajeActivo: v}))} />
+             <LedButton compId="demo-travel" baseClass="w-[12px] h-[12px] rounded-full" value={filters.viajeActivo} onChange={(v) => setFilters(p => ({...p, viajeActivo: v}))} />
           </div>
 
           {/* VIVIENDA (Col Q = 17) */}
           <div style={{ gridColumnStart: 17, gridRowStart: 1 }} className="flex flex-col items-start justify-end pb-[4px] relative w-full h-full z-20">
              <span className={`${HEADER_TXT} left-0`}>Vivienda</span>
-             <LedButton baseClass="w-[12px] h-[12px] rounded-full" value={filters.convivenciaActiva} onChange={(v) => setFilters(p => ({...p, convivenciaActiva: v}))} />
+             <LedButton compId="demo-living" baseClass="w-[12px] h-[12px] rounded-full" value={filters.convivenciaActiva} onChange={(v) => setFilters(p => ({...p, convivenciaActiva: v}))} />
           </div>
 
           {/* BOTÓN ENVIAR (Col V-W = 22-23, Row 2) */}
@@ -180,37 +190,37 @@ export default function ConsoleModule({ isCol, saveToDb }) {
           {/* PROMEDIO (Rotary): Cols 2-3 */}
           <div style={{ gridColumnStart: 2, gridColumnEnd: 4, gridRowStart: 2 }} className="flex flex-col items-start justify-center relative w-full h-full">
              <div className={`relative flex flex-col items-center justify-center w-[90%] ${!filters.promedioActivo ? 'pointer-events-none' : ''}`}>
-                <RotarySwitch sizeClass="w-full aspect-square" angles={[45, 90, 135]} optionLabels={['zen', 'Promedio', 'estresado']} stepIndex={['zen', 'Promedio', 'estresado'].indexOf(filters.promedioNivel)} onChange={(idx) => setFilters(p => ({...p, promedioNivel: ['zen', 'Promedio', 'estresado'][idx]}))} />
+                <RotarySwitch compId="demo-avg" sizeClass="w-full aspect-square" angles={[45, 90, 135]} optionLabels={['zen', 'Promedio', 'estresado']} stepIndex={['zen', 'Promedio', 'estresado'].indexOf(filters.promedioNivel)} onChange={(idx) => setFilters(p => ({...p, promedioNivel: ['zen', 'Promedio', 'estresado'][idx]}))} />
              </div>
           </div>
 
           {/* EDAD (Pads): Col E = 5 */}
           <div style={{ gridColumnStart: 5, gridRowStart: 2, gridRowEnd: 4 }} className="flex flex-col items-start justify-start pt-[6px] w-full h-full">
-             <VerticalPads options={edadOptions.map(o=>({label:o, value:o}))} value={filters.edadGroup} onChange={(v) => setFilters(p => ({...p, edadActiva: v !== null, edadGroup: v !== null ? v : p.edadGroup}))} disabled={!filters.edadActiva} />
+             <VerticalPads compId="demo-age" options={edadOptions.map(o=>({label:o, value:o}))} value={filters.edadGroup} onChange={(v) => setFilters(p => ({...p, edadActiva: v !== null, edadGroup: v !== null ? v : p.edadGroup}))} disabled={!filters.edadActiva} />
           </div>
 
           {/* GÉNERO (Switch en top de G2) + PAÍS LED (en bottom de G2): Col G = 7 */}
           <div style={{ gridColumnStart: 7, gridRowStart: 2 }} className="flex flex-col items-start justify-between relative w-full h-full">
              <div className={`h-[12px] w-[90%] pt-[2px] ${!filters.generoActivo ? 'pointer-events-none' : ''}`}>
-                <ToggleSwitch sizeClass="h-full aspect-[2/1]" onLabel="F" offLabel="M" value={filters.genero === 'F'} onChange={(v) => setFilters(p => ({...p, genero: v ? 'F' : 'M'}))} />
+                <ToggleSwitch compId="demo-gender" sizeClass="h-full aspect-[2/1]" onLabel="F" offLabel="M" value={filters.genero === 'F'} onChange={(v) => setFilters(p => ({...p, genero: v ? 'F' : 'M'}))} />
              </div>
              <div className="flex flex-col items-start justify-end pb-0">
                 <span className={BASE_TXT}>País</span>
-                <LedButton baseClass="w-[12px] h-[12px] rounded-full" value={filters.paisActivo} onChange={(v) => setFilters(p => ({...p, paisActivo: v}))} />
+                <LedButton compId="demo-country" baseClass="w-[12px] h-[12px] rounded-full" value={filters.paisActivo} onChange={(v) => setFilters(p => ({...p, paisActivo: v}))} />
              </div>
           </div>
 
           {/* PAÍS (Switch en top de G3): Col G = 7 */}
           <div style={{ gridColumnStart: 7, gridRowStart: 3 }} className="flex flex-col items-start justify-start pt-[2px] w-full h-full">
              <div className={`h-[12px] w-[90%] ${!filters.paisActivo ? 'pointer-events-none' : ''}`}>
-                <ToggleSwitch sizeClass="h-full aspect-[2/1]" onLabel="Otro" offLabel="Argentina" value={filters.nacionalidad === 'Extranjero'} onChange={(v) => setFilters(p => ({...p, nacionalidad: v ? 'Extranjero' : 'Argentino'}))} />
+                <ToggleSwitch compId="demo-country" sizeClass="h-full aspect-[2/1]" onLabel="Otro" offLabel="Argentina" value={filters.nacionalidad === 'Extranjero'} onChange={(v) => setFilters(p => ({...p, nacionalidad: v ? 'Extranjero' : 'Argentino'}))} />
              </div>
           </div>
 
           {/* TRABAJO (Switch): Col I = 9 */}
           <div style={{ gridColumnStart: 9, gridRowStart: 2 }} className="flex flex-col items-start justify-start pt-[6px] relative w-full h-full">
              <div className={`h-[12px] w-[90%] ${!filters.trabajaActivo ? 'pointer-events-none' : ''}`}>
-                <ToggleSwitch sizeClass="h-full aspect-[2/1]" onLabel="si" offLabel="no" value={filters.trabaja === 'SÍ'} onChange={(v) => {
+                <ToggleSwitch compId="demo-work" sizeClass="h-full aspect-[2/1]" onLabel="si" offLabel="no" value={filters.trabaja === 'SÍ'} onChange={(v) => {
                   setFilters(p => {
                     let next = {...p, trabaja: v ? 'SÍ' : 'NO'};
                     if (!v) { next.horasTrabajoActivo = false; next.modalidadActiva = false; }
@@ -223,6 +233,7 @@ export default function ConsoleModule({ isCol, saveToDb }) {
           {/* HORAS (Pads): Col J = 10 */}
           <div style={{ gridColumnStart: 10, gridRowStart: 2, gridRowEnd: 4 }} className="flex flex-col items-start justify-start pt-[6px] w-full h-full">
              <VerticalPads 
+                compId="demo-hours"
                 options={[{label:'< 4', value:'<4'}, {label:'4-6', value:'4-6'}, {label:'6-8', value:'6-8'}, {label:'>8', value:'>8'}]} 
                 value={filters.horasTrabajoActivo ? filters.horasTrabajo : null} 
                 onChange={(v) => setFilters(p => ({...p, horasTrabajoActivo: v !== null, horasTrabajo: v !== null ? v : p.horasTrabajo}))} 
@@ -233,6 +244,7 @@ export default function ConsoleModule({ isCol, saveToDb }) {
           {/* MODALIDAD (Pads): Col L = 12 */}
           <div style={{ gridColumnStart: 12, gridRowStart: 2, gridRowEnd: 4 }} className="flex flex-col items-start justify-start pt-[6px] w-full h-full">
              <VerticalPads 
+                compId="demo-modality"
                 options={[{label:'presencial', value:'Presencial'}, {label:'híbrido', value:'Híbrido'}, {label:'remoto', value:'Remoto'}]} 
                 value={filters.modalidadActiva ? filters.modalidad : null} 
                 onChange={(v) => setFilters(p => ({...p, modalidadActiva: v !== null, modalidad: v !== null ? v : p.modalidad}))} 
@@ -243,6 +255,7 @@ export default function ConsoleModule({ isCol, saveToDb }) {
           {/* VIAJE (Pads): Col O = 15 */}
           <div style={{ gridColumnStart: 15, gridRowStart: 2, gridRowEnd: 4 }} className="flex flex-col items-start justify-start pt-[6px] w-full h-full">
              <VerticalPads 
+                compId="demo-travel"
                 options={[{label:'<1hr', value:'<1H'}, {label:'1-2hra', value:'1-2H'}, {label:'>2hrs', value:'>2H'}]} 
                 value={filters.viajeActivo ? filters.tiempoViaje : null} 
                 onChange={(v) => setFilters(p => ({...p, viajeActivo: v !== null, tiempoViaje: v !== null ? v : p.tiempoViaje}))} 
@@ -253,6 +266,7 @@ export default function ConsoleModule({ isCol, saveToDb }) {
           {/* VIVIENDA (Pads): Col Q = 17 */}
           <div style={{ gridColumnStart: 17, gridRowStart: 2, gridRowEnd: 4 }} className="flex flex-col items-start justify-start pt-[6px] w-full h-full">
              <VerticalPads 
+                compId="demo-living"
                 options={[{label:'Familia', value:'Familia'}, {label:'Solo/a', value:'Solo'}, {label:'con pares', value:'Pares'}]} 
                 value={filters.convivenciaActiva ? filters.convivencia : null} 
                 onChange={(v) => setFilters(p => ({...p, convivenciaActiva: v !== null, convivencia: v !== null ? v : p.convivencia}))} 

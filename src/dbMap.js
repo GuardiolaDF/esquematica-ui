@@ -64,6 +64,19 @@ export const dbMap = {
   "mod3-17": "Emociones afectan resultado",
   "mod3-18": "Tecnicas de concentracion",
   "mod3-19": "Sintomas fisicos",
+
+  // Consola / Demografía
+  "demo-age": "Filtro: Edad",
+  "demo-gender": "Filtro: Género",
+  "demo-career": "Filtro: Carrera",
+  "demo-xp": "Filtro: Años de experiencia",
+  "demo-work": "Filtro: Trabajo",
+  "demo-hours": "Filtro: Horas de trabajo",
+  "demo-modality": "Filtro: Modalidad de trabajo",
+  "demo-avg": "Visualizar Promedio",
+  "demo-country": "Filtro: País",
+  "demo-travel": "Filtro: Tiempo de Viaje",
+  "demo-living": "Filtro: Convivencia"
 };
 
 export const reverseDbMap = Object.entries(dbMap).reduce((acc, [compId, dbKey]) => {
