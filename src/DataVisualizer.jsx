@@ -326,11 +326,11 @@ export default function DataVisualizer() {
 
       {/* 3. PANEL DE VARIABLE */}
       <div 
-        className={`absolute top-4 left-4 bg-[#0a0a0a]/90 backdrop-blur-sm border border-[#222] rounded-xl p-4 min-w-[280px] max-w-[320px] transition-opacity duration-500 z-10 flex flex-col gap-1 pointer-events-none ${hoveredId ? 'opacity-100' : 'opacity-0'}`}
+        className="absolute top-4 left-4 bg-[#0a0a0a]/90 border border-[#333] shadow-lg rounded-xl p-4 min-w-[280px] max-w-[320px] z-10 flex flex-col gap-1 pointer-events-none"
       >
         <span className="text-[#888] text-[9px] font-bold uppercase tracking-widest">Variable</span>
-        <span className="text-[#eee] text-sm font-medium leading-snug">
-          {lastHoveredText}
+        <span className="text-[#eee] text-sm font-medium leading-snug min-h-[40px] flex items-start">
+          {hoveredId && dbMap[hoveredId] ? dbMap[hoveredId] : "---"}
         </span>
       </div>
 
