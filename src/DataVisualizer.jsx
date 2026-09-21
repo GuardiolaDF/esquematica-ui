@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { useHover } from './contexts/HoverContext';
 import { useAppContext } from './contexts/AppContext';
+import { dbMap } from './dbMap';
 
 // Math helpers for SVG arcs
 function polarToCartesian(cx, cy, r, angleInDegrees) {
@@ -30,6 +31,19 @@ export default function DataVisualizer() {
 
   const { hoveredId, setHoveredId } = useHover();
   const { mode, values, distributions, averages, showSavedOverlay } = useAppContext();
+  
+  const [lastHoveredText, setLastHoveredText] = useState("");
+  useEffect(() => {
+    if (hoveredId && dbMap[hoveredId]) {
+      setLastHoveredText(dbMap[hoveredId]);
+    }
+  }, [hoveredId]);
+
+  const modeLabels = {
+    'colectivo': 'MODO COLECTIVO',
+    'individual': 'MODO INDIVIDUAL',
+    'sandbox': 'MODO Y SI...?'
+  };
   
   const width = 800;
   const height = 600;
@@ -296,6 +310,30 @@ export default function DataVisualizer() {
 
   return (
     <div className="w-full h-full relative overflow-hidden flex items-end justify-center">
+      
+      {/* 1. MODO INDICADOR */}
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 text-white font-extrabold text-base uppercase tracking-widest z-10 drop-shadow-md">
+        {modeLabels[mode]}
+      </div>
+
+      {/* 2. EXTREMOS DEL VÚMETRO */}
+      <div className="absolute top-[35%] left-[4%] text-white font-extrabold text-sm uppercase tracking-wide z-10 drop-shadow-md">
+        + RELAX
+      </div>
+      <div className="absolute top-[35%] right-[4%] text-white font-extrabold text-sm uppercase tracking-wide z-10 drop-shadow-md">
+        + ESTRÉS
+      </div>
+
+      {/* 3. PANEL DE VARIABLE */}
+      <div 
+        className={`absolute top-4 left-4 bg-[#0a0a0a]/90 backdrop-blur-sm border border-[#222] rounded-xl p-4 min-w-[280px] max-w-[320px] transition-opacity duration-500 z-10 flex flex-col gap-1 pointer-events-none ${hoveredId ? 'opacity-100' : 'opacity-0'}`}
+      >
+        <span className="text-[#888] text-[9px] font-bold uppercase tracking-widest">Variable</span>
+        <span className="text-[#eee] text-sm font-medium leading-snug">
+          {lastHoveredText}
+        </span>
+      </div>
+
       <svg width="100%" height="100%" viewBox="0 0 800 450" preserveAspectRatio="xMidYMax meet">
         <defs>
           <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
