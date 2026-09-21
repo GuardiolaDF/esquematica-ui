@@ -170,9 +170,9 @@ const ControlModule = () => {
           return (
             <div key={`jack-mod1--${i}`} style={{ gridColumnStart: 11 + i, gridRowStart: 7 }} className="flex items-end justify-end z-10 w-full h-full">
               <Jack 
-                id={`out-$mod1-${i}`} 
+                id={`out-mod1-${i}`} 
                 type="output" 
-                label={text !== '' ? text : undefined}
+                label={item}
                 activeColor={isActive ? activeColor : null} 
               />
             </div>

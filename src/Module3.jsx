@@ -156,9 +156,8 @@ const Module3 = () => {
           return (
             <div key={`jack-mod3--${i}`} style={{ gridColumnStart: 11 + i, gridRowStart: 7 }} className="flex items-end justify-end z-10 w-full h-full">
               <Jack 
-                id={`out-$mod3-${i}`} 
+                id={`out-mod3-${i}`} 
                 type="output" 
-                label={'' !== '' ? '' : undefined}
                 activeColor={isActive ? activeColor : null} 
               />
             </div>
