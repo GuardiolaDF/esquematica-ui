@@ -68,7 +68,7 @@ const LedButton = ({
   if (routeColor) {
     const isBlue = routeColor === 'blue-500';
     const cColor = isBlue ? '59,130,246' : '249,115,22';
-    bgClass = `bg-[#444] shadow-[inset_0_0_6px_rgba(${cColor},0.2),0_0_12px_rgba(${cColor},0.8)] border border-${routeColor}/80`;
+    bgClass = `bg-[#444] ring-4 ring-${routeColor} shadow-[inset_0_0_15px_rgba(${cColor},0.5),0_0_30px_rgba(${cColor},1)] border border-${routeColor} bg-${routeColor}/50`;
   } else if (isOn) {
     if (ledColor === 'yellow') {
       bgClass = `bg-[#6b6b47] shadow-[inset_0_0_6px_rgba(250,204,21,0.2),0_0_12px_rgba(250,204,21,${0.5 * intensity})] border border-yellow-500/${Math.round(30 * intensity)}`;

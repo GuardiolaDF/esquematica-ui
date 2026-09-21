@@ -110,8 +110,8 @@ const Fader = ({
   let trackGlowClass = '';
   
   if (routeColor) {
-    thumbGlowClass = `shadow-[0_0_15px_rgba(${routeColor === 'blue-500' ? '59,130,246' : '249,115,22'},0.8)] border border-${routeColor} bg-${routeColor}/20`;
-    trackGlowClass = `ring-2 ring-${routeColor} shadow-[0_0_15px_rgba(${routeColor === 'blue-500' ? '59,130,246' : '249,115,22'},0.3)]`;
+    thumbGlowClass = `ring-4 ring-${routeColor} shadow-[0_0_30px_rgba(${routeColor === 'blue-500' ? '59,130,246' : '249,115,22'},1)] bg-${routeColor}/80`;
+    trackGlowClass = `ring-2 ring-${routeColor} shadow-[0_0_20px_rgba(${routeColor === 'blue-500' ? '59,130,246' : '249,115,22'},0.6)]`;
   } else if (isReadOnly) {
     thumbGlowClass = isHovered ? 'shadow-[0_0_15px_rgba(255,255,255,0.6)] border border-white bg-gray-100' : 'shadow-[0_0_8px_rgba(255,255,255,0.2)] border border-transparent';
   } else {

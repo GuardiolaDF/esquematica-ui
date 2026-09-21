@@ -34,7 +34,7 @@ const RotarySwitch = ({
   const isReadOnly = mode === 'colectivo';
   let glowClass = 'shadow-md border border-transparent';
   if (routeColor) {
-    knobGlow = `shadow-[0_0_15px_rgba(${routeColor === 'blue-500' ? '59,130,246' : '249,115,22'},0.5)] border border-${routeColor}`;
+    glowClass = `ring-4 ring-${routeColor} shadow-[0_0_30px_rgba(${routeColor === 'blue-500' ? '59,130,246' : '249,115,22'},1)] bg-${routeColor}/20`;
   } else if (isReadOnly) {
     glowClass = isHovered ? 'shadow-[0_0_15px_rgba(255,255,255,0.4)] border border-white' : 'shadow-md border border-[#333]';
   } else {
