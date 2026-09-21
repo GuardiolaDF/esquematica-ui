@@ -13,7 +13,7 @@ const LBL_DN = "absolute top-[100%] mt-[4px] left-1/2 -translate-x-1/2 text-[7px
 const LBL_V = "absolute right-[100%] mr-[4px] top-1/2 -translate-y-1/2 -rotate-90 origin-center text-[7px] uppercase tracking-[0.2em] text-[#777] font-sans font-bold whitespace-nowrap pointer-events-none";
 
 const Module3 = () => {
-  const { values, averages, mode, showGrid } = useAppContext();
+  const { values, averages, mode, showGrid, routingOutputs } = useAppContext();
   
   // Determinar si el switch de procrastinación está activo
   // En modo colectivo, si el promedio es > 0, lo consideramos activo para iluminar el banco de pads
