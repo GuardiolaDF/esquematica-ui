@@ -14,7 +14,15 @@ const Fader = ({
   value,
   onChange
 }) => {
-  const { mode, values, setValue: setGlobalValue, averages } = useAppContext();
+  const { mode, values, setValue: setGlobalValue, averages , visualizationMode, routingOutputs, toggleRoutingSource } = useAppContext();
+
+  const isRoutingMode = mode === 'colectivo' && visualizationMode !== 'general';
+  let routeColor = null;
+  if (isRoutingMode && compId) {
+    if (routingOutputs.out1 === compId) routeColor = 'blue-500';
+    else if (routingOutputs.out2 === compId) routeColor = 'orange-500';
+  }
+
   const [localValue, setLocalValue] = useState(initialValue);
   const trackRef = useRef(null);
 
@@ -59,6 +67,7 @@ const Fader = ({
   }, [orientation, mode, compId, setGlobalValue, onChange]);
 
   const onMouseDown = (e) => {
+    if (isRoutingMode && compId) { e.preventDefault(); toggleRoutingSource(compId); return; }
     e.preventDefault(); // Previene selección de texto
     setIsDragging(true);
     handleMove(e.clientX, e.clientY);
@@ -100,7 +109,10 @@ const Fader = ({
   let thumbGlowClass = 'shadow-md border border-transparent';
   let trackGlowClass = '';
   
-  if (isReadOnly) {
+  if (routeColor) {
+    thumbGlowClass = `shadow-[0_0_15px_rgba(${routeColor === 'blue-500' ? '59,130,246' : '249,115,22'},0.8)] border border-${routeColor} bg-${routeColor}/20`;
+    trackGlowClass = `ring-2 ring-${routeColor} shadow-[0_0_15px_rgba(${routeColor === 'blue-500' ? '59,130,246' : '249,115,22'},0.3)]`;
+  } else if (isReadOnly) {
     thumbGlowClass = isHovered ? 'shadow-[0_0_15px_rgba(255,255,255,0.6)] border border-white bg-gray-100' : 'shadow-[0_0_8px_rgba(255,255,255,0.2)] border border-transparent';
   } else {
     thumbGlowClass = isHovered 

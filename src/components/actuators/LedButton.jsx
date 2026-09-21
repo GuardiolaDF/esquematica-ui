@@ -13,7 +13,15 @@ const LedButton = ({
   value,
   onChange
 }) => {
-  const { mode, values, setValue: setGlobalValue, averages } = useAppContext();
+  const { mode, values, setValue: setGlobalValue, averages , visualizationMode, routingOutputs, toggleRoutingSource } = useAppContext();
+
+  const isRoutingMode = mode === 'colectivo' && visualizationMode !== 'general';
+  let routeColor = null;
+  if (isRoutingMode && compId) {
+    if (routingOutputs.out1 === compId) routeColor = 'blue-500';
+    else if (routingOutputs.out2 === compId) routeColor = 'orange-500';
+  }
+
   const [localIsOn, setLocalIsOn] = useState(initialState);
   const { hoveredId, setHoveredId } = useHover();
   const [localHover, setLocalHover] = useState(false);

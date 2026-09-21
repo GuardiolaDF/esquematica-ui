@@ -16,7 +16,15 @@ const RotarySwitch = ({
   stepIndex
 }) => {
   const startStep = initialStep !== undefined ? initialStep : Math.floor(angles.length / 2);
-  const { mode, values, setValue: setGlobalValue, averages } = useAppContext();
+  const { mode, values, setValue: setGlobalValue, averages , visualizationMode, routingOutputs, toggleRoutingSource } = useAppContext();
+
+  const isRoutingMode = mode === 'colectivo' && visualizationMode !== 'general';
+  let routeColor = null;
+  if (isRoutingMode && compId) {
+    if (routingOutputs.out1 === compId) routeColor = 'blue-500';
+    else if (routingOutputs.out2 === compId) routeColor = 'orange-500';
+  }
+
   const [localStep, setLocalStep] = useState(startStep);
   const { hoveredId, setHoveredId } = useHover();
   const [localHover, setLocalHover] = useState(false);
@@ -25,7 +33,9 @@ const RotarySwitch = ({
   const isMissing = useAppContext().missingFields?.includes(compId);
   const isReadOnly = mode === 'colectivo';
   let glowClass = 'shadow-md border border-transparent';
-  if (isReadOnly) {
+  if (routeColor) {
+    knobGlow = `shadow-[0_0_15px_rgba(${routeColor === 'blue-500' ? '59,130,246' : '249,115,22'},0.5)] border border-${routeColor}`;
+  } else if (isReadOnly) {
     glowClass = isHovered ? 'shadow-[0_0_15px_rgba(255,255,255,0.4)] border border-white' : 'shadow-md border border-[#333]';
   } else {
     glowClass = isHovered 
@@ -82,6 +92,7 @@ const RotarySwitch = ({
   }, [angles, mode, compId, setGlobalValue, onChange]);
 
   const onMouseDown = (e) => {
+    if (isRoutingMode && compId) { e.preventDefault(); toggleRoutingSource(compId); return; }
     e.preventDefault();
     const rect = e.currentTarget.getBoundingClientRect();
     handleInteraction(e.clientX, e.clientY, rect);

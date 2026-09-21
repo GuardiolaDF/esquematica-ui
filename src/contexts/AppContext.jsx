@@ -180,6 +180,28 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  const [visualizationMode, setVisualizationMode] = useState('general'); // 'general', 'ranking', 'distribution', 'relation', 'wordcloud'
+  const [routingOutputs, setRoutingOutputs] = useState({ out1: null, out2: null });
+
+  const toggleRoutingSource = (compId) => {
+    setRoutingOutputs(prev => {
+      // If already selected, deselect it
+      if (prev.out1 === compId) return { ...prev, out1: null };
+      if (prev.out2 === compId) return { ...prev, out2: null };
+      
+      // If not selected, assign to first available slot
+      if (!prev.out1) return { ...prev, out1: compId };
+      if (!prev.out2) return { ...prev, out2: compId };
+      
+      // If full, do nothing
+      return prev;
+    });
+  };
+
+  // When switching modes, if we go to individual/sandbox, or visualization mode goes to 'general', we might want to reset routing.
+  // Actually, the user says "Al volver a GENERAL, desaparecen los controles de routing y los módulos vuelven a mostrar el estado colectivo general."
+  // Routing state can be kept but just hidden, or reset. Let's just keep the state, we will hide the UI.
+
   return (
     <AppContext.Provider value={{ 
       mode, setMode, 
@@ -193,7 +215,9 @@ export const AppProvider = ({ children }) => {
       isLoading,
       showGrid, setShowGrid,
       showSavedOverlay,
-      missingFields
+      missingFields,
+      visualizationMode, setVisualizationMode,
+      routingOutputs, toggleRoutingSource, setRoutingOutputs
     }}>
       {children}
     </AppContext.Provider>

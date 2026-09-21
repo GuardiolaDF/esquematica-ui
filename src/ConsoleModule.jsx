@@ -11,19 +11,45 @@ const LBL_UP = "absolute bottom-[100%] mb-[4px] left-1/2 -translate-x-1/2 text-[
 
 const VerticalPads = ({ options, value, onChange, disabled, compId }) => {
   const { setHoveredId } = useHover();
+  const { mode, visualizationMode, routingOutputs, toggleRoutingSource } = useAppContext();
   
+  const isRoutingMode = mode === 'colectivo' && visualizationMode !== 'general';
+  let routeColor = null;
+  if (isRoutingMode && compId) {
+    if (routingOutputs.out1 === compId) routeColor = 'blue-500';
+    else if (routingOutputs.out2 === compId) routeColor = 'orange-500';
+  }
+
   return (
     <div 
-      className={`flex flex-col gap-[7px] w-full ${disabled ? 'pointer-events-none' : ''}`}
+      className={`flex flex-col gap-[7px] w-full ${disabled && !isRoutingMode ? 'pointer-events-none' : ''}`}
       onMouseEnter={() => { if (compId) setHoveredId(compId); }}
       onMouseLeave={() => { if (compId) setHoveredId(null); }}
     >
       {options.map(opt => {
         const isSelected = value === opt.value;
+        let boxClass = isSelected ? 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.5)]' : 'bg-[#555] border border-[#444]';
+        
+        if (routeColor) {
+          boxClass = `bg-${routeColor} shadow-[0_0_8px_rgba(${routeColor === 'blue-500' ? '59,130,246' : '249,115,22'},0.8)]`;
+        } else if (isRoutingMode) {
+          boxClass = 'bg-[#333] border border-[#555]'; // Deselected state in routing mode
+        }
+
         return (
-          <div key={opt.value} className="flex items-center gap-1.5 cursor-pointer" onClick={() => onChange(isSelected ? null : opt.value)}>
-            <div className={`w-[10px] h-[10px] shrink-0 rounded-[2px] transition-all ${isSelected ? 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.5)]' : 'bg-[#555] border border-[#444]'}`}></div>
-            <span className={`text-[7.5px] font-sans whitespace-nowrap transition-colors ${isSelected ? 'text-white font-bold' : (disabled ? 'text-[#666]' : 'text-[#999]')}`}>{opt.label}</span>
+          <div 
+            key={opt.value} 
+            className="flex items-center gap-1.5 cursor-pointer" 
+            onClick={() => {
+              if (isRoutingMode && compId) {
+                toggleRoutingSource(compId);
+              } else if (!isRoutingMode) {
+                onChange(isSelected ? null : opt.value);
+              }
+            }}
+          >
+            <div className={`w-[10px] h-[10px] shrink-0 rounded-[2px] transition-all ${boxClass}`}></div>
+            <span className={`text-[7.5px] font-sans whitespace-nowrap transition-colors ${isSelected || routeColor ? 'text-white font-bold' : (disabled && !isRoutingMode ? 'text-[#666]' : 'text-[#999]')}`}>{opt.label}</span>
           </div>
         );
       })}

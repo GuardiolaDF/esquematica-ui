@@ -30,7 +30,7 @@ export default function DataVisualizer() {
   }, []);
 
   const { hoveredId, setHoveredId } = useHover();
-  const { mode, values, distributions, averages, showSavedOverlay } = useAppContext();
+  const { mode, values, distributions, averages, showSavedOverlay, visualizationMode, setVisualizationMode, routingOutputs } = useAppContext();
   
   const [lastHoveredText, setLastHoveredText] = useState("");
   useEffect(() => {
@@ -308,33 +308,85 @@ export default function DataVisualizer() {
     return 0;
   }, [mode, averages, values, startAngle, endAngle, directInvertedTracks, distributions]);
 
+  const renderAlternativeVisualization = () => {
+    return (
+      <div className="w-full h-full flex flex-col items-center justify-center p-8 mt-12 bg-[#111]">
+        <h2 className="text-white text-xl font-bold uppercase tracking-widest mb-12">
+          MODO: {visualizationMode}
+        </h2>
+        
+        <div className="flex gap-16 items-center justify-center w-full max-w-2xl">
+          {/* OUTPUT 1 */}
+          <div className="flex flex-col items-center justify-center bg-[#1a1a1a] border-2 border-[#3b82f6] rounded-xl p-8 shadow-[0_0_30px_rgba(59,130,246,0.3)] w-1/2 min-h-[150px]">
+            <span className="text-[#3b82f6] text-xs font-bold uppercase tracking-widest mb-4">INPUT 1 (AZUL)</span>
+            <span className="text-white text-lg font-medium text-center">
+              {routingOutputs.out1 && dbMap[routingOutputs.out1] ? dbMap[routingOutputs.out1] : "ESPERANDO SEÑAL..."}
+            </span>
+          </div>
+
+          {/* OUTPUT 2 */}
+          <div className="flex flex-col items-center justify-center bg-[#1a1a1a] border-2 border-[#f97316] rounded-xl p-8 shadow-[0_0_30px_rgba(249,115,22,0.3)] w-1/2 min-h-[150px]">
+            <span className="text-[#f97316] text-xs font-bold uppercase tracking-widest mb-4">INPUT 2 (NARANJA)</span>
+            <span className="text-white text-lg font-medium text-center">
+              {routingOutputs.out2 && dbMap[routingOutputs.out2] ? dbMap[routingOutputs.out2] : "ESPERANDO SEÑAL..."}
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="w-full h-full relative overflow-hidden flex items-end justify-center">
       
-      {/* 1. MODO INDICADOR */}
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 text-white font-extrabold text-base uppercase tracking-widest z-10 drop-shadow-md">
-        {modeLabels[mode]}
+      {/* 1. MODO INDICADOR Y MENÚ DE VISUALIZACIÓN */}
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-20">
+        <div className="text-white font-extrabold text-base uppercase tracking-widest drop-shadow-md">
+          {modeLabels[mode]}
+        </div>
+        
+        {mode === 'colectivo' && (
+          <div className="flex bg-[#0a0a0a]/80 backdrop-blur-sm border border-[#333] rounded-full p-1 gap-1">
+            {['general', 'ranking', 'distribution', 'relation', 'wordcloud'].map(vMode => (
+              <button
+                key={vMode}
+                onClick={() => setVisualizationMode(vMode)}
+                className={`px-3 py-1 text-[9px] font-bold uppercase tracking-wider rounded-full transition-all ${
+                  visualizationMode === vMode 
+                    ? 'bg-amber-500 text-black shadow-[0_0_10px_rgba(245,158,11,0.5)]' 
+                    : 'text-[#888] hover:text-white hover:bg-[#222]'
+                }`}
+              >
+                {vMode}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* 2. EXTREMOS DEL VÚMETRO */}
-      <div className="absolute top-[35%] left-[4%] text-white font-extrabold text-sm uppercase tracking-wide z-10 drop-shadow-md">
-        + RELAX
-      </div>
-      <div className="absolute top-[35%] right-[4%] text-white font-extrabold text-sm uppercase tracking-wide z-10 drop-shadow-md">
-        + ESTRÉS
-      </div>
+      {visualizationMode !== 'general' && mode === 'colectivo' ? (
+        renderAlternativeVisualization()
+      ) : (
+        <>
+          {/* 2. EXTREMOS DEL VÚMETRO */}
+          <div className="absolute top-[35%] left-[4%] text-white font-extrabold text-sm uppercase tracking-wide z-10 drop-shadow-md pointer-events-none">
+            + RELAX
+          </div>
+          <div className="absolute top-[35%] right-[4%] text-white font-extrabold text-sm uppercase tracking-wide z-10 drop-shadow-md pointer-events-none">
+            + ESTRÉS
+          </div>
 
-      {/* 3. PANEL DE VARIABLE */}
-      <div 
-        className="absolute top-4 left-4 bg-[#0a0a0a]/90 border border-[#333] shadow-lg rounded-xl p-4 min-w-[280px] max-w-[320px] z-10 flex flex-col gap-1 pointer-events-none"
-      >
-        <span className="text-[#888] text-[9px] font-bold uppercase tracking-widest">Variable</span>
-        <span className="text-[#eee] text-sm font-medium leading-snug min-h-[40px] flex items-start">
-          {hoveredId && dbMap[hoveredId] ? dbMap[hoveredId] : "---"}
-        </span>
-      </div>
+          {/* 3. PANEL DE VARIABLE */}
+          <div 
+            className="absolute top-4 left-4 bg-[#0a0a0a]/90 border border-[#333] shadow-lg rounded-xl p-4 min-w-[280px] max-w-[320px] z-10 flex flex-col gap-1 pointer-events-none"
+          >
+            <span className="text-[#888] text-[9px] font-bold uppercase tracking-widest">Variable</span>
+            <span className="text-[#eee] text-sm font-medium leading-snug min-h-[40px] flex items-start">
+              {hoveredId && dbMap[hoveredId] ? dbMap[hoveredId] : "---"}
+            </span>
+          </div>
 
-      <svg width="100%" height="100%" viewBox="0 0 800 450" preserveAspectRatio="xMidYMax meet">
+          <svg width="100%" height="100%" viewBox="0 0 800 450" preserveAspectRatio="xMidYMax meet">
         <defs>
           <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur stdDeviation="4" result="blur" />
@@ -469,6 +521,8 @@ export default function DataVisualizer() {
         {/* Center Pivot Point Cover (Offscreen) */}
         <circle cx={cx} cy={cy} r="16" fill="#1a1a1a" stroke="#000" strokeWidth="4" />
       </svg>
+        </>
+      )}
     </div>
   );
 }
