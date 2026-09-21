@@ -160,14 +160,21 @@ const ControlModule = () => {
         </div>
 
         {/* 2 JACKS: K7, L7 (Cols 11-12, Row 7) */}
-        {['JACK 1', 'JACK 2'].map((text, i) => (
-          <div key={`jack-${i}`} style={{ gridColumnStart: 11 + i, gridRowStart: 7 }} className="flex items-end justify-end z-10">
-            <div className="w-[60%] aspect-square bg-[#CCC] rounded-full shadow-inner border border-[#999] flex items-center justify-center relative">
-               <span className={LBL_UP}>{text}</span>
-               <div className="w-[45%] aspect-square bg-[#111] rounded-full"></div>
+        {['JACK 1', 'JACK 2'].map((text, i) => {
+          const isOut1Active = routingOutputs.out1?.startsWith('mod1-');
+          const isOut2Active = routingOutputs.out2?.startsWith('mod1-');
+          const isActive = (i === 0 && isOut1Active) || (i === 1 && isOut2Active);
+          const activeColor = i === 0 ? 'orange-500' : 'blue-500';
+          const glowClass = isActive ? `bg-${activeColor} shadow-[0_0_15px_rgba(${i === 0 ? '249,115,22' : '59,130,246'},0.8)]` : 'bg-[#111]';
+          return (
+            <div key={`jack-${i}`} style={{ gridColumnStart: 11 + i, gridRowStart: 7 }} className="flex items-end justify-end z-10">
+              <div className="w-[60%] aspect-square bg-[#CCC] rounded-full shadow-inner border border-[#999] flex items-center justify-center relative">
+                 <span className={LBL_UP}>{text}</span>
+                 <div className={`w-[45%] aspect-square rounded-full transition-all duration-300 ${glowClass}`}></div>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
 
       </div>
     </ModuleShell>

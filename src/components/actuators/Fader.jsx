@@ -19,8 +19,8 @@ const Fader = ({
   const isRoutingMode = mode === 'colectivo' && visualizationMode !== 'general';
   let routeColor = null;
   if (isRoutingMode && compId) {
-    if (routingOutputs.out1 === compId) routeColor = 'blue-500';
-    else if (routingOutputs.out2 === compId) routeColor = 'orange-500';
+    if (routingOutputs.out1 === compId) routeColor = 'orange-500';
+    else if (routingOutputs.out2 === compId) routeColor = 'blue-500';
   }
 
   const [localValue, setLocalValue] = useState(initialValue);

@@ -18,8 +18,8 @@ const LedButton = ({
   const isRoutingMode = mode === 'colectivo' && visualizationMode !== 'general';
   let routeColor = null;
   if (isRoutingMode && compId) {
-    if (routingOutputs.out1 === compId) routeColor = 'blue-500';
-    else if (routingOutputs.out2 === compId) routeColor = 'orange-500';
+    if (routingOutputs.out1 === compId) routeColor = 'orange-500';
+    else if (routingOutputs.out2 === compId) routeColor = 'blue-500';
   }
 
   const [localIsOn, setLocalIsOn] = useState(initialState);
@@ -33,7 +33,9 @@ const LedButton = ({
   let isOn = localIsOn;
   let intensity = 1;
 
-  if (value !== undefined) {
+  if (isRoutingMode) {
+    isOn = false;
+  } else if (value !== undefined) {
     isOn = value === 100 || value === true;
   } else if (isReadOnly && compId) {
     const avg = averages[compId];

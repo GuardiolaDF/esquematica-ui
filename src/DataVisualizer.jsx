@@ -317,16 +317,16 @@ export default function DataVisualizer() {
         
         <div className="flex gap-16 items-center justify-center w-full max-w-2xl">
           {/* OUTPUT 1 */}
-          <div className="flex flex-col items-center justify-center bg-[#1a1a1a] border-2 border-[#3b82f6] rounded-xl p-8 shadow-[0_0_30px_rgba(59,130,246,0.3)] w-1/2 min-h-[150px]">
-            <span className="text-[#3b82f6] text-xs font-bold uppercase tracking-widest mb-4">INPUT 1 (AZUL)</span>
+          <div className="flex flex-col items-center justify-center bg-[#1a1a1a] border-2 border-[#f97316] rounded-xl p-8 shadow-[0_0_30px_rgba(249,115,22,0.3)] w-1/2 min-h-[150px]">
+            <span className="text-[#f97316] text-xs font-bold uppercase tracking-widest mb-4">INPUT 1 (NARANJA)</span>
             <span className="text-white text-lg font-medium text-center">
               {routingOutputs.out1 && dbMap[routingOutputs.out1] ? dbMap[routingOutputs.out1] : "ESPERANDO SEÑAL..."}
             </span>
           </div>
 
           {/* OUTPUT 2 */}
-          <div className="flex flex-col items-center justify-center bg-[#1a1a1a] border-2 border-[#f97316] rounded-xl p-8 shadow-[0_0_30px_rgba(249,115,22,0.3)] w-1/2 min-h-[150px]">
-            <span className="text-[#f97316] text-xs font-bold uppercase tracking-widest mb-4">INPUT 2 (NARANJA)</span>
+          <div className="flex flex-col items-center justify-center bg-[#1a1a1a] border-2 border-[#3b82f6] rounded-xl p-8 shadow-[0_0_30px_rgba(59,130,246,0.3)] w-1/2 min-h-[150px]">
+            <span className="text-[#3b82f6] text-xs font-bold uppercase tracking-widest mb-4">INPUT 2 (AZUL)</span>
             <span className="text-white text-lg font-medium text-center">
               {routingOutputs.out2 && dbMap[routingOutputs.out2] ? dbMap[routingOutputs.out2] : "ESPERANDO SEÑAL..."}
             </span>

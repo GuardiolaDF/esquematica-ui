@@ -13,7 +13,7 @@ const LBL_DN = "absolute top-[100%] mt-[4px] left-1/2 -translate-x-1/2 text-[7px
 const LBL_V = "absolute right-[100%] mr-[4px] top-1/2 -translate-y-1/2 -rotate-90 origin-center text-[7px] uppercase tracking-[0.2em] text-[#777] font-sans font-bold whitespace-nowrap pointer-events-none";
 
 const Module2 = () => {
-  const { showGrid, mode } = useAppContext();
+  const { showGrid, mode, routingOutputs } = useAppContext();
   const cols = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
   const rows = [1, 2, 3, 4, 5, 6, 7];
 
@@ -109,14 +109,21 @@ const Module2 = () => {
         ))}
 
         {/* 2 JACKS: Cols K-L (11-12), Row 7 */}
-        {[11, 12].map((col) => (
-          <div key={`jack2-${col}`} style={{ gridColumnStart: col, gridRowStart: 7 }} className="flex items-end justify-end z-10">
-            <div className="w-[60%] aspect-square bg-[#CCC] rounded-full shadow-inner border border-[#999] flex items-center justify-center relative">
-               <span className={LBL_UP}>TEXTO</span>
-               <div className="w-[45%] aspect-square bg-[#111] rounded-full"></div>
+        {[11, 12].map((col, i) => {
+          const isOut1Active = routingOutputs?.out1?.startsWith('mod2-');
+          const isOut2Active = routingOutputs?.out2?.startsWith('mod2-');
+          const isActive = (i === 0 && isOut1Active) || (i === 1 && isOut2Active);
+          const activeColor = i === 0 ? 'orange-500' : 'blue-500';
+          const glowClass = isActive ? `bg-${activeColor} shadow-[0_0_15px_rgba(${i === 0 ? '249,115,22' : '59,130,246'},0.8)]` : 'bg-[#111]';
+          return (
+            <div key={`jack2-${col}`} style={{ gridColumnStart: col, gridRowStart: 7 }} className="flex items-end justify-end z-10">
+              <div className="w-[60%] aspect-square bg-[#CCC] rounded-full shadow-inner border border-[#999] flex items-center justify-center relative">
+                 <span className={LBL_UP}>TEXTO</span>
+                 <div className={`w-[45%] aspect-square rounded-full transition-all duration-300 ${glowClass}`}></div>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </ModuleShell>
   );
