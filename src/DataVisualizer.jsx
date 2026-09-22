@@ -4,6 +4,7 @@ import { useAppContext } from './contexts/AppContext';
 import { useCables } from './contexts/CableContext';
 import Jack from './components/cables/Jack';
 import RelationXY from './components/visualizations/RelationXY';
+import SpectrumAnalyzer from './components/visualizations/SpectrumAnalyzer';
 import { dbMap, reverseDbMap, dbMetadata } from './dbMap';
 
 // Math helpers for SVG arcs
@@ -342,6 +343,10 @@ export default function DataVisualizer() {
     const isRelation = visualizationMode === 'relation';
     const canPlotRelation = hasSource1 && hasSource2 && isCompatible;
 
+    // Logic for Spectrum Analyzer (Distribution)
+    const isSpectrum = visualizationMode === 'distribution';
+    const canPlotSpectrum = hasSource1 && source1Meta.visualizations.includes('distribution');
+
     return (
       <div className="w-full h-full flex flex-col items-center justify-between p-8 mt-12 bg-[#111]">
         
@@ -360,6 +365,17 @@ export default function DataVisualizer() {
                   {(!hasSource1 || !hasSource2) ? "WAITING FOR BOTH INPUTS" : "DATOS INCOMPATIBLES PARA XY"}
                 </span>
                 <span className="text-xs">Por favor, conecte dos variables compatibles con modo "Relation" en los Inputs X e Y.</span>
+              </div>
+            )
+          ) : isSpectrum ? (
+            canPlotSpectrum ? (
+              <SpectrumAnalyzer outId={routingOutputs.out1} outMeta={source1Meta} colorHex="#3b82f6" />
+            ) : (
+              <div className="flex flex-col items-center gap-4 border-2 border-dashed border-[#444] rounded-xl p-12 text-[#666]">
+                <span className="text-sm font-bold uppercase tracking-widest">
+                  {!hasSource1 ? "WAITING FOR INPUT X" : "DATOS INCOMPATIBLES PARA SPECTRUM"}
+                </span>
+                <span className="text-xs">Por favor, conecte una variable compatible en el Input X (Azul).</span>
               </div>
             )
           ) : (
