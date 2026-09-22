@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useAppContext } from '../../contexts/AppContext';
 import { dbMap } from '../../dbMap';
+import { getVisualizableData } from '../../dataTransforms';
 
 const SpectrumAnalyzer = ({ outId, outMeta, colorHex = "#3b82f6" }) => {
   const { allSetups, values, averages, mode } = useAppContext();

@@ -6,6 +6,7 @@ import Jack from './components/cables/Jack';
 import RelationXY from './components/visualizations/RelationXY';
 import SpectrumAnalyzer from './components/visualizations/SpectrumAnalyzer';
 import { dbMap, reverseDbMap, dbMetadata } from './dbMap';
+import { directInvertedTracks, counterTracks, booleanTracks, getVisualizableData } from './dataTransforms';
 
 // Math helpers for SVG arcs
 function polarToCartesian(cx, cy, r, angleInDegrees) {
@@ -67,71 +68,14 @@ export default function DataVisualizer() {
     { name: 'Módulo 1', startR: boundaries[2], endR: boundaries[3], tracks: 26 }, // mod1-1 to mod1-25
   ];
 
-  const directInvertedTracks = [
-    'mod2-1', 'mod2-5', 'mod2-6', 'mod2-8', 'mod2-12', 'mod2-17',
-    'mod3-5', 'mod3-18'
-  ];
   
-  const counterTracks = ['mod2-9', 'mod2-10', 'mod2-11', 'mod3-6', 'mod3-7'];
-  const zonedTracks = ['mod2-1', 'mod3-5'];
-  const booleanTracks = ['mod2-5', 'mod2-6', 'mod2-7', 'mod2-8', 'mod2-12', 'mod2-13', 'mod2-14', 'mod3-8', 'mod3-9', 'mod3-10', 'mod3-11', 'mod3-12', 'mod3-13', 'mod3-14', 'mod3-17', 'mod3-18', 'mod3-19'];
   
-  const getRelativeValue = (compId, val) => {
-    if (counterTracks.includes(compId)) {
-      if (compId === 'mod3-6' || compId === 'mod3-7') {
-        if (val >= 9) return 10;
-        if (val === 8) return 20;
-        if (val === 7) return 30;
-        if (val === 6) return 45;
-        if (val === 5) return 60;
-        if (val === 4) return 75;
-        if (val === 3) return 85;
-        if (val === 2) return 90;
-        if (val === 1) return 95;
-        if (val === 0) return 98;
-      }
-      
-      if (val === 0) return 2;
-      
-      let maxRelax = 2, maxInter = 4;
-      if (compId === 'mod2-9') { // Programas
-        maxRelax = 2; maxInter = 4;
-      } else if (compId === 'mod2-10') { // Pestañas
-        maxRelax = 4; maxInter = 10;
-      } else if (compId === 'mod2-11') { // Archivos
-        maxRelax = 5; maxInter = 15;
-      }
-      
-      if (val <= maxRelax) {
-        if (maxRelax === 1) return 20;
-        return 10 + ((val - 1) / (maxRelax - 1)) * 23; 
-      }
-      
-      if (val <= maxInter) {
-        if (maxInter - maxRelax === 1) return 50;
-        return 35 + ((val - maxRelax - 1) / (maxInter - maxRelax - 1)) * 31;
-      }
-      
-      // Asintótico de 67 a 98
-      const over = val - maxInter; 
-      const k = 0.2; // Controla qué tan rápido se acerca a 98
-      return 67 + (31 * (1 - Math.exp(-k * over)));
-    }
-    return val;
-  };
-
-  const getZonedValue = (compId, val) => {
-    if (zonedTracks.includes(compId)) {
-      // Convierte 0..100 en 5 zonas: 0->10, 25->30, 50->50, 75->70, 100->90
-      return 10 + (val / 100) * 80;
-    }
-    if (booleanTracks.includes(compId)) {
-      // Divide en dos mitades (SI/NO): 0 se va al 25% (mitad izquierda) y 100 se va al 75% (mitad derecha)
-      return val < 50 ? 25 : 75;
-    }
-    return val;
-  };
-
+  
+  
+  
+  
+  
+  
   const dots = useMemo(() => {
     const d = [];
     
@@ -152,12 +96,11 @@ export default function DataVisualizer() {
         if (mode === 'individual') {
           const rawVal = values[compId];
           
-          let processedVal = rawVal !== undefined ? getRelativeValue(compId, rawVal) : (counterTracks.includes(compId) ? getRelativeValue(compId, 0) : 50);
+          let visData = getVisualizableData(compId, rawVal !== undefined ? rawVal : (counterTracks.includes(compId) ? 0 : 50), dbMetadata[compId]?.dataType);
+          let processedVal = visData.value;
           
-          if (rawVal !== undefined && isInverted) processedVal = 100 - processedVal;
-          processedVal = getZonedValue(compId, processedVal);
-          
-          let targetAngle = paddedStartAngle + (processedVal / 100) * (paddedEndAngle - paddedStartAngle);
+          let percent = (processedVal - visData.min) / (visData.max - visData.min);
+          let targetAngle = paddedStartAngle + percent * (paddedEndAngle - paddedStartAngle);
           if (rawVal === undefined && !counterTracks.includes(compId)) targetAngle = paddedStartAngle + 0.5 * (paddedEndAngle - paddedStartAngle);
 
           let currentAngle = isMounted ? targetAngle : paddedStartAngle;
@@ -178,38 +121,40 @@ export default function DataVisualizer() {
           const dist = distributions[compId] || [];
           
           let visualShift = 0;
-          let visualAvg = getRelativeValue(compId, averages[compId] ?? 50);
-          if (isInverted) visualAvg = 100 - visualAvg;
-          visualAvg = getZonedValue(compId, visualAvg);
+          let avgData = getVisualizableData(compId, averages[compId] ?? 50, dbMetadata[compId]?.dataType);
+          let visualAvg = avgData.value;
+          let visMin = avgData.min;
+          let visMax = avgData.max;
 
           if (mode === 'sandbox') {
             const rawUser = values[compId];
             if (rawUser !== undefined) {
-              let visualUser = getRelativeValue(compId, rawUser);
-              if (isInverted) visualUser = 100 - visualUser;
-              visualUser = getZonedValue(compId, visualUser);
-              visualShift = visualUser - visualAvg;
+              let usrData = getVisualizableData(compId, rawUser, dbMetadata[compId]?.dataType);
+              visualShift = usrData.value - visualAvg;
             }
           }
 
           dist.forEach((entry, idx) => {
-            let processedVal = getRelativeValue(compId, entry.val);
-            if (isInverted) processedVal = 100 - processedVal;
-            processedVal = getZonedValue(compId, processedVal);
+            let visData = getVisualizableData(compId, entry.val, dbMetadata[compId]?.dataType);
+            let processedVal = visData.value;
+            
+            // Re-scale smear offset according to domain
+            let domainSpan = visData.max - visData.min;
             
             // Ruido de Descuantización para romper bloques discretos ("Categorical Smear")
-            if (booleanTracks.includes(compId) || zonedTracks.includes(compId) || counterTracks.includes(compId)) {
-              // Deterministic uniform noise between -8% and +8%
+            // Apply a relative jitter of 8% of the domain span
+            if (booleanTracks.includes(compId) || counterTracks.includes(compId) || visData.max === 5) {
               const smearSeed = ((idx * 17.345) % 1);
-              const smearOffset = (smearSeed - 0.5) * 16;
+              const smearOffset = (smearSeed - 0.5) * (0.16 * domainSpan);
               processedVal += smearOffset;
             }
             
             if (mode === 'sandbox') {
-              processedVal = Math.max(0, Math.min(100, processedVal + visualShift));
+              processedVal = Math.max(visData.min, Math.min(visData.max, processedVal + visualShift));
             }
             
-            let baseAngle = paddedStartAngle + (processedVal / 100) * (paddedEndAngle - paddedStartAngle);
+            let percent = (processedVal - visData.min) / domainSpan;
+            let baseAngle = paddedStartAngle + percent * (paddedEndAngle - paddedStartAngle);
             
             // --- ENJAMBRE ORGÁNICO (Organic Swarm) ---
             const u = (Math.sin(idx * 13.456) + 1) / 2 || 0.001;
@@ -294,10 +239,10 @@ export default function DataVisualizer() {
       if (compId.startsWith('mod')) {
         let rawVal = sourceData[compId];
         if (typeof rawVal === 'number') {
-          let val = getRelativeValue(compId, rawVal);
-          if (directInvertedTracks.includes(compId)) val = 100 - val;
-          val = getZonedValue(compId, val);
-          total += val;
+          let visData = getVisualizableData(compId, rawVal, dbMetadata[compId]?.dataType);
+          // Convert back to 0-100 percentage for the total calculation
+          let percent = (visData.value - visData.min) / (visData.max - visData.min);
+          total += percent * 100;
           count++;
         }
       }

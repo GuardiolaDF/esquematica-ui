@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useAppContext } from '../../contexts/AppContext';
-import { dbMap } from '../../dbMap';
+import { dbMap, dbMetadata } from '../../dbMap';
+import { getVisualizableData } from '../../dataTransforms';
 
 const RelationXY = ({ out1Id, out2Id, out1Meta, out2Meta }) => {
   const { allSetups, values, averages, mode } = useAppContext();
@@ -14,15 +15,19 @@ const RelationXY = ({ out1Id, out2Id, out1Meta, out2Meta }) => {
         let v1 = vals[dbMap[out1Id]];
         let v2 = vals[dbMap[out2Id]];
         if (v1 !== undefined && v2 !== undefined) {
-          if (typeof v1 === 'boolean') v1 = v1 ? 100 : 0;
-          if (typeof v2 === 'boolean') v2 = v2 ? 100 : 0;
-          pts.push({ x: v1, y: v2 });
+          let vis1 = getVisualizableData(out1Id, v1, out1Meta.dataType);
+          let vis2 = getVisualizableData(out2Id, v2, out2Meta.dataType);
+          pts.push({ x: vis1.value, y: vis2.value });
         }
       });
     } else if (mode === 'individual' && values[out1Id] !== undefined && values[out2Id] !== undefined) {
-      pts.push({ x: typeof values[out1Id] === 'boolean' ? (values[out1Id] ? 100 : 0) : values[out1Id], y: typeof values[out2Id] === 'boolean' ? (values[out2Id] ? 100 : 0) : values[out2Id] });
+      let vis1 = getVisualizableData(out1Id, values[out1Id], out1Meta.dataType);
+      let vis2 = getVisualizableData(out2Id, values[out2Id], out2Meta.dataType);
+      pts.push({ x: vis1.value, y: vis2.value });
     } else if (averages[out1Id] !== undefined && averages[out2Id] !== undefined) {
-      pts.push({ x: averages[out1Id], y: averages[out2Id] });
+      let vis1 = getVisualizableData(out1Id, averages[out1Id], out1Meta.dataType);
+      let vis2 = getVisualizableData(out2Id, averages[out2Id], out2Meta.dataType);
+      pts.push({ x: vis1.value, y: vis2.value });
     }
     return pts;
   }, [allSetups, values, averages, mode, out1Id, out2Id]);
@@ -32,15 +37,28 @@ const RelationXY = ({ out1Id, out2Id, out1Meta, out2Meta }) => {
     let minX = 0, maxX = 100;
     let minY = 0, maxY = 100;
 
+    // Get semantic domains
+    let v1Sample = getVisualizableData(out1Id, 50, out1Meta.dataType);
+    let v2Sample = getVisualizableData(out2Id, 50, out2Meta.dataType);
+    
+    minX = v1Sample.min;
+    maxX = v1Sample.max;
+    minY = v2Sample.min;
+    maxY = v2Sample.max;
+
     if (out1Meta.dataType === 'numeric' && rawPairs.length > 0) {
-      minX = Math.min(...rawPairs.map(p => p.x));
-      maxX = Math.max(...rawPairs.map(p => p.x));
+      const pMinX = Math.min(...rawPairs.map(p => p.x));
+      const pMaxX = Math.max(...rawPairs.map(p => p.x));
+      if (pMinX < minX) minX = pMinX;
+      if (pMaxX > maxX) maxX = pMaxX;
       if (minX === maxX) { minX -= 1; maxX += 1; }
     }
 
     if (out2Meta.dataType === 'numeric' && rawPairs.length > 0) {
-      minY = Math.min(...rawPairs.map(p => p.y));
-      maxY = Math.max(...rawPairs.map(p => p.y));
+      const pMinY = Math.min(...rawPairs.map(p => p.y));
+      const pMaxY = Math.max(...rawPairs.map(p => p.y));
+      if (pMinY < minY) minY = pMinY;
+      if (pMaxY > maxY) maxY = pMaxY;
       if (minY === maxY) { minY -= 1; maxY += 1; }
     }
 

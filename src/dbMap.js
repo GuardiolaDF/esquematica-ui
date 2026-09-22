@@ -90,426 +90,426 @@ export const dbMetadata = {
     label: "Formato",
     dataType: "categorical",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum"]
   },
   "mod1-2": {
     label: "Modo avión (Estudio)",
     dataType: "categorical",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum"]
   },
   "mod1-22": {
     label: "Horas en Redes Sociales",
     dataType: "numeric",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod1-3": {
     label: "Cine (Voracidad)",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod1-4": {
     label: "Libros (Voracidad)",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod1-5": {
     label: "Podcasts (Voracidad)",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod1-6": {
     label: "Música (Voracidad)",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod1-7": {
     label: "Videojuegos (Voracidad)",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod1-8": {
     label: "Diseño IG (Voracidad)",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod1-9": {
     label: "Diversidad Cultural",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod1-10": {
     label: "Horas",
     dataType: "numeric",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod1-11": {
     label: "Horas",
     dataType: "numeric",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod1-12": {
     label: "Horas",
     dataType: "numeric",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod1-13": {
     label: "Horas",
     dataType: "numeric",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod1-14": {
     label: "Horas",
     dataType: "numeric",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod1-15": {
     label: "Horas",
     dataType: "numeric",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod1-16": {
     label: "Horas",
     dataType: "numeric",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod1-17": {
     label: "Horas",
     dataType: "numeric",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod1-18": {
     label: "Horas",
     dataType: "numeric",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod1-19": {
     label: "Horas",
     dataType: "numeric",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod1-20": {
     label: "Horas",
     dataType: "numeric",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod1-21": {
     label: "Horas",
     dataType: "numeric",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod1-23": {
     label: "Frecuencia uso Referencias",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod1-24": {
     label: "Importancia de Referencias",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod2-1": {
     label: "Boceto a mano",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod2-2": {
     label: "Perfeccionismo",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod2-3": {
     label: "Procrastinacion",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod2-4": {
     label: "Silencio para trabajar",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod2-5": {
     label: "Pausas programadas",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod2-6": {
     label: "Setup escritorio",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod2-7": {
     label: "Trabajo nocturno",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod2-8": {
     label: "Respaldo nube",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod2-9": {
     label: "Programas simultáneos",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod2-10": {
     label: "Pestañas abiertas",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod2-11": {
     label: "Archivos sin título",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod2-12": {
     label: "Versiones vs Sobrescribir",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod2-13": {
     label: "Notificaciones activadas",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod2-14": {
     label: "Comer escritorio",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod2-15": {
     label: "Interrupciones",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod2-16": {
     label: "Sindrome impostor",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod2-17": {
     label: "Orden archivos",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod3-1": {
     label: "Trabajo bajo presión",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod3-2": {
     label: "Confianza en decisiones",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod3-3": {
     label: "Planificación vs último momento",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod3-4": {
     label: "Comparacion con otros",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod3-5": {
     label: "Emocion dominante",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod3-6": {
     label: "Horas sueno habituales",
     dataType: "numeric",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod3-7": {
     label: "Horas sueno pre entrega",
     dataType: "numeric",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod3-8": {
     label: "Procrastinas",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod3-9": {
     label: "Proc",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod3-10": {
     label: "Proc",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod3-11": {
     label: "Proc",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod3-12": {
     label: "Proc",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod3-13": {
     label: "Proc",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod3-14": {
     label: "Proc",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod3-15": {
     label: "Momento mayor frustracion",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod3-16": {
     label: "Nivel de ansiedad general",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod3-17": {
     label: "Emociones afectan resultado",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod3-18": {
     label: "Tecnicas de concentracion",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "mod3-19": {
     label: "Sintomas fisicos",
     dataType: "scale",
     routable: true,
-    visualizations: ["ranking", "distribution", "relation"]
+    visualizations: ["spectrum", "relation"]
   },
   "demo-age": {
     label: "Filtro",
     dataType: "scale",
     routable: false,
-    visualizations: []
+    visualizations: ["spectrum", "relation"]
   },
   "demo-gender": {
     label: "Filtro",
     dataType: "scale",
     routable: false,
-    visualizations: []
+    visualizations: ["spectrum", "relation"]
   },
   "demo-career": {
     label: "Filtro",
     dataType: "scale",
     routable: false,
-    visualizations: []
+    visualizations: ["spectrum", "relation"]
   },
   "demo-xp": {
     label: "Filtro",
     dataType: "scale",
     routable: false,
-    visualizations: []
+    visualizations: ["spectrum", "relation"]
   },
   "demo-work": {
     label: "Filtro",
     dataType: "scale",
     routable: false,
-    visualizations: []
+    visualizations: ["spectrum", "relation"]
   },
   "demo-hours": {
     label: "Filtro",
     dataType: "scale",
     routable: false,
-    visualizations: []
+    visualizations: ["spectrum", "relation"]
   },
   "demo-modality": {
     label: "Filtro",
     dataType: "scale",
     routable: false,
-    visualizations: []
+    visualizations: ["spectrum", "relation"]
   },
   "demo-avg": {
     label: "Visualizar Promedio",
     dataType: "scale",
     routable: false,
-    visualizations: []
+    visualizations: ["spectrum", "relation"]
   },
   "demo-country": {
     label: "Filtro",
     dataType: "scale",
     routable: false,
-    visualizations: []
+    visualizations: ["spectrum", "relation"]
   },
   "demo-travel": {
     label: "Filtro",
     dataType: "scale",
     routable: false,
-    visualizations: []
+    visualizations: ["spectrum", "relation"]
   },
   "demo-living": {
     label: "Filtro",
     dataType: "scale",
     routable: false,
-    visualizations: []
+    visualizations: ["spectrum", "relation"]
   },
 };
