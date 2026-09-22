@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
+import CanvasSwarm from './components/visualizations/CanvasSwarm';
 import { useHover } from './contexts/HoverContext';
 import { useAppContext } from './contexts/AppContext';
 import { useCables } from './contexts/CableContext';
@@ -26,6 +27,7 @@ function describeArc(x, y, radius, startAngle, endAngle) {
     "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y
   ].join(" ");
 }
+
 
 export default function DataVisualizer() {
   const [isMounted, setIsMounted] = useState(false);
@@ -115,7 +117,7 @@ export default function DataVisualizer() {
             if (isBooleanLike && processedVal === 0) opacity = 0.05;
           }
           
-          d.push({ id: `${compId}-single`, compId, r, angle: currentAngle, opacity, color, isHovered: hoveredId === compId });
+          d.push({ id: `${compId}-single`, compId, r, angle: currentAngle, opacity, color });
           
         } else if (mode === 'colectivo' || mode === 'sandbox') {
           const dist = distributions[compId] || [];
@@ -199,7 +201,7 @@ export default function DataVisualizer() {
           let aVal = visualAvg;
           if (mode === 'sandbox') aVal = Math.max(0, Math.min(100, aVal + visualShift));
           const aAngle = paddedStartAngle + (aVal / 100) * (paddedEndAngle - paddedStartAngle);
-          d.push({ id: `${compId}-avg`, compId, r, angle: isMounted ? aAngle : paddedStartAngle, opacity: 1, color: "#FFFFFF", isAvg: true, isHovered: hoveredId === compId });
+          d.push({ id: `${compId}-avg`, compId, r, angle: isMounted ? aAngle : paddedStartAngle, opacity: 1, color: "#FFFFFF", isAvg: true });
           
           if (showSavedOverlay) {
             const rawVal = values[compId];
@@ -227,7 +229,7 @@ export default function DataVisualizer() {
       }
     });
     return d;
-  }, [mode, values, distributions, hoveredId, startAngle, endAngle, boundaries, directInvertedTracks]);
+  }, [mode, values, distributions, startAngle, endAngle, boundaries]);
 
   const avgNeedleAngle = useMemo(() => {
     let sourceData = mode === 'colectivo' ? averages : values;
@@ -465,34 +467,7 @@ export default function DataVisualizer() {
         })()}
 
         {/* Data Dots */}
-        {dots.map((dot) => {
-          // Ya no animamos x e y directamente con transition-all porque hace una línea recta.
-          // En vez de eso, ubicamos el punto a las 12 en punto y rotamos el grupo. 
-          // CSS interpolará la rotación circularmente.
-          return (
-            <g 
-              key={dot.id}
-              className="transition-transform duration-500 ease-out pointer-events-none"
-              style={{ 
-                transform: `rotate(${dot.angle}deg)`, 
-                transformOrigin: `${cx}px ${cy}px`,
-                mixBlendMode: dot.isHovered ? 'normal' : 'screen' 
-              }}
-            >
-              <circle 
-                cx={cx} 
-                cy={cy - dot.r} 
-                r={dot.isHovered ? "3.5" : (dot.size || (mode === 'colectivo' ? 2 : 3))} 
-                fill={dot.isHovered ? "#FFF" : (dot.color || "#FFC800")} 
-                opacity={dot.isHovered ? 1 : dot.opacity}
-                filter={dot.isHovered ? "url(#glow)" : ""}
-                stroke={dot.strokeColor || "transparent"}
-                strokeWidth={dot.strokeColor ? 1.5 : 0}
-                className="transition-all duration-500 ease-out"
-              />
-            </g>
-          );
-        })}
+
 
         {/* Labels on the left edge */}
         {modules.map((mod, i) => {
@@ -525,6 +500,7 @@ export default function DataVisualizer() {
         {/* Center Pivot Point Cover (Offscreen) */}
         <circle cx={cx} cy={cy} r="16" fill="#1a1a1a" stroke="#000" strokeWidth="4" />
       </svg>
+        {visualizationMode === 'general' && <CanvasSwarm dots={dots} cx={cx} cy={cy} hoveredId={hoveredId} mode={mode} startAngle={startAngle} />}
         </>
       )}
     </div>
