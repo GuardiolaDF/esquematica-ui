@@ -3,6 +3,7 @@ import { useHover } from './contexts/HoverContext';
 import { useAppContext } from './contexts/AppContext';
 import { useCables } from './contexts/CableContext';
 import Jack from './components/cables/Jack';
+import RelationXY from './components/visualizations/RelationXY';
 import { dbMap, reverseDbMap, dbMetadata } from './dbMap';
 
 // Math helpers for SVG arcs
@@ -322,41 +323,57 @@ export default function DataVisualizer() {
     if (source1Meta && !source1Meta.visualizations.includes(visualizationMode)) isCompatible = false;
     if (source2Meta && !source2Meta.visualizations.includes(visualizationMode)) isCompatible = false;
 
+    const renderInputPanel = (title, colorClass, borderClass, shadowClass, outId, isConnected, jackId, jackColor) => (
+      <div className={`flex flex-col items-center justify-center bg-[#1a1a1a] border-2 ${isConnected ? borderClass + ' ' + shadowClass : 'border-[#444]'} rounded-xl p-4 w-1/2 min-h-[100px] transition-all duration-300 relative z-10`}>
+        <span className={`${isConnected ? colorClass : 'text-[#666]'} text-[10px] font-bold uppercase tracking-widest mb-2`}>{title}</span>
+        <span className={`${isConnected ? 'text-white' : 'text-[#555]'} text-sm font-medium text-center`}>
+          {routingOutputs[outId] ? (isConnected ? dbMetadata[routingOutputs[outId]].label : "ESPERANDO CABLE...") : "SIN SEÑAL..."}
+        </span>
+        <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-10 h-10">
+          <Jack id={jackId} type="input" activeColor={isConnected ? jackColor : null} />
+        </div>
+      </div>
+    );
+
+    const hasSource1 = connections.out1 && source1Meta;
+    const hasSource2 = connections.out2 && source2Meta;
+    
+    // Logic for Relation XY
+    const isRelation = visualizationMode === 'relation';
+    const canPlotRelation = hasSource1 && hasSource2 && isCompatible;
+
     return (
-      <div className="w-full h-full flex flex-col items-center justify-center p-8 mt-12 bg-[#111]">
-        <div className="flex flex-col items-center gap-2 mb-12">
-          <h2 className="text-white text-xl font-bold uppercase tracking-widest">
-            MODO: {visualizationMode}
+      <div className="w-full h-full flex flex-col items-center justify-between p-8 mt-12 bg-[#111]">
+        
+        {/* Gráfico o estado de espera */}
+        <div className="w-full flex-1 flex flex-col items-center justify-center mb-12 relative">
+          <h2 className="absolute top-0 left-0 text-white text-xl font-bold uppercase tracking-widest">
+            {visualizationMode}
           </h2>
-          {(source1Meta || source2Meta) && (
-             <span className={`text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full ${isCompatible ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
-               {isCompatible ? 'DATOS COMPATIBLES' : 'VISUALIZACIÓN INCOMPATIBLE'}
-             </span>
+
+          {isRelation ? (
+            canPlotRelation ? (
+              <RelationXY out1Id={routingOutputs.out1} out2Id={routingOutputs.out2} out1Meta={source1Meta} out2Meta={source2Meta} />
+            ) : (
+              <div className="flex flex-col items-center gap-4 border-2 border-dashed border-[#444] rounded-xl p-12 text-[#666]">
+                <span className="text-sm font-bold uppercase tracking-widest">
+                  {(!hasSource1 || !hasSource2) ? "WAITING FOR BOTH INPUTS" : "DATOS INCOMPATIBLES PARA XY"}
+                </span>
+                <span className="text-xs">Por favor, conecte dos variables compatibles con modo "Relation" en los Inputs X e Y.</span>
+              </div>
+            )
+          ) : (
+            <div className="flex flex-col items-center gap-4 text-[#444]">
+              <span className="text-xl font-bold uppercase tracking-widest">WIP</span>
+              <span>{visualizationMode} visualization pending...</span>
+            </div>
           )}
         </div>
         
-        <div className="flex gap-16 items-center justify-center w-full max-w-2xl">
-          {/* OUTPUT 1 */}
-          <div className={`flex flex-col items-center justify-center bg-[#1a1a1a] border-2 ${connections.out1 ? 'border-[#3b82f6] shadow-[0_0_30px_rgba(59,130,246,0.3)]' : 'border-[#444]'} rounded-xl p-8 w-1/2 min-h-[150px] transition-all duration-300 relative`}>
-            <span className={`${connections.out1 ? 'text-[#3b82f6]' : 'text-[#666]'} text-xs font-bold uppercase tracking-widest mb-4`}>INPUT 1 (AZUL)</span>
-            <span className={`${connections.out1 ? 'text-white' : 'text-[#555]'} text-lg font-medium text-center`}>
-              {routingOutputs.out1 ? (connections.out1 ? dbMap[routingOutputs.out1] : "ESPERANDO CONEXIÓN FÍSICA...") : "SIN SEÑAL..."}
-            </span>
-            <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-12 h-12">
-              <Jack id="vis-in-1" type="input" activeColor={connections.out1 ? 'blue-500' : null} />
-            </div>
-          </div>
-
-          {/* OUTPUT 2 */}
-          <div className={`flex flex-col items-center justify-center bg-[#1a1a1a] border-2 ${connections.out2 ? 'border-[#f97316] shadow-[0_0_30px_rgba(249,115,22,0.3)]' : 'border-[#444]'} rounded-xl p-8 w-1/2 min-h-[150px] transition-all duration-300 relative`}>
-            <span className={`${connections.out2 ? 'text-[#f97316]' : 'text-[#666]'} text-xs font-bold uppercase tracking-widest mb-4`}>INPUT 2 (NARANJA)</span>
-            <span className={`${connections.out2 ? 'text-white' : 'text-[#555]'} text-lg font-medium text-center`}>
-              {routingOutputs.out2 ? (connections.out2 ? dbMap[routingOutputs.out2] : "ESPERANDO CONEXIÓN FÍSICA...") : "SIN SEÑAL..."}
-            </span>
-            <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-12 h-12">
-              <Jack id="vis-in-2" type="input" activeColor={connections.out2 ? 'orange-500' : null} />
-            </div>
-          </div>
+        {/* Conectores / Inputs Físicos */}
+        <div className="flex gap-8 items-center justify-center w-full max-w-xl">
+          {renderInputPanel("INPUT X (AZUL)", "text-[#3b82f6]", "border-[#3b82f6]", "shadow-[0_0_30px_rgba(59,130,246,0.3)]", "out1", connections.out1, "vis-in-1", "blue-500")}
+          {renderInputPanel("INPUT Y (NARANJA)", "text-[#f97316]", "border-[#f97316]", "shadow-[0_0_30px_rgba(249,115,22,0.3)]", "out2", connections.out2, "vis-in-2", "orange-500")}
         </div>
       </div>
     );
