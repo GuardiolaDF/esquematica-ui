@@ -10,8 +10,9 @@ const RelationXY = ({ out1Id, out2Id, out1Meta, out2Meta }) => {
     const pts = [];
     if (mode === 'colectivo' && allSetups && allSetups.length > 0) {
       allSetups.forEach(setup => {
-        let v1 = setup.values?.[dbMap[out1Id]];
-        let v2 = setup.values?.[dbMap[out2Id]];
+        const vals = setup.values || setup;
+        let v1 = vals[dbMap[out1Id]];
+        let v2 = vals[dbMap[out2Id]];
         if (v1 !== undefined && v2 !== undefined) {
           if (typeof v1 === 'boolean') v1 = v1 ? 100 : 0;
           if (typeof v2 === 'boolean') v2 = v2 ? 100 : 0;
@@ -67,12 +68,18 @@ const RelationXY = ({ out1Id, out2Id, out1Meta, out2Meta }) => {
   return (
     <div className="w-full flex-1 flex flex-col relative bg-[#0a0a0a] rounded-xl border border-[#222] p-8 overflow-hidden">
       
-      {/* Indicadores de Ejes */}
       <div className="absolute left-4 top-1/2 -translate-y-1/2 -rotate-90 origin-center text-[#f97316] text-xs font-bold uppercase tracking-widest whitespace-nowrap">
         EJE Y: {out2Meta.label}
       </div>
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[#3b82f6] text-xs font-bold uppercase tracking-widest whitespace-nowrap">
         EJE X: {out1Meta.label}
+      </div>
+      <div className="absolute top-4 left-4 text-white text-xs z-50">
+        DEBUG: allSetups={allSetups?.length}, rawPairs={rawPairs.length}, normPairs={normalizedPairs.length}
+        <br/>
+        dbMap.out1={dbMap[out1Id]}, dbMap.out2={dbMap[out2Id]}
+        <br/>
+        sample v1={String(allSetups?.[0]?.values?.[dbMap[out1Id]])}, v2={String(allSetups?.[0]?.values?.[dbMap[out2Id]])}
       </div>
 
       <div className="w-full h-full relative pl-8 pb-8">
