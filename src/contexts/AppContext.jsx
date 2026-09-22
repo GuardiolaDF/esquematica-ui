@@ -218,6 +218,7 @@ export const AppProvider = ({ children }) => {
       values, setValue, 
       averages, 
       distributions,
+      allSetups,
       filters, setFilters,
       activePlatform, setActivePlatform,
       saveToDb: validateAndSave, 
