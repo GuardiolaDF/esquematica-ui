@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { useAppContext } from '../../contexts/AppContext';
+import { dbMap } from '../../dbMap';
 
 const RelationXY = ({ out1Id, out2Id, out1Meta, out2Meta }) => {
   const { allSetups, values, averages, mode } = useAppContext();
@@ -9,14 +10,16 @@ const RelationXY = ({ out1Id, out2Id, out1Meta, out2Meta }) => {
     const pts = [];
     if (mode === 'colectivo' && allSetups && allSetups.length > 0) {
       allSetups.forEach(setup => {
-        const v1 = setup[out1Id];
-        const v2 = setup[out2Id];
+        let v1 = setup.values?.[dbMap[out1Id]];
+        let v2 = setup.values?.[dbMap[out2Id]];
         if (v1 !== undefined && v2 !== undefined) {
+          if (typeof v1 === 'boolean') v1 = v1 ? 100 : 0;
+          if (typeof v2 === 'boolean') v2 = v2 ? 100 : 0;
           pts.push({ x: v1, y: v2 });
         }
       });
     } else if (mode === 'individual' && values[out1Id] !== undefined && values[out2Id] !== undefined) {
-      pts.push({ x: values[out1Id], y: values[out2Id] });
+      pts.push({ x: typeof values[out1Id] === 'boolean' ? (values[out1Id] ? 100 : 0) : values[out1Id], y: typeof values[out2Id] === 'boolean' ? (values[out2Id] ? 100 : 0) : values[out2Id] });
     } else if (averages[out1Id] !== undefined && averages[out2Id] !== undefined) {
       pts.push({ x: averages[out1Id], y: averages[out2Id] });
     }
