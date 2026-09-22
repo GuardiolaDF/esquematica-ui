@@ -47,12 +47,23 @@ const RelationXY = ({ out1Id, out2Id, out1Meta, out2Meta }) => {
     return { minX, maxX, minY, maxY };
   }, [rawPairs, out1Meta.dataType, out2Meta.dataType]);
 
-  // 3. Normalizar puntos (0 a 1)
+  // 3. Normalizar puntos (0 a 1) y agregar Jitter
   const normalizedPairs = useMemo(() => {
-    return rawPairs.map(p => ({
-      x: (p.x - minX) / (maxX - minX),
-      y: (p.y - minY) / (maxY - minY)
-    }));
+    return rawPairs.map((p, i) => {
+      // Jitter pseudo-aleatorio basado en el índice para separar puntos idénticos
+      // Rango de -0.015 a +0.015 (aprox 1.5% de la pantalla)
+      const jitterX = (Math.sin(i * 13.54) * 0.03) - 0.015;
+      const jitterY = (Math.cos(i * 21.43) * 0.03) - 0.015;
+
+      let normX = (p.x - minX) / (maxX - minX);
+      let normY = (p.y - minY) / (maxY - minY);
+
+      // Prevenir que el jitter los empuje fuera del SVG
+      normX = Math.max(0, Math.min(1, normX + jitterX));
+      normY = Math.max(0, Math.min(1, normY + jitterY));
+
+      return { x: normX, y: normY };
+    });
   }, [rawPairs, minX, maxX, minY, maxY]);
 
   // Si no hay datos compatibles
@@ -74,13 +85,6 @@ const RelationXY = ({ out1Id, out2Id, out1Meta, out2Meta }) => {
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[#3b82f6] text-xs font-bold uppercase tracking-widest whitespace-nowrap">
         EJE X: {out1Meta.label}
       </div>
-      <div className="absolute top-4 left-4 text-white text-xs z-50">
-        DEBUG: allSetups={allSetups?.length}, rawPairs={rawPairs.length}, normPairs={normalizedPairs.length}
-        <br/>
-        dbMap.out1={dbMap[out1Id]}, dbMap.out2={dbMap[out2Id]}
-        <br/>
-        sample v1={String(allSetups?.[0]?.values?.[dbMap[out1Id]])}, v2={String(allSetups?.[0]?.values?.[dbMap[out2Id]])}
-      </div>
 
       <div className="w-full h-full relative pl-8 pb-8">
         <svg className="w-full h-full overflow-visible">
@@ -95,9 +99,9 @@ const RelationXY = ({ out1Id, out2Id, out1Meta, out2Meta }) => {
               cx={`${p.x * 100}%`}
               cy={`${(1 - p.y) * 100}%`}
               r="4"
-              className="fill-white mix-blend-screen opacity-80"
+              className="fill-white mix-blend-screen opacity-40"
               style={{
-                filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.8))'
+                filter: 'drop-shadow(0 0 6px rgba(255,255,255,0.6))'
               }}
             />
           ))}
