@@ -16,6 +16,7 @@ export const AppProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showGrid, setShowGrid] = useState(false);
   const [allSetups, setAllSetups] = useState(null);
+  const [filteredSetups, setFilteredSetups] = useState([]);
 
   // Carga inicial (una sola vez) para no tener latencia al filtrar
   useEffect(() => {
@@ -59,9 +60,11 @@ export const AppProvider = ({ children }) => {
     setIsLoading(true);
     
     try {
+      
       const sums = {};
       const counts = {};
       const rawDist = {};
+      const validSetups = [];
       
       allSetups.forEach(data => {
         const demog = data.demographics || {};
@@ -87,7 +90,8 @@ export const AppProvider = ({ children }) => {
         if (filters.convivenciaActiva && demog.convivencia !== filters.convivencia) return;
         if (filters.viajeActivo && demog.tiempoViaje !== filters.tiempoViaje) return;
         
-        Object.keys(data.values || {}).forEach(dbKey => {
+        validSetups.push(data);
+Object.keys(data.values || {}).forEach(dbKey => {
           const compId = reverseDbMap[dbKey];
           if (compId) {
             const val = data.values[dbKey];
@@ -105,6 +109,7 @@ export const AppProvider = ({ children }) => {
       });
       setAverages(avgs);
       setDistributions(rawDist);
+      setFilteredSetups(validSetups);
     } catch (error) {
       console.error("Error calculating averages:", error);
     } finally {

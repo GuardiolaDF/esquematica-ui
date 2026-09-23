@@ -5,6 +5,7 @@ import { useCables } from './contexts/CableContext';
 import Jack from './components/cables/Jack';
 import RelationXY from './components/visualizations/RelationXY';
 import SpectrumAnalyzer from './components/visualizations/SpectrumAnalyzer';
+import Association from './components/visualizations/Association';
 import { dbMap, reverseDbMap, dbMetadata } from './dbMap';
 import { directInvertedTracks, counterTracks, booleanTracks, getVisualizableData } from './dataTransforms';
 
@@ -74,7 +75,7 @@ export default function DataVisualizer() {
   }, []);
 
   const { hoveredId, setHoveredId } = useHover();
-  const { mode, values, distributions, averages, showSavedOverlay, visualizationMode, setVisualizationMode, routingOutputs } = useAppContext();
+  const { mode, values, distributions, averages, showSavedOverlay, visualizationMode, filteredSetups, setVisualizationMode, routingOutputs } = useAppContext();
   const { connections } = useCables();
   
   const [lastHoveredText, setLastHoveredText] = useState("");
@@ -328,8 +329,9 @@ export default function DataVisualizer() {
     const canPlotRelation = hasSource1 && hasSource2 && isCompatible;
 
     // Logic for Spectrum Analyzer (Distribution)
-    const isSpectrum = visualizationMode === 'distribution';
-    const canPlotSpectrum = hasSource1 && source1Meta.visualizations.includes('distribution');
+    const isSpectrum = visualizationMode === 'spectrum';
+    const isAssociation = visualizationMode === 'association';
+    const canPlotSpectrum = hasSource1 && source1Meta.visualizations.includes('spectrum');
 
     return (
       <div className="w-full h-full flex flex-col items-center justify-between p-8 mt-12 bg-[#111]">
@@ -351,7 +353,14 @@ export default function DataVisualizer() {
                 <span className="text-xs">Por favor, conecte dos variables compatibles con modo "Relation" en los Inputs X e Y.</span>
               </div>
             )
-          ) : isSpectrum ? (
+          ) : isAssociation ? (
+              <Association 
+                dbMetadata={dbMetadata} 
+                dbMap={dbMap} 
+                routingOutputs={routingOutputs} 
+                filteredSetups={filteredSetups}
+              />
+            ) : isSpectrum ? (
             canPlotSpectrum ? (
               <SpectrumAnalyzer outId={routingOutputs.out1} outMeta={source1Meta} colorHex="#3b82f6" />
             ) : (
