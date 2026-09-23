@@ -1,5 +1,4 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import CanvasSwarm from './components/visualizations/CanvasSwarm';
 import { useHover } from './contexts/HoverContext';
 import { useAppContext } from './contexts/AppContext';
 import { useCables } from './contexts/CableContext';
@@ -28,7 +27,45 @@ function describeArc(x, y, radius, startAngle, endAngle) {
   ].join(" ");
 }
 
+const startAngle = -112.5;
+const endAngle = 112.5;
+const boundaries = [350, 460, 570, 680];
+const modules = [
+  { name: 'Módulo 3', startR: boundaries[0], endR: boundaries[1], tracks: 20 },
+  { name: 'Módulo 2', startR: boundaries[1], endR: boundaries[2], tracks: 18 },
+  { name: 'Módulo 1', startR: boundaries[2], endR: boundaries[3], tracks: 26 },
+];
 
+const Swarm = React.memo(({ dots, cx, cy, mode }) => {
+  return (
+    <>
+      {dots.map((dot) => (
+        <g 
+          key={dot.id}
+          className={`dot-group dot-${dot.compId} transition-transform duration-500 ease-out pointer-events-none`}
+          style={{ 
+            transform: `rotate(${dot.angle}deg)`, 
+            transformOrigin: `${cx}px ${cy}px`,
+            mixBlendMode: 'screen'
+          }}
+        >
+          <circle 
+            cx={cx} 
+            cy={cy - dot.r} 
+            r={dot.size || (mode === 'colectivo' ? 2 : 3)} 
+            fill={dot.color || "#FFC800"} 
+            opacity={dot.opacity}
+            stroke={dot.strokeColor || "transparent"}
+            strokeWidth={dot.strokeColor ? 1.5 : 0}
+            className="dot-circle transition-opacity duration-300 ease-out"
+          />
+        </g>
+      ))}
+    </>
+  );
+}, (prev, next) => {
+  return prev.dots === next.dots && prev.mode === next.mode && prev.cx === next.cx && prev.cy === next.cy;
+});
 export default function DataVisualizer() {
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
@@ -229,7 +266,7 @@ export default function DataVisualizer() {
       }
     });
     return d;
-  }, [mode, values, distributions, startAngle, endAngle, boundaries]);
+  }, [mode, values, distributions, directInvertedTracks]);
 
   const avgNeedleAngle = useMemo(() => {
     let sourceData = mode === 'colectivo' ? averages : values;
@@ -258,7 +295,7 @@ export default function DataVisualizer() {
     }
 
     return 0;
-  }, [mode, averages, values, startAngle, endAngle, directInvertedTracks, distributions]);
+  }, [mode, averages, values, directInvertedTracks, distributions]);
 
   const renderAlternativeVisualization = () => {
     // PREPARACIÓN DE ARQUITECTURA:
@@ -392,7 +429,7 @@ export default function DataVisualizer() {
             </span>
           </div>
 
-          <svg width="100%" height="100%" viewBox="0 0 800 450" preserveAspectRatio="xMidYMax meet">
+          <svg width="100%" height="100%" viewBox="0 0 800 450" preserveAspectRatio="xMidYMax meet" className="overflow-visible">
         <defs>
           <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur stdDeviation="4" result="blur" />
@@ -468,6 +505,22 @@ export default function DataVisualizer() {
 
         {/* Data Dots */}
 
+        {/* CSS DINAMICO PARA HOVER SIN RE-RENDERIZAR NODOS */}
+        <style>{`
+          ${hoveredId ? `
+            .dot-group .dot-circle { opacity: 0.1 !important; }
+            .dot-group.dot-${hoveredId} { mix-blend-mode: normal !important; z-index: 100; }
+            .dot-group.dot-${hoveredId} .dot-circle {
+              opacity: 1 !important;
+              fill: #FFFFFF !important;
+              stroke: #FFFFFF !important;
+              stroke-width: 1.5px !important;
+              r: 3.5px !important;
+              filter: url(#glow) !important;
+            }
+          ` : ''}
+        `}</style>
+        <Swarm dots={dots} cx={cx} cy={cy} mode={mode} />
 
         {/* Labels on the left edge */}
         {modules.map((mod, i) => {
@@ -500,7 +553,6 @@ export default function DataVisualizer() {
         {/* Center Pivot Point Cover (Offscreen) */}
         <circle cx={cx} cy={cy} r="16" fill="#1a1a1a" stroke="#000" strokeWidth="4" />
       </svg>
-        {visualizationMode === 'general' && <CanvasSwarm dots={dots} cx={cx} cy={cy} hoveredId={hoveredId} mode={mode} startAngle={startAngle} />}
         </>
       )}
     </div>
