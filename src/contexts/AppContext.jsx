@@ -185,7 +185,7 @@ Object.keys(data.values || {}).forEach(dbKey => {
     }
   };
 
-  const [visualizationMode, setVisualizationMode] = useState('general'); // 'general', 'ranking', 'distribution', 'relation', 'wordcloud'
+  const [visualizationMode, setVisualizationMode] = useState('general'); // 'general', 'spectrum', 'relation', 'association'
   const [routingOutputs, setRoutingOutputs] = useState({ out1: null, out2: null });
 
   const toggleRoutingSource = (compId) => {

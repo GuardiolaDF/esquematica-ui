@@ -39,6 +39,13 @@ const modules = [
 ];
 
 export default function DataVisualizer() {
+  const visLabels = {
+    general: 'COLECTIVO',
+    spectrum: 'DISTRIBUCIÓN',
+    relation: 'RELACIÓN',
+    association: 'ASOCIACIONES'
+  };
+
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
     const t = setTimeout(() => setIsMounted(true), 150); // delay to trigger CSS transition
@@ -370,7 +377,7 @@ export default function DataVisualizer() {
         
         {mode === 'colectivo' && (
           <div className="flex bg-[#0a0a0a]/80 backdrop-blur-sm border border-[#333] rounded-full p-1 gap-1">
-            {['general', 'ranking', 'distribution', 'relation', 'wordcloud'].map(vMode => (
+            {['general', 'spectrum', 'relation', 'association'].map(vMode => (
               <button
                 key={vMode}
                 onClick={() => setVisualizationMode(vMode)}
