@@ -6,6 +6,7 @@ import Jack from './components/cables/Jack';
 import RelationXY from './components/visualizations/RelationXY';
 import SpectrumAnalyzer from './components/visualizations/SpectrumAnalyzer';
 import Association from './components/visualizations/Association';
+import SwarmCanvas from './components/visualizations/SwarmCanvas';
 import { dbMap, reverseDbMap, dbMetadata } from './dbMap';
 import { directInvertedTracks, counterTracks, booleanTracks, getVisualizableData } from './dataTransforms';
 
@@ -37,36 +38,6 @@ const modules = [
   { name: 'Módulo 1', startR: boundaries[2], endR: boundaries[3], tracks: 26 },
 ];
 
-const Swarm = React.memo(({ dots, cx, cy, mode }) => {
-  return (
-    <>
-      {dots.map((dot) => (
-        <g 
-          key={dot.id}
-          className={`dot-group dot-${dot.compId} transition-transform duration-500 ease-out pointer-events-none`}
-          style={{ 
-            transform: `rotate(${dot.angle}deg)`, 
-            transformOrigin: `${cx}px ${cy}px`,
-            mixBlendMode: 'screen'
-          }}
-        >
-          <circle 
-            cx={cx} 
-            cy={cy - dot.r} 
-            r={dot.size || (mode === 'colectivo' ? 2 : 3)} 
-            fill={dot.color || "#FFC800"} 
-            opacity={dot.opacity}
-            stroke={dot.strokeColor || "transparent"}
-            strokeWidth={dot.strokeColor ? 1.5 : 0}
-            className="dot-circle transition-opacity duration-300 ease-out"
-          />
-        </g>
-      ))}
-    </>
-  );
-}, (prev, next) => {
-  return prev.dots === next.dots && prev.mode === next.mode && prev.cx === next.cx && prev.cy === next.cy;
-});
 export default function DataVisualizer() {
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
@@ -515,21 +486,8 @@ export default function DataVisualizer() {
         {/* Data Dots */}
 
         {/* CSS DINAMICO PARA HOVER SIN RE-RENDERIZAR NODOS */}
-        <style>{`
-          ${hoveredId ? `
-            .dot-group .dot-circle { opacity: 0.1 !important; }
-            .dot-group.dot-${hoveredId} { mix-blend-mode: normal !important; z-index: 100; }
-            .dot-group.dot-${hoveredId} .dot-circle {
-              opacity: 1 !important;
-              fill: #FFFFFF !important;
-              stroke: #FFFFFF !important;
-              stroke-width: 1.5px !important;
-              r: 3.5px !important;
-              filter: url(#glow) !important;
-            }
-          ` : ''}
-        `}</style>
-        <Swarm dots={dots} cx={cx} cy={cy} mode={mode} />
+        
+        <SwarmCanvas dots={dots} cx={cx} cy={cy} mode={mode} hoveredId={hoveredId} width={800} height={450} />
 
         {/* Labels on the left edge */}
         {modules.map((mod, i) => {
