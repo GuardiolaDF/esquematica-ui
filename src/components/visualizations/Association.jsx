@@ -69,15 +69,15 @@ const getTypeGroup = (dbType) => {
 
 // Normalize values to strings for categorical, numbers for numeric
 const extractValue = (setup, compId, dbMap) => {
-  const dbKey = Object.keys(dbMap).find(k => dbMap[k] === compId);
+  const dbKey = dbMap[compId];
   if (!dbKey) return undefined;
   return setup.values[dbKey];
 };
 
 
 export default function Association({ dbMetadata, dbMap, routingOutputs, filteredSetups = [] }) {
-  const out1 = routingOutputs?.[1];
-  const out2 = routingOutputs?.[2];
+  const out1 = routingOutputs?.out1;
+  const out2 = routingOutputs?.out2;
 
   // We only run if there's at least one valid output
   const hasOut1 = out1 && dbMetadata[out1];
