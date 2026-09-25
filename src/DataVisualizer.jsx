@@ -8,7 +8,7 @@ import SpectrumAnalyzer from './components/visualizations/SpectrumAnalyzer';
 import Association from './components/visualizations/Association';
 import SwarmCanvas from './components/visualizations/SwarmCanvas';
 import { dbMap, reverseDbMap, dbMetadata } from './dbMap';
-import { directInvertedTracks, counterTracks, booleanTracks, getVisualizableData } from './dataTransforms';
+import { directInvertedTracks, counterTracks, booleanTracks, getVisualizableData, calculateGlobalStress } from './dataTransforms';
 
 // Math helpers for SVG arcs
 function polarToCartesian(cx, cy, r, angleInDegrees) {
@@ -136,7 +136,7 @@ export default function DataVisualizer() {
           d.push({ id: `${compId}-single`, compId, r, angle: currentAngle, opacity, color });
           
         } else if (mode === 'colectivo' || mode === 'sandbox') {
-          const dist = distributions[compId] || [];
+          
           
           let visualShift = 0;
           let avgData = getVisualizableData(compId, averages[compId] ?? 50, dbMetadata[compId]?.dataType);
@@ -152,8 +152,11 @@ export default function DataVisualizer() {
             }
           }
 
-          dist.forEach((entry, idx) => {
-            let visData = getVisualizableData(compId, entry.val, dbMetadata[compId]?.dataType);
+          filteredSetups.forEach((setup, idx) => {
+            const rawVal = setup.values ? setup.values[dbMap[compId]] : undefined;
+            if (rawVal === undefined) return;
+
+            let visData = getVisualizableData(compId, rawVal, dbMetadata[compId]?.dataType);
             let processedVal = visData.value;
             
             // Re-scale smear offset according to domain
@@ -162,8 +165,10 @@ export default function DataVisualizer() {
             // Ruido de Descuantización para romper bloques discretos ("Categorical Smear")
             // Apply a relative jitter of 8% of the domain span
             if (booleanTracks.includes(compId) || counterTracks.includes(compId) || visData.max === 5) {
-              const smearSeed = ((idx * 17.345) % 1);
-              const smearOffset = (smearSeed - 0.5) * (0.16 * domainSpan);
+              const stressIndex = calculateGlobalStress(setup);
+              const smearSpread = 0.38 * domainSpan;
+              const smearOffset = (stressIndex - 0.5) * smearSpread;
+              
               processedVal += smearOffset;
             }
             
@@ -540,3 +545,4 @@ export default function DataVisualizer() {
     </div>
   );
 }
+

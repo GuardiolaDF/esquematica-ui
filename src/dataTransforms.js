@@ -106,3 +106,59 @@ export const getVisualizableData = (compId, rawVal, metaDataType) => {
 
   return { value: processedVal, min, max };
 };
+
+export const calculateGlobalStress = (setup) => {
+  if (!setup) return 0.5;
+  const values = setup.values || {};
+  const demog = setup.demographics || {};
+  
+  let score = 0;
+  let maxPossible = 0;
+
+  const add = (val, max, weight) => {
+    if (val === undefined || isNaN(val)) return;
+    score += (val / max) * weight;
+    maxPossible += weight;
+  };
+
+  // 1. Nivel de ansiedad general (0-100)
+  add(values['Nivel de ansiedad general'], 100, 3);
+  
+  // 2. Horas de sueño (Idealmente 8+. Menos es más estrés)
+  const sleep = values['Horas sueno habituales'];
+  if (sleep !== undefined && !isNaN(sleep)) {
+    // 8h = 0 estrés, <= 4h = estrés máximo
+    let sleepStress = Math.max(0, Math.min(4, 8 - sleep)) / 4; 
+    score += sleepStress * 2;
+    maxPossible += 2;
+  }
+
+  // 3. Procrastinacion (0-100)
+  add(values['Procrastinacion'], 100, 1.5);
+
+  // 4. Sintomas fisicos (booleano)
+  const fisicos = values['Sintomas fisicos'];
+  if (fisicos !== undefined) {
+    add(fisicos === true ? 100 : 0, 100, 2);
+  }
+
+  // 5. Horas en RRSS
+  const rrss = values['Horas en Redes Sociales'];
+  if (rrss !== undefined && !isNaN(rrss)) {
+     // max esperado = 8 horas para normalización
+     let rrssStress = Math.min(8, rrss) / 8;
+     score += rrssStress * 1.5;
+     maxPossible += 1.5;
+  }
+
+  // 6. Demografía: Tiempo de viaje
+  const viaje = demog.tiempoViaje;
+  if (viaje) {
+     if (viaje === '> 2hrs' || viaje === '>2hrs') { score += 1.5; maxPossible += 1.5; }
+     else if (viaje === '1-2hrs') { score += 0.75; maxPossible += 1.5; }
+     else { maxPossible += 1.5; } // base agregada pero 0 score
+  }
+
+  if (maxPossible === 0) return 0.5; // fallback neutral
+  return score / maxPossible; // Retorna un factor entre 0.0 y 1.0
+};
