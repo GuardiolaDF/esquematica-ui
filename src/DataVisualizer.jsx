@@ -321,16 +321,7 @@ export default function DataVisualizer() {
           </h2>
 
           {isRelation ? (
-            canPlotRelation ? (
-              <RelationXY out1Id={routingOutputs.out1} out2Id={routingOutputs.out2} out1Meta={source1Meta} out2Meta={source2Meta} />
-            ) : (
-              <div className="flex flex-col items-center gap-4 border-2 border-dashed border-[#444] rounded-xl p-12 text-[#666]">
-                <span className="text-sm font-bold uppercase tracking-widest">
-                  {(!hasSource1 || !hasSource2) ? "WAITING FOR BOTH INPUTS" : "DATOS INCOMPATIBLES PARA XY"}
-                </span>
-                <span className="text-xs">Por favor, conecte dos variables compatibles con modo "Relation" en los Inputs X e Y.</span>
-              </div>
-            )
+              <RelationXY out1Id={routingOutputs.out1} out2Id={routingOutputs.out2} out1Meta={source1Meta} out2Meta={source2Meta} hasSource1={hasSource1} hasSource2={hasSource2} isCompatible={isCompatible} />
           ) : isAssociation ? (
               <Association 
                 dbMetadata={dbMetadata} 
