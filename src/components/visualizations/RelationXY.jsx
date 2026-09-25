@@ -11,15 +11,22 @@ const RelationXY = ({ out1Id, out2Id, out1Meta, out2Meta, hasSource1, hasSource2
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
-    const updateSize = () => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        setDimensions({ width: rect.width, height: rect.height });
+    const element = containerRef.current;
+    if (!element) return;
+
+    const resizeObserver = new ResizeObserver(entries => {
+      for (let entry of entries) {
+        if (entry.contentRect) {
+          setDimensions({
+            width: entry.contentRect.width,
+            height: entry.contentRect.height
+          });
+        }
       }
-    };
-    updateSize();
-    window.addEventListener('resize', updateSize);
-    return () => window.removeEventListener('resize', updateSize);
+    });
+
+    resizeObserver.observe(element);
+    return () => resizeObserver.disconnect();
   }, []);
 
   // 1. Extraer pares de valores X / Y
@@ -84,21 +91,14 @@ const RelationXY = ({ out1Id, out2Id, out1Meta, out2Meta, hasSource1, hasSource2
     return { minX, maxX, minY, maxY };
   }, [rawPairs, out1Meta, out2Meta, out1Id, out2Id]);
 
-  // 3. Normalizar puntos (0 a 1) y agregar Jitter pseudo-aleatorio para densidad
+  // 3. Normalizar puntos (0 a 1) estrictamente
   const normalizedPairs = useMemo(() => {
-    // Si no hay variación real, no dibujamos ruido.
-    // Pero si hay mucha superposición (categóricas), el jitter ayuda a ver la "nube" de persistencia.
-    return rawPairs.map((p, i) => {
-      // Jitter sutil
-      const jitterX = (Math.sin(i * 13.54) * 0.03) - 0.015;
-      const jitterY = (Math.cos(i * 21.43) * 0.03) - 0.015;
+    return rawPairs.map((p) => {
+      let normX = (maxX - minX) === 0 ? 0.5 : (p.x - minX) / (maxX - minX);
+      let normY = (maxY - minY) === 0 ? 0.5 : (p.y - minY) / (maxY - minY);
 
-      let normX = (p.x - minX) / (maxX - minX);
-      let normY = (p.y - minY) / (maxY - minY);
-
-      // Limitar al 100% para que no salga del osciloscopio
-      normX = Math.max(0, Math.min(1, normX + jitterX));
-      normY = Math.max(0, Math.min(1, normY + jitterY));
+      normX = Math.max(0, Math.min(1, normX));
+      normY = Math.max(0, Math.min(1, normY));
 
       return { x: normX, y: normY };
     });
