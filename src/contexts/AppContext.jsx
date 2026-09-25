@@ -224,6 +224,7 @@ Object.keys(data.values || {}).forEach(dbKey => {
       averages, 
       distributions,
       allSetups,
+      filteredSetups,
       filters, setFilters,
       activePlatform, setActivePlatform,
       saveToDb: validateAndSave, 
@@ -239,3 +240,4 @@ Object.keys(data.values || {}).forEach(dbKey => {
     </AppContext.Provider>
   );
 };
+
