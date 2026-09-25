@@ -19,42 +19,32 @@ const LissajousCanvas = React.memo(({ points, width, height }) => {
 
     if (!points || points.length === 0) return;
 
-    // Use lighter composite operation for phosphor accumulation effect
+    // Use lighter composite operation for phosphor accumulation effect (additive blending)
     ctx.globalCompositeOperation = 'lighter';
-
-    // 1. Draw the "Beam Trace"
-    // We connect the dots to simulate the electron beam jumping between coordinates
-    ctx.beginPath();
-    ctx.moveTo(points[0].x * width, (1 - points[0].y) * height);
-    for (let i = 1; i < points.length; i++) {
-      ctx.lineTo(points[i].x * width, (1 - points[i].y) * height);
-    }
-    
-    // The beam trail is extremely faint but builds up density in clusters
-    ctx.strokeStyle = '#f8fafc'; // White/cyan mix for the energized beam
-    ctx.lineWidth = 0.5;
-    ctx.globalAlpha = 0.04; // Very faint trace
-    ctx.stroke();
-
-    // 2. Draw Phosphor Core Points (The actual data hits)
-    ctx.globalCompositeOperation = 'screen';
     
     points.forEach(p => {
       const px = p.x * width;
       const py = (1 - p.y) * height;
       
-      // Outer glow for each point (soft phosphor)
+      // Halo exterior suave (brillo de fósforo esparcido)
       ctx.beginPath();
-      ctx.arc(px, py, 3, 0, Math.PI * 2);
-      ctx.fillStyle = '#bae6fd'; // Pale blue/white mix
+      ctx.arc(px, py, 6, 0, Math.PI * 2);
+      ctx.fillStyle = '#bae6fd'; // Cyan muy claro
+      ctx.globalAlpha = 0.02; // Súper sutil, solo brilla cuando hay acumulación
+      ctx.fill();
+
+      // Halo interior intermedio
+      ctx.beginPath();
+      ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#38bdf8'; // Cyan medio
       ctx.globalAlpha = 0.15;
       ctx.fill();
 
-      // Bright inner core
+      // Núcleo brillante
       ctx.beginPath();
-      ctx.arc(px, py, 1, 0, Math.PI * 2);
-      ctx.fillStyle = '#ffffff';
-      ctx.globalAlpha = 0.8;
+      ctx.arc(px, py, 0.8, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff'; // Blanco puro
+      ctx.globalAlpha = 0.6;
       ctx.fill();
     });
 

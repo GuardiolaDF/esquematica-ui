@@ -312,7 +312,7 @@ export default function DataVisualizer() {
     const canPlotSpectrum = hasSource1 && source1Meta.visualizations.includes('spectrum');
 
     return (
-      <div className="w-full h-full flex flex-col items-center justify-between p-8 mt-12 bg-[#111]">
+      <div className="w-full h-full flex flex-col items-center justify-between p-8 mt-12 bg-[#111] relative">
         
         {/* Gráfico o estado de espera */}
         <div className="w-full flex-1 flex flex-col items-center justify-center mb-12 relative">
@@ -348,10 +348,27 @@ export default function DataVisualizer() {
           )}
         </div>
         
-        {/* Conectores / Inputs Físicos */}
-        <div className="flex gap-8 items-center justify-center w-full max-w-xl">
-          {renderInputPanel("INPUT X (AZUL)", "text-[#3b82f6]", "border-[#3b82f6]", "shadow-[0_0_30px_rgba(59,130,246,0.3)]", "out1", connections.out1, "vis-in-1", "blue-500")}
-          {renderInputPanel("INPUT Y (NARANJA)", "text-[#f97316]", "border-[#f97316]", "shadow-[0_0_30px_rgba(249,115,22,0.3)]", "out2", connections.out2, "vis-in-2", "orange-500")}
+        {/* Mini Inputs / Jacks en la esquina inferior izquierda */}
+        <div className="absolute bottom-6 left-6 flex flex-col gap-3 z-30">
+          <span className="text-[9px] text-[#555] font-bold tracking-widest uppercase mb-1">Entradas</span>
+          
+          <div className="flex items-center gap-3">
+            <div className="w-6 h-6 relative flex-shrink-0">
+              <Jack id="vis-in-1" type="input" activeColor={connections.out1 ? "blue-500" : null} />
+            </div>
+            <span className={`text-[10px] font-mono font-bold uppercase tracking-wider truncate max-w-[140px] ${connections.out1 ? 'text-[#3b82f6]' : 'text-[#444]'}`}>
+              1 · {connections.out1 && source1Meta ? source1Meta.label : 'VACÍO'}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="w-6 h-6 relative flex-shrink-0">
+              <Jack id="vis-in-2" type="input" activeColor={connections.out2 ? "orange-500" : null} />
+            </div>
+            <span className={`text-[10px] font-mono font-bold uppercase tracking-wider truncate max-w-[140px] ${connections.out2 ? 'text-[#f97316]' : 'text-[#444]'}`}>
+              2 · {connections.out2 && source2Meta ? source2Meta.label : 'VACÍO'}
+            </span>
+          </div>
         </div>
       </div>
     );
