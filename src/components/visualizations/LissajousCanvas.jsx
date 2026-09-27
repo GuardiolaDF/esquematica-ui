@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-const LissajousCanvas = React.memo(({ points, width, height }) => {
+const LissajousCanvas = React.memo(({ points, width, height, paddingX = 50, paddingY = 40 }) => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -18,9 +18,8 @@ const LissajousCanvas = React.memo(({ points, width, height }) => {
 
     if (!points || points.length === 0) return;
 
-    // Márgenes internos para que la señal respire dentro del canvas
-    const paddingX = 40;
-    const paddingY = 30;
+    // Márgenes pasados por props
+
     const plotWidth = width - (paddingX * 2);
     const plotHeight = height - (paddingY * 2);
 

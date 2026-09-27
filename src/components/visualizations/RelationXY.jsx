@@ -4,6 +4,9 @@ import { dbMap } from '../../dbMap';
 import { getVisualizableData } from '../../dataTransforms';
 import LissajousCanvas from './LissajousCanvas';
 
+const PADDING_X = 50;
+const PADDING_Y = 40;
+
 const RelationXY = ({ out1Id, out2Id, out1Meta, out2Meta, hasSource1, hasSource2, isCompatible }) => {
   const { allSetups, values, averages, mode } = useAppContext();
   
@@ -29,7 +32,7 @@ const RelationXY = ({ out1Id, out2Id, out1Meta, out2Meta, hasSource1, hasSource2
     return () => resizeObserver.disconnect();
   }, []);
 
-  // 1. Extraer pares de valores X / Y
+  // 1. Extraer pares de valores X / Y reales
   const rawPairs = useMemo(() => {
     if (!hasSource1 || !hasSource2 || !isCompatible) return [];
     
@@ -57,8 +60,9 @@ const RelationXY = ({ out1Id, out2Id, out1Meta, out2Meta, hasSource1, hasSource2
     return pts;
   }, [allSetups, values, averages, mode, out1Id, out2Id, hasSource1, hasSource2, isCompatible, out1Meta, out2Meta]);
 
-  // 2. Determinar rangos de normalización
+  // 2. Determinar rangos estrictos basados en metadata (min y max) y evitar negativos
   const { minX, maxX, minY, maxY } = useMemo(() => {
+    // Valores por defecto
     let minX = 0, maxX = 100;
     let minY = 0, maxY = 100;
 
@@ -67,74 +71,150 @@ const RelationXY = ({ out1Id, out2Id, out1Meta, out2Meta, hasSource1, hasSource2
     let v1Sample = getVisualizableData(out1Id, 50, out1Meta.dataType);
     let v2Sample = getVisualizableData(out2Id, 50, out2Meta.dataType);
     
-    minX = v1Sample.min;
-    maxX = v1Sample.max;
-    minY = v2Sample.min;
-    maxY = v2Sample.max;
+    // Siempre asumimos que el límite inferior es al menos 0 (NO valores negativos)
+    minX = Math.max(0, v1Sample.min || 0);
+    maxX = v1Sample.max || 100;
+    minY = Math.max(0, v2Sample.min || 0);
+    maxY = v2Sample.max || 100;
 
+    // Si los datos sobrepasan el máximo esperado, lo extendemos
     if (out1Meta.dataType === 'numeric' && rawPairs.length > 0) {
-      const pMinX = Math.min(...rawPairs.map(p => p.x));
       const pMaxX = Math.max(...rawPairs.map(p => p.x));
-      if (pMinX < minX) minX = pMinX;
       if (pMaxX > maxX) maxX = pMaxX;
-      if (minX === maxX) { minX -= 1; maxX += 1; }
     }
 
     if (out2Meta.dataType === 'numeric' && rawPairs.length > 0) {
-      const pMinY = Math.min(...rawPairs.map(p => p.y));
       const pMaxY = Math.max(...rawPairs.map(p => p.y));
-      if (pMinY < minY) minY = pMinY;
       if (pMaxY > maxY) maxY = pMaxY;
-      if (minY === maxY) { minY -= 1; maxY += 1; }
     }
+
+    // Prevención de división por cero
+    if (minX === maxX) maxX = minX + 1;
+    if (minY === maxY) maxY = minY + 1;
 
     return { minX, maxX, minY, maxY };
   }, [rawPairs, out1Meta, out2Meta, out1Id, out2Id]);
 
-  // 3. Normalizar puntos (0 a 1) estrictamente
+  // 3. Normalizar puntos (0 a 1) e inyectar un JITTER orgánico, controladísimo y determinista.
   const normalizedPairs = useMemo(() => {
-    return rawPairs.map((p) => {
-      let normX = (maxX - minX) === 0 ? 0.5 : (p.x - minX) / (maxX - minX);
-      let normY = (maxY - minY) === 0 ? 0.5 : (p.y - minY) / (maxY - minY);
+    return rawPairs.map((p, i) => {
+      let normX = (p.x - minX) / (maxX - minX);
+      let normY = (p.y - minY) / (maxY - minY);
 
-      normX = Math.max(0, Math.min(1, normX));
-      normY = Math.max(0, Math.min(1, normY));
+      // Jitter determinista (depende del index i de la persona)
+      // Dispersión máxima del 4% del gráfico (suficiente para esparcir sin cruzar al siguiente tick)
+      const jitterAmount = 0.04;
+      const jitterX = (Math.sin(i * 13.54) * jitterAmount);
+      const jitterY = (Math.cos(i * 21.43) * jitterAmount);
+
+      // Limitar para que los puntos dispersos no se salgan nunca del 0 a 1
+      normX = Math.max(0, Math.min(1, normX + jitterX));
+      normY = Math.max(0, Math.min(1, normY + jitterY));
 
       return { x: normX, y: normY };
     });
   }, [rawPairs, minX, maxX, minY, maxY]);
 
-  // Grilla estilo osciloscopio
-  const renderOscilloscopeGrid = () => {
-    // Líneas secundarias sutiles
-    const ticks = [0.1, 0.2, 0.3, 0.4, 0.6, 0.7, 0.8, 0.9];
+  // Genera pasos de ticks para la grilla (ej. 0 1 2 3 4 5)
+  const getTicks = (min, max) => {
+    const ticks = [];
+    const span = max - min;
+    let steps = span <= 10 ? span : 5; // Si el rango es pequeño (0 a 5), marcamos todos. Si es grande (0 a 100), marcamos 5.
+    if (steps <= 0) steps = 1;
+
+    for (let i = 0; i <= steps; i++) {
+      const val = min + (i / steps) * span;
+      ticks.push({ 
+        percent: i / steps, 
+        label: Number.isInteger(val) ? val.toString() : val.toFixed(1)
+      });
+    }
+    return ticks;
+  };
+
+  // Renderiza la grilla cartesiana pura con inicio en 0,0 inferior izquierdo
+  const renderCartesianGrid = () => {
+    if (dimensions.width === 0 || dimensions.height === 0) return null;
+
+    const xTicks = getTicks(minX, maxX);
+    const yTicks = getTicks(minY, maxY);
+
+    // Área útil donde dibuja LissajousCanvas
+    const plotWidth = dimensions.width - (PADDING_X * 2);
+    const plotHeight = dimensions.height - (PADDING_Y * 2);
+    const originX = PADDING_X;
+    const originY = dimensions.height - PADDING_Y;
+
     return (
-      <svg className="w-full h-full absolute inset-0 pointer-events-none opacity-50">
+      <svg className="w-full h-full absolute inset-0 pointer-events-none">
+        {/* Fondo tenue opcional, sin cruces extrañas */}
         <defs>
-          <radialGradient id="screen-glow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#0ea5e9" stopOpacity="0.05" />
-            <stop offset="100%" stopColor="#000000" stopOpacity="0" />
-          </radialGradient>
+          <linearGradient id="grid-fade" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0%" stopColor="#1e293b" stopOpacity="0.2" />
+            <stop offset="100%" stopColor="#1e293b" stopOpacity="0" />
+          </linearGradient>
         </defs>
-        
-        {/* Soft background glow */}
-        <rect width="100%" height="100%" fill="url(#screen-glow)" />
+        <rect 
+          x={PADDING_X} 
+          y={PADDING_Y} 
+          width={plotWidth} 
+          height={plotHeight} 
+          fill="url(#grid-fade)" 
+        />
 
-        {/* Ejes centrales (Cruz) */}
-        <line x1="50%" y1="0" x2="50%" y2="100%" stroke="#1e293b" strokeWidth="2" strokeDasharray="4 4" />
-        <line x1="0" y1="50%" x2="100%" y2="50%" stroke="#1e293b" strokeWidth="2" strokeDasharray="4 4" />
+        {/* Retícula: Líneas X */}
+        {xTicks.map(t => {
+          const xPos = originX + (t.percent * plotWidth);
+          return (
+            <g key={`x-${t.label}`}>
+              <line 
+                x1={xPos} y1={PADDING_Y} 
+                x2={xPos} y2={originY} 
+                stroke="#111827" strokeWidth="1" strokeDasharray="4 4" 
+              />
+              <line 
+                x1={xPos} y1={originY} 
+                x2={xPos} y2={originY + 5} 
+                stroke="#334155" strokeWidth="2" 
+              />
+              <text 
+                x={xPos} y={originY + 16} 
+                fill="#64748b" fontSize="9" fontFamily="monospace" textAnchor="middle"
+              >
+                {t.label}
+              </text>
+            </g>
+          );
+        })}
 
-        {/* Ticks finos en los ejes centrales */}
-        {ticks.map(t => (
-          <React.Fragment key={t}>
-            <line x1="49%" y1={`${t * 100}%`} x2="51%" y2={`${t * 100}%`} stroke="#334155" strokeWidth="1" />
-            <line x1={`${t * 100}%`} y1="49%" x2={`${t * 100}%`} y2="51%" stroke="#334155" strokeWidth="1" />
-          </React.Fragment>
-        ))}
+        {/* Retícula: Líneas Y */}
+        {yTicks.map(t => {
+          const yPos = originY - (t.percent * plotHeight);
+          return (
+            <g key={`y-${t.label}`}>
+              <line 
+                x1={originX} y1={yPos} 
+                x2={originX + plotWidth} y2={yPos} 
+                stroke="#111827" strokeWidth="1" strokeDasharray="4 4" 
+              />
+              <line 
+                x1={originX - 5} y1={yPos} 
+                x2={originX} y2={yPos} 
+                stroke="#334155" strokeWidth="2" 
+              />
+              <text 
+                x={originX - 10} y={yPos + 3} 
+                fill="#64748b" fontSize="9" fontFamily="monospace" textAnchor="end"
+              >
+                {t.label}
+              </text>
+            </g>
+          );
+        })}
 
-        {/* Círculos polares sutiles típicos de algunos instrumentos */}
-        <circle cx="50%" cy="50%" r="25%" fill="none" stroke="#1e293b" strokeWidth="1" strokeDasharray="2 4" opacity="0.5"/>
-        <circle cx="50%" cy="50%" r="45%" fill="none" stroke="#1e293b" strokeWidth="1" strokeDasharray="2 4" opacity="0.5"/>
+        {/* Ejes principales (L inferior izquierda) */}
+        <line x1={originX} y1={PADDING_Y} x2={originX} y2={originY} stroke="#475569" strokeWidth="2" />
+        <line x1={originX} y1={originY} x2={originX + plotWidth} y2={originY} stroke="#475569" strokeWidth="2" />
       </svg>
     );
   };
@@ -144,35 +224,46 @@ const RelationXY = ({ out1Id, out2Id, out1Meta, out2Meta, hasSource1, hasSource2
   return (
     <div className="w-full flex-1 flex flex-col relative bg-[#050505] rounded-xl border border-[#111] overflow-hidden shadow-[inset_0_0_50px_rgba(0,0,0,0.8)]">
       
+      {/* Explicación concisa secundaria (Top Right) */}
+      <div className="absolute right-4 top-4 text-[#444] text-[9px] font-mono tracking-wider z-20 pointer-events-none text-right">
+        Compara dos variables para observar<br/>cómo se relacionan entre sí.
+      </div>
+
       {/* Etiqueta EJE Y (NARANJA) */}
-      <div className="absolute left-4 top-4 text-[#f97316] text-[10px] font-mono font-bold uppercase tracking-widest z-20 flex items-center gap-2">
+      <div className="absolute left-10 top-3 text-[#f97316] text-[11px] font-mono font-bold uppercase tracking-widest z-20 flex items-center gap-2">
         <div className="w-2 h-2 rounded-full bg-[#f97316] shadow-[0_0_5px_#f97316]"></div>
-        {hasSource2 ? `CH2 [Y]: ${out2Meta?.label || 'UNKNOWN'}` : 'CH2 [Y]: WAITING...'}
+        {hasSource2 ? `OUT 2 · ${out2Meta?.label || 'UNKNOWN'}` : 'OUT 2 · WAITING'}
       </div>
       
       {/* Etiqueta EJE X (AZUL) */}
-      <div className="absolute right-4 bottom-4 text-[#3b82f6] text-[10px] font-mono font-bold uppercase tracking-widest z-20 flex items-center gap-2">
-        {hasSource1 ? `CH1 [X]: ${out1Meta?.label || 'UNKNOWN'}` : 'CH1 [X]: WAITING...'}
+      <div className="absolute right-6 bottom-3 text-[#3b82f6] text-[11px] font-mono font-bold uppercase tracking-widest z-20 flex items-center justify-end gap-2 text-right">
+        {hasSource1 ? `OUT 1 · ${out1Meta?.label || 'UNKNOWN'}` : 'OUT 1 · WAITING'}
         <div className="w-2 h-2 rounded-full bg-[#3b82f6] shadow-[0_0_5px_#3b82f6]"></div>
       </div>
 
-      {/* Trazador central */}
+      {/* Contenedor Gráfico */}
       <div ref={containerRef} className="w-full h-full relative">
-        {renderOscilloscopeGrid()}
+        {!isWaiting && renderCartesianGrid()}
 
         {isWaiting ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center text-[#333] font-mono text-[10px] tracking-[0.3em] pointer-events-none">
             {!isCompatible && hasSource1 && hasSource2 
               ? 'NO SYNC - INCOMPATIBLE FORMATS' 
               : hasSource1 && !hasSource2 
-                ? 'WAITING FOR CH2 [Y] SIGNAL...'
+                ? 'WAITING FOR OUT 2 [Y] SIGNAL...'
                 : !hasSource1 && hasSource2
-                  ? 'WAITING FOR CH1 [X] SIGNAL...'
-                  : 'AWAITING CH1 & CH2 SIGNALS'}
+                  ? 'WAITING FOR OUT 1 [X] SIGNAL...'
+                  : 'AWAITING OUT 1 & OUT 2 SIGNALS'}
           </div>
         ) : (
           dimensions.width > 0 && dimensions.height > 0 && (
-            <LissajousCanvas points={normalizedPairs} width={dimensions.width} height={dimensions.height} />
+            <LissajousCanvas 
+              points={normalizedPairs} 
+              width={dimensions.width} 
+              height={dimensions.height} 
+              paddingX={PADDING_X}
+              paddingY={PADDING_Y}
+            />
           )
         )}
       </div>
