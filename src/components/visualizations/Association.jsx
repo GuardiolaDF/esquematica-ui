@@ -1,308 +1,344 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useRef } from 'react';
+import { useAppContext } from '../../contexts/AppContext';
+import { dbMap } from '../../dbMap';
 
-// --- MATH UTILS ---
-
-// Pearson Correlation (-1 to 1)
-const pearsonCorrelation = (x, y) => {
-  const n = x.length;
-  if (n === 0) return 0;
+// Hook para Canvas que simula la Constelación (Force-Directed Graph)
+const useConstellationCanvas = (nodes, edges, colorHex) => {
+  const canvasRef = useRef(null);
   
-  const sumX = x.reduce((a, b) => a + b, 0);
-  const sumY = y.reduce((a, b) => a + b, 0);
-  const sumXY = x.reduce((sum, xi, i) => sum + xi * y[i], 0);
-  const sumX2 = x.reduce((sum, xi) => sum + xi * xi, 0);
-  const sumY2 = y.reduce((sum, yi) => sum + yi * yi, 0);
-  
-  const numerator = n * sumXY - sumX * sumY;
-  const denominator = Math.sqrt((n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY));
-  
-  if (denominator === 0) return 0;
-  return numerator / denominator;
-};
-
-// Cramér's V (0 to 1) for Categorical/Boolean
-const cramersV = (x, y) => {
-  const n = x.length;
-  if (n === 0) return 0;
-
-  // Contingency table
-  const table = {};
-  const xTotals = {};
-  const yTotals = {};
-  
-  for (let i = 0; i < n; i++) {
-    const xv = x[i];
-    const yv = y[i];
-    if (!table[xv]) table[xv] = {};
-    table[xv][yv] = (table[xv][yv] || 0) + 1;
-    xTotals[xv] = (xTotals[xv] || 0) + 1;
-    yTotals[yv] = (yTotals[yv] || 0) + 1;
-  }
-  
-  let chiSquare = 0;
-  const xKeys = Object.keys(xTotals);
-  const yKeys = Object.keys(yTotals);
-  
-  xKeys.forEach(xv => {
-    yKeys.forEach(yv => {
-      const observed = (table[xv] && table[xv][yv]) ? table[xv][yv] : 0;
-      const expected = (xTotals[xv] * yTotals[yv]) / n;
-      if (expected > 0) {
-        chiSquare += Math.pow(observed - expected, 2) / expected;
-      }
-    });
+  // Estado interno para las posiciones de los nodos
+  const stateRef = useRef({
+    positions: [],
+    velocities: [],
+    width: 800,
+    height: 500
   });
-  
-  const k = Math.min(xKeys.length, yKeys.length);
-  if (k <= 1) return 0;
-  
-  const v = Math.sqrt(chiSquare / (n * (k - 1)));
-  return v;
-};
 
-// Map logical type
-const getTypeGroup = (dbType) => {
-  if (dbType === 'numeric' || dbType === 'scale') return 'numeric';
-  if (dbType === 'categorical' || dbType === 'boolean') return 'categorical';
-  return 'unknown';
-};
-
-// Normalize values to strings for categorical, numbers for numeric
-const extractValue = (setup, compId, dbMap) => {
-  const dbKey = dbMap[compId];
-  if (!dbKey) return undefined;
-  return setup.values[dbKey];
-};
-
-
-export default function Association({ dbMetadata, dbMap, routingOutputs, filteredSetups = [] }) {
-  const out1 = routingOutputs?.out1;
-  const out2 = routingOutputs?.out2;
-
-  // We only run if there's at least one valid output
-  const hasOut1 = out1 && dbMetadata[out1];
-  const hasOut2 = out2 && dbMetadata[out2];
-
-  const graphData = useMemo(() => {
-    if (!hasOut1 && !hasOut2) return null;
-    if (filteredSetups.length === 0) return null;
-
-    const sources = [];
-    if (hasOut1) sources.push({ id: out1, type: 'out1', meta: dbMetadata[out1] });
-    if (hasOut2) sources.push({ id: out2, type: 'out2', meta: dbMetadata[out2] });
-
-    const allNodesMap = {}; // store computed associations
-    const links = [];
-
-    // Valid candidates for satellites (routable and not the sources themselves)
-    const candidates = Object.keys(dbMetadata).filter(id => 
-      dbMetadata[id].routable && id !== out1 && id !== out2 && !id.startsWith('demo-')
-    );
-
-    sources.forEach(source => {
-      const sourceType = getTypeGroup(source.meta.dataType);
-      const sourceAssocs = [];
-
-      candidates.forEach(candId => {
-        const candMeta = dbMetadata[candId];
-        const candType = getTypeGroup(candMeta.dataType);
-        
-        // Skip mixing different types
-        if (sourceType !== candType) return;
-
-        // Extract paired data
-        const pairsX = [];
-        const pairsY = [];
-        filteredSetups.forEach(setup => {
-          const vSrc = extractValue(setup, source.id, dbMap);
-          const vCand = extractValue(setup, candId, dbMap);
-          if (vSrc !== undefined && vCand !== undefined && vSrc !== null && vCand !== null) {
-            pairsX.push(vSrc);
-            pairsY.push(vCand);
-          }
-        });
-
-        if (pairsX.length < 5) return; // Need minimum data points
-
-        let coef = 0;
-        if (sourceType === 'numeric') {
-          coef = pearsonCorrelation(pairsX, pairsY);
-        } else {
-          coef = cramersV(pairsX, pairsY);
-        }
-
-        // Only keep if significant enough
-        if (Math.abs(coef) >= 0.15) {
-          sourceAssocs.push({
-            id: candId,
-            coef: coef,
-            absCoef: Math.abs(coef),
-            meta: candMeta
-          });
-        }
-      });
-
-      // Top N for this source
-      sourceAssocs.sort((a, b) => b.absCoef - a.absCoef);
-      const topAssocs = sourceAssocs.slice(0, 8);
-
-      topAssocs.forEach(assoc => {
-        if (!allNodesMap[assoc.id]) {
-          allNodesMap[assoc.id] = { 
-            id: assoc.id, 
-            label: assoc.meta.label, 
-            connectedTo: [], 
-            totalAbs: 0 
-          };
-        }
-        allNodesMap[assoc.id].connectedTo.push({ sourceId: source.id, coef: assoc.coef, absCoef: assoc.absCoef });
-        allNodesMap[assoc.id].totalAbs += assoc.absCoef;
-        
-        links.push({
-          source: source.id,
-          target: assoc.id,
-          coef: assoc.coef,
-          absCoef: assoc.absCoef,
-          sourceType: source.type
-        });
-      });
-    });
-
-    // Node layout algorithm (Simple Deterministic Force/Radial)
-    const nodes = [];
-    const cx = 400;
-    const cy = 250;
-
-    // Place sources
-    if (sources.length === 1) {
-      nodes.push({ id: sources[0].id, label: sources[0].meta.label, type: sources[0].type, x: cx, y: cy, isSource: true });
-    } else if (sources.length === 2) {
-      nodes.push({ id: sources[0].id, label: sources[0].meta.label, type: sources[0].type, x: cx - 180, y: cy, isSource: true });
-      nodes.push({ id: sources[1].id, label: sources[1].meta.label, type: sources[1].type, x: cx + 180, y: cy, isSource: true });
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
+    
+    // Inicializar posiciones
+    const state = stateRef.current;
+    if (state.positions.length !== nodes.length) {
+       state.positions = nodes.map((n, i) => {
+         // Disposición inicial circular, determinista
+         const angle = (i / nodes.length) * Math.PI * 2;
+         const r = 150;
+         return {
+           x: state.width / 2 + Math.cos(angle) * r,
+           y: state.height / 2 + Math.sin(angle) * r
+         };
+       });
+       state.velocities = nodes.map(() => ({ x: 0, y: 0 }));
     }
 
-    const satellites = Object.values(allNodesMap);
+    let alpha = 1.0; // Temperatura de simulación
+
+    const render = () => {
+      // Ajuste de DPI y tamaño
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      if (canvas.width !== rect.width * dpr || canvas.height !== rect.height * dpr) {
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        state.width = rect.width;
+        state.height = rect.height;
+      }
+      
+      const W = state.width;
+      const H = state.height;
+
+      ctx.save();
+      ctx.scale(dpr, dpr);
+      ctx.clearRect(0, 0, W, H);
+
+      if (nodes.length === 0) {
+        ctx.restore();
+        return;
+      }
+
+      // 1. Simulación Física (Force-Directed)
+      if (alpha > 0.01) {
+        const k = Math.sqrt((W * H) / nodes.length); // Factor de escala
+        const repulse = k * k * 0.5;
+        
+        // Repulsión (Todos contra todos)
+        for (let i = 0; i < nodes.length; i++) {
+          for (let j = i + 1; j < nodes.length; j++) {
+            const dx = state.positions[i].x - state.positions[j].x;
+            const dy = state.positions[i].y - state.positions[j].y;
+            let dist = Math.sqrt(dx*dx + dy*dy);
+            if (dist === 0) dist = 0.01;
+            
+            const force = repulse / dist;
+            const fx = (dx / dist) * force;
+            const fy = (dy / dist) * force;
+            
+            state.velocities[i].x += fx * alpha;
+            state.velocities[i].y += fy * alpha;
+            state.velocities[j].x -= fx * alpha;
+            state.velocities[j].y -= fy * alpha;
+          }
+        }
+        
+        // Atracción (Conexiones)
+        edges.forEach(edge => {
+          const s = edge.sourceIndex;
+          const t = edge.targetIndex;
+          const dx = state.positions[s].x - state.positions[t].x;
+          const dy = state.positions[s].y - state.positions[t].y;
+          let dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist === 0) dist = 0.01;
+          
+          // La fuerza atractiva depende del peso (frecuencia)
+          const attract = (dist * dist) / k;
+          const weight = edge.weight * 0.1; 
+          const fx = (dx / dist) * attract * weight;
+          const fy = (dy / dist) * attract * weight;
+          
+          state.velocities[s].x -= fx * alpha;
+          state.velocities[s].y -= fy * alpha;
+          state.velocities[t].x += fx * alpha;
+          state.velocities[t].y += fy * alpha;
+        });
+        
+        // Gravedad (Hacia el centro)
+        for (let i = 0; i < nodes.length; i++) {
+           const dx = state.positions[i].x - (W / 2);
+           const dy = state.positions[i].y - (H / 2);
+           let dist = Math.sqrt(dx*dx + dy*dy);
+           if (dist > 0) {
+             const force = dist * 0.05;
+             state.velocities[i].x -= (dx / dist) * force * alpha;
+             state.velocities[i].y -= (dy / dist) * force * alpha;
+           }
+        }
+        
+        // Aplicar velocidades y Damping
+        const maxV = 20;
+        for (let i = 0; i < nodes.length; i++) {
+          const vx = Math.max(-maxV, Math.min(maxV, state.velocities[i].x));
+          const vy = Math.max(-maxV, Math.min(maxV, state.velocities[i].y));
+          
+          state.positions[i].x += vx;
+          state.positions[i].y += vy;
+          
+          // Fricción
+          state.velocities[i].x *= 0.8;
+          state.velocities[i].y *= 0.8;
+        }
+        
+        alpha *= 0.95; // Enfriamiento rápido para estabilizar
+      }
+
+      // Convert hex to rgb
+      const hex = colorHex.replace('#', '');
+      const r = parseInt(hex.substring(0,2), 16);
+      const g = parseInt(hex.substring(2,4), 16);
+      const b = parseInt(hex.substring(4,6), 16);
+
+      ctx.globalCompositeOperation = 'screen';
+
+      // 2. Dibujar Conexiones (Edges)
+      edges.forEach(edge => {
+        const s = state.positions[edge.sourceIndex];
+        const t = state.positions[edge.targetIndex];
+        const opacity = Math.min(1, 0.1 + (edge.weight * 0.1));
+        const thickness = 0.5 + (edge.weight * 0.3);
+
+        ctx.beginPath();
+        ctx.moveTo(s.x, s.y);
+        ctx.lineTo(t.x, t.y);
+        ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${opacity})`;
+        ctx.lineWidth = thickness;
+        ctx.stroke();
+      });
+
+      // 3. Dibujar Nodos (Items)
+      nodes.forEach((node, i) => {
+        const pos = state.positions[i];
+        
+        // Tamaño proporcional a la frecuencia absoluta, capado
+        const radius = Math.min(15, 2 + (node.count * 0.8));
+        
+        // Halo
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, radius + 2, 0, 2 * Math.PI);
+        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.2)`;
+        ctx.fill();
+
+        // Núcleo
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, radius, 0, 2 * Math.PI);
+        ctx.fillStyle = `#fff`;
+        ctx.fill();
+
+        // Etiqueta
+        ctx.font = '10px monospace';
+        ctx.fillStyle = '#cbd5e1';
+        ctx.textAlign = 'center';
+        // Despejar el texto del nodo
+        ctx.fillText(node.label, pos.x, pos.y + radius + 10);
+      });
+
+      ctx.restore();
+
+      // Seguir simulando hasta que enfríe
+      if (alpha > 0.01) {
+        animationFrameId = requestAnimationFrame(render);
+      }
+    };
+
+    animationFrameId = requestAnimationFrame(render);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [nodes, edges, colorHex]);
+
+  return canvasRef;
+};
+
+const Association = ({ out1Id, out1Meta, hasSource1 }) => {
+  const { allSetups, values, mode } = useAppContext();
+
+  // 1. Extraer elementos y co-ocurrencias
+  const { nodes, edges } = useMemo(() => {
+    if (!hasSource1 || !out1Id) return { nodes: [], edges: [] };
+
+    // Validar si es una variable compatible con colecciones/listas de elementos.
+    // Aunque el backend no tenga actualmente strings, lo parseamos buscando Arrays o strings separados por comas.
+    const itemsMap = {}; // { itemName: count }
+    const pairsMap = {}; // { "itemA::itemB": count }
+
+    const processRecord = (val) => {
+      if (!val) return;
+      let items = [];
+      if (Array.isArray(val)) {
+        items = val;
+      } else if (typeof val === 'string') {
+        items = val.split(',').map(s => s.trim()).filter(Boolean);
+      }
+      
+      // Eliminar duplicados dentro del mismo usuario para no sobrecontar asociaciones consigo mismo
+      items = [...new Set(items)];
+
+      // Contar frecuencias individuales
+      items.forEach(item => {
+        itemsMap[item] = (itemsMap[item] || 0) + 1;
+      });
+
+      // Contar co-ocurrencias
+      for (let i = 0; i < items.length; i++) {
+        for (let j = i + 1; j < items.length; j++) {
+          const a = items[i];
+          const b = items[j];
+          // Ordenar alfabéticamente para tener una key única independientemente del orden
+          const key = a < b ? `${a}::${b}` : `${b}::${a}`;
+          pairsMap[key] = (pairsMap[key] || 0) + 1;
+        }
+      }
+    };
+
+    if (mode === 'colectivo' && allSetups && allSetups.length > 0) {
+      allSetups.forEach(setup => {
+        const v = setup.values ? setup.values[dbMap[out1Id]] : undefined;
+        processRecord(v);
+      });
+    } else if (mode === 'individual' && values[out1Id] !== undefined) {
+      processRecord(values[out1Id]);
+    }
+
+    // Si la DB actualmente devuelve números, itemsMap quedará vacío.
+    const allItems = Object.keys(itemsMap);
+    if (allItems.length === 0) return { nodes: [], edges: [] };
+
+    // UMBRAL: Quedarse con los Top N elementos más frecuentes para evitar una sopa
+    const TOP_N_NODES = 40;
+    const sortedItems = allItems.sort((a, b) => itemsMap[b] - itemsMap[a]).slice(0, TOP_N_NODES);
     
-    // Sort satellites by type of connection to layout them cleanly
-    const shared = satellites.filter(s => s.connectedTo.length === 2);
-    const only1 = satellites.filter(s => s.connectedTo.length === 1 && s.connectedTo[0].sourceId === out1);
-    const only2 = satellites.filter(s => s.connectedTo.length === 1 && s.connectedTo[0].sourceId === out2);
+    // Crear Nodos
+    const graphNodes = sortedItems.map(label => ({
+      id: label,
+      label: label,
+      count: itemsMap[label]
+    }));
 
-    // Layout shared in the middle vertically
-    shared.forEach((s, i) => {
-      // spread them vertically between the two sources
-      const yOffset = (i - (shared.length - 1) / 2) * 60;
-      nodes.push({ ...s, x: cx, y: cy + yOffset, isSource: false });
+    // UMBRAL DE CONEXIONES: Quedarse solo con asociaciones entre los Top N, y con frecuencia >= 2 (si hay suficientes datos)
+    const validSet = new Set(sortedItems);
+    const graphEdges = [];
+    
+    Object.keys(pairsMap).forEach(key => {
+      const weight = pairsMap[key];
+      if (weight > 0) {
+        const [a, b] = key.split('::');
+        if (validSet.has(a) && validSet.has(b)) {
+           // Encontrar índices
+           const sIdx = graphNodes.findIndex(n => n.id === a);
+           const tIdx = graphNodes.findIndex(n => n.id === b);
+           if (sIdx !== -1 && tIdx !== -1) {
+             graphEdges.push({
+               sourceIndex: sIdx,
+               targetIndex: tIdx,
+               weight: weight
+             });
+           }
+        }
+      }
     });
 
-    // Layout only1 in a semi-circle around left source
-    const rBase1 = 120;
-    only1.forEach((s, i) => {
-      const angle = Math.PI/2 + (Math.PI / (only1.length + 1)) * (i + 1); // 90 to 270 degrees (left side)
-      // Distance inversely proportional to strength
-      const dist = rBase1 + (1 - s.totalAbs) * 80;
-      nodes.push({ ...s, x: (cx - (sources.length === 2 ? 180 : 0)) + dist * Math.cos(angle), y: cy + dist * Math.sin(angle), isSource: false });
-    });
+    return { nodes: graphNodes, edges: graphEdges };
+  }, [allSetups, values, mode, out1Id, hasSource1]);
 
-    // Layout only2 in a semi-circle around right source
-    const rBase2 = 120;
-    only2.forEach((s, i) => {
-      const angle = -Math.PI/2 + (Math.PI / (only2.length + 1)) * (i + 1); // -90 to 90 degrees (right side)
-      const dist = rBase2 + (1 - s.totalAbs) * 80;
-      nodes.push({ ...s, x: (cx + 180) + dist * Math.cos(angle), y: cy + dist * Math.sin(angle), isSource: false });
-    });
+  const colorHex = "#3b82f6"; // OUT 1 = Azul
 
-    return { nodes, links };
-  }, [out1, out2, dbMetadata, filteredSetups, dbMap]);
+  const canvasRef = useConstellationCanvas(nodes, edges, colorHex);
 
-  if (!hasOut1 && !hasOut2) {
+  if (!hasSource1) {
     return (
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-white/40">
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="mb-4">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M12 8v4l3 3"/>
-        </svg>
-        <p className="text-sm font-medium tracking-widest">CONECTA UNA VARIABLE PARA VER ASOCIACIONES</p>
-      </div>
-    );
-  }
-
-  if (graphData && graphData.nodes.length === (hasOut1 && hasOut2 ? 2 : 1)) {
-    return (
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-white/40">
-        <p className="text-sm font-medium tracking-widest">NO SE ENCONTRARON ASOCIACIONES SIGNIFICATIVAS</p>
+      <div className="w-full flex-1 flex flex-col relative bg-[#050505] rounded-xl border border-[#111] overflow-hidden shadow-[inset_0_0_50px_rgba(0,0,0,0.8)] items-center justify-center">
+        <span className="text-[#333] font-mono text-[10px] tracking-[0.3em] uppercase">WAITING FOR SIGNAL...</span>
       </div>
     );
   }
 
   return (
-    <svg width="100%" height="100%" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid meet" className="overflow-visible">
-      {/* Links */}
-      {graphData?.links.map((link, i) => {
-        const sourceNode = graphData.nodes.find(n => n.id === link.source);
-        const targetNode = graphData.nodes.find(n => n.id === link.target);
-        if (!sourceNode || !targetNode) return null;
+    <div className="w-full flex-1 flex flex-col relative bg-[#050505] rounded-xl border border-[#111] overflow-hidden shadow-[inset_0_0_50px_rgba(0,0,0,0.8)] p-6">
+      
+      {/* Etiqueta Técnica Superior Izquierda */}
+      <div className="absolute left-6 top-5 z-20 flex flex-col gap-1 pointer-events-none">
+        <div className="text-[#444] text-[9px] font-mono tracking-widest uppercase">ASOCIACIÓN</div>
+        <div className="text-[11px] font-mono font-bold uppercase tracking-widest flex items-center gap-2" style={{ color: colorHex }}>
+          <div className="w-2 h-2 rounded-full shadow-[0_0_5px]" style={{ backgroundColor: colorHex, boxShadow: `0 0 5px ${colorHex}` }}></div>
+          OUT 1 · {out1Meta?.label || 'UNKNOWN'}
+        </div>
+      </div>
 
-        const isNegative = link.coef < 0;
-        const color = link.sourceType === 'out1' ? '#3b82f6' : '#f97316'; // blue-500, orange-500
-        const strokeW = 1 + link.absCoef * 5; // thicker if stronger
+      {/* Explicación Concisa Inferior Derecha */}
+      <div className="absolute right-6 bottom-4 z-20 text-[#444] text-[9px] font-mono tracking-wider pointer-events-none text-right">
+        Elementos que aparecen asociados<br/>dentro de las mismas respuestas.
+      </div>
 
-        return (
-          <line
-            key={`link-${i}`}
-            x1={sourceNode.x} y1={sourceNode.y}
-            x2={targetNode.x} y2={targetNode.y}
-            stroke={color}
-            strokeWidth={strokeW}
-            strokeOpacity={isNegative ? 0.3 : 0.7}
-            strokeDasharray={isNegative ? "4 4" : "none"}
-            strokeLinecap="round"
-            className="transition-all duration-1000 ease-out"
+      {/* Analizador de Constelación Canvas */}
+      <div className="w-full h-full relative mt-8">
+        {nodes.length > 0 ? (
+          <canvas 
+            ref={canvasRef}
+            className="w-full h-full absolute inset-0"
           />
-        );
-      })}
+        ) : (
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+             <span className="text-[#555] font-mono text-[10px] tracking-[0.3em] uppercase">SIN DATOS ASOCIABLES EN ESTA VARIABLE</span>
+             <span className="text-[#333] font-mono text-[8px] tracking-[0.1em] uppercase mt-2">(Se esperaba una lista de elementos)</span>
+          </div>
+        )}
+      </div>
 
-      {/* Nodes */}
-      {graphData?.nodes.map(node => {
-        let fill = "#333";
-        let stroke = "#555";
-        let size = 6;
-        let textY = 16;
-        
-        if (node.isSource) {
-          fill = node.type === 'out1' ? '#3b82f6' : '#f97316';
-          stroke = "#FFF";
-          size = 12;
-          textY = 24;
-        } else {
-          // secondary node size based on total association
-          size = 4 + node.totalAbs * 8;
-          textY = size + 10;
-        }
-
-        return (
-          <g key={node.id} style={{ transform: `translate(${node.x}px, ${node.y}px)` }} className="transition-transform duration-1000 ease-out">
-            <circle 
-              cx={0} cy={0} 
-              r={size} 
-              fill={fill} 
-              stroke={stroke} 
-              strokeWidth={node.isSource ? 2 : 1}
-            />
-            <text 
-              x={0} y={textY} 
-              textAnchor="middle" 
-              fill={node.isSource ? "#FFF" : "#AAA"} 
-              fontSize={node.isSource ? "12px" : "10px"}
-              fontWeight={node.isSource ? "bold" : "normal"}
-              pointerEvents="none"
-              style={{ textShadow: "0px 2px 4px rgba(0,0,0,0.8)" }}
-            >
-              {node.label}
-            </text>
-          </g>
-        );
-      })}
-    </svg>
+    </div>
   );
-}
+};
+
+export default Association;

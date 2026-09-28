@@ -368,7 +368,7 @@ export default function DataVisualizer() {
 
           <div className="flex items-center gap-3">
             <div className="w-6 h-6 relative flex-shrink-0">
-              <Jack id="vis-in-2" type="input" activeColor={connections.out2 ? "orange-500" : null} />
+              <Jack id="vis-in-2" type="input" activeColor={connections.out2 ? "orange-500" : null} disabled={visualizationMode === "association"} />
             </div>
             <span className={`text-[10px] font-mono font-bold uppercase tracking-wider truncate max-w-[140px] ${connections.out2 ? 'text-[#f97316]' : 'text-[#444]'}`}>
               2 · {connections.out2 && source2Meta ? source2Meta.label : 'VACÍO'}
@@ -545,4 +545,5 @@ export default function DataVisualizer() {
     </div>
   );
 }
+
 
