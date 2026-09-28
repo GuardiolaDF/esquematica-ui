@@ -316,3 +316,4 @@ export default function ConsoleModule({ isCol, saveToDb }) {
     </ModuleShell>
   );
 }
+

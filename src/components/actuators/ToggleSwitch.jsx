@@ -30,7 +30,7 @@ const ToggleSwitch = ({
   const isHovered = (compId && hoveredId === compId) || localHover;
   const isMissing = useAppContext().missingFields?.includes(compId);
   
-  const isReadOnly = mode === 'colectivo';
+  const isReadOnly = mode === 'colectivo' && !(compId && compId.startsWith('demo-'));
   
   let glowClass = 'shadow-md border border-transparent';
   if (routeColor) {
@@ -96,3 +96,4 @@ const ToggleSwitch = ({
 };
 
 export default ToggleSwitch;
+

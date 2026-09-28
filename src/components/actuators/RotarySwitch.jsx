@@ -31,7 +31,7 @@ const RotarySwitch = ({
   
   const isHovered = (compId && hoveredId === compId) || localHover;
   const isMissing = useAppContext().missingFields?.includes(compId);
-  const isReadOnly = mode === 'colectivo';
+  const isReadOnly = mode === 'colectivo' && !(compId && compId.startsWith('demo-'));
   let glowClass = 'shadow-md border border-transparent';
   if (routeColor) {
     glowClass = `ring-4 ring-${routeColor} shadow-[0_0_30px_rgba(${routeColor === 'orange-500' ? '249,115,22' : '59,130,246'},1)] bg-${routeColor}/20`;
@@ -64,7 +64,7 @@ const RotarySwitch = ({
   }
 
   const handleInteraction = useCallback((clientX, clientY, rect) => {
-    if (mode === 'colectivo' && compId) return;
+    if (isReadOnly && compId) return;
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
     const dx = clientX - cx;
@@ -192,3 +192,4 @@ const RotarySwitch = ({
 };
 
 export default RotarySwitch;
+

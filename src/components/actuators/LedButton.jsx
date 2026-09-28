@@ -28,7 +28,7 @@ const LedButton = ({
   
   const isHovered = (compId && hoveredId === compId) || localHover;
 
-  const isReadOnly = mode === 'colectivo';
+  const isReadOnly = mode === 'colectivo' && !(compId && compId.startsWith('demo-'));
 
   let isOn = localIsOn;
   let intensity = 1;
@@ -110,3 +110,4 @@ const LedButton = ({
 };
 
 export default LedButton;
+
