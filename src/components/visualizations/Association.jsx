@@ -211,24 +211,41 @@ const Association = ({ out1Id, out1Meta, hasSource1 }) => {
 
     // Validar si es una variable compatible con colecciones/listas de elementos.
     // Aunque el backend no tenga actualmente strings, lo parseamos buscando Arrays o strings separados por comas.
-    const itemsMap = {}; // { itemName: count }
-    const pairsMap = {}; // { "itemA::itemB": count }
+    const itemsMap = {}; // { normKey: count }
+    const pairsMap = {}; // { "normA::normB": count }
+    const labelMap = {}; // { normKey: originalLabel }
 
     const processRecord = (val) => {
       if (!val) return;
-      let items = [];
+      let rawItems = [];
       if (Array.isArray(val)) {
-        items = val;
+        rawItems = val;
       } else if (typeof val === 'string') {
-        items = val.split(',').map(s => s.trim()).filter(Boolean);
+        rawItems = val.split(',');
       }
       
-      // Eliminar duplicados dentro del mismo usuario para no sobrecontar asociaciones consigo mismo
-      items = [...new Set(items)];
+      const items = [];
+      const seen = new Set();
+      
+      // Normalizar, deduplicar y registrar etiqueta visual original
+      rawItems.forEach(s => {
+        const raw = typeof s === 'string' ? s.trim() : String(s).trim();
+        if (!raw) return;
+        const norm = raw.toLowerCase();
+        
+        if (!seen.has(norm)) {
+          seen.add(norm);
+          items.push(norm);
+          
+          if (!labelMap[norm]) {
+            labelMap[norm] = raw;
+          }
+        }
+      });
 
       // Contar frecuencias individuales
-      items.forEach(item => {
-        itemsMap[item] = (itemsMap[item] || 0) + 1;
+      items.forEach(norm => {
+        itemsMap[norm] = (itemsMap[norm] || 0) + 1;
       });
 
       // Contar co-ocurrencias
@@ -261,10 +278,10 @@ const Association = ({ out1Id, out1Meta, hasSource1 }) => {
     const sortedItems = allItems.sort((a, b) => itemsMap[b] - itemsMap[a]).slice(0, TOP_N_NODES);
     
     // Crear Nodos
-    const graphNodes = sortedItems.map(label => ({
-      id: label,
-      label: label,
-      count: itemsMap[label]
+    const graphNodes = sortedItems.map(normKey => ({
+      id: normKey,
+      label: labelMap[normKey] || normKey,
+      count: itemsMap[normKey]
     }));
 
     // UMBRAL DE CONEXIONES: Quedarse solo con asociaciones entre los Top N, y con frecuencia >= 2 (si hay suficientes datos)
@@ -342,3 +359,4 @@ const Association = ({ out1Id, out1Meta, hasSource1 }) => {
 };
 
 export default Association;
+
