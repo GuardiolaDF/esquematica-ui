@@ -1,139 +1,311 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useRef } from 'react';
 import { useAppContext } from '../../contexts/AppContext';
 import { dbMap } from '../../dbMap';
 import { getVisualizableData } from '../../dataTransforms';
 
-const SpectrumAnalyzer = ({ outId, outMeta, colorHex = "#3b82f6" }) => {
+// Hook para Canvas que maneja la animación de Decay y Peak Hold
+const useSpectrumCanvas = (bins, maxBinCount, colorHex, binsCount, binLabels) => {
+  const canvasRef = useRef(null);
+  
+  // Estado interno para la animación
+  const stateRef = useRef({
+    currentVals: [],
+    peakVals: [],
+    peakTimers: [],
+    lastFrameTime: 0
+  });
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    
+    let animationFrameId;
+
+    // Inicializar estado si cambió la cantidad de bins
+    if (stateRef.current.currentVals.length !== binsCount) {
+      stateRef.current = {
+        currentVals: new Array(binsCount).fill(0),
+        peakVals: new Array(binsCount).fill(0),
+        peakTimers: new Array(binsCount).fill(0),
+        lastFrameTime: performance.now()
+      };
+    }
+
+    const render = (time) => {
+      const dt = time - stateRef.current.lastFrameTime;
+      stateRef.current.lastFrameTime = time;
+
+      // Handle Resize / DPI
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      if (canvas.width !== rect.width * dpr || canvas.height !== rect.height * dpr) {
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+      }
+      
+      ctx.save();
+      ctx.scale(dpr, dpr);
+      ctx.clearRect(0, 0, rect.width, rect.height);
+
+      const W = rect.width;
+      const H = rect.height;
+      const PADDING_BOTTOM = 30; // Espacio para las etiquetas X
+      const PLOT_H = H - PADDING_BOTTOM;
+
+      const state = stateRef.current;
+      let needsUpdate = false;
+
+      // Dibuja retícula sutil
+      ctx.strokeStyle = '#222';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let i = 0; i <= 4; i++) {
+        const y = PLOT_H - (PLOT_H * (i / 4));
+        ctx.moveTo(0, y);
+        ctx.lineTo(W, y);
+      }
+      ctx.stroke();
+
+      // Configuración de los bloques
+      const gap = Math.max(2, W * 0.01);
+      const barWidth = (W / binsCount) - gap;
+      const segmentHeight = 4;
+      const segmentGap = 2;
+
+      ctx.globalCompositeOperation = 'lighter';
+      
+      for (let i = 0; i < binsCount; i++) {
+        const target = bins[i] || 0; // 0 a 1
+        let current = state.currentVals[i];
+        
+        // Rise instantáneo, Decay lento
+        if (target > current) {
+          current = target;
+          needsUpdate = true;
+        } else if (current > target) {
+          // Decay rate
+          current = Math.max(target, current - (dt * 0.0015)); 
+          needsUpdate = true;
+        }
+        state.currentVals[i] = current;
+
+        // Peak Hold logic
+        let peak = state.peakVals[i];
+        if (current >= peak) {
+          peak = current;
+          state.peakTimers[i] = 1000; // Hold por 1 segundo
+        } else {
+          state.peakTimers[i] -= dt;
+          if (state.peakTimers[i] <= 0) {
+            peak = Math.max(current, peak - (dt * 0.0008)); // Peak decay
+            needsUpdate = true;
+          }
+        }
+        state.peakVals[i] = peak;
+
+        const x = (i * (barWidth + gap)) + (gap / 2);
+        
+        // Cantidad de segmentos total
+        const totalSegments = Math.floor(PLOT_H / (segmentHeight + segmentGap));
+        const activeSegments = Math.floor(current * totalSegments);
+        const peakSegment = Math.floor(peak * totalSegments);
+
+        // Convert hex to rgb for glow
+        const hex = colorHex.replace('#', '');
+        const r = parseInt(hex.substring(0,2), 16);
+        const g = parseInt(hex.substring(2,4), 16);
+        const b = parseInt(hex.substring(4,6), 16);
+
+        // Dibujar segmentos inactivos (Fondo tenue)
+        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.05)`;
+        for (let s = 0; s < totalSegments; s++) {
+          const sy = PLOT_H - (s * (segmentHeight + segmentGap)) - segmentHeight;
+          ctx.fillRect(x, sy, barWidth, segmentHeight);
+        }
+
+        // Dibujar segmentos activos
+        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.9)`;
+        ctx.shadowColor = colorHex;
+        ctx.shadowBlur = 10;
+        
+        for (let s = 0; s < activeSegments; s++) {
+          const sy = PLOT_H - (s * (segmentHeight + segmentGap)) - segmentHeight;
+          
+          // Color cambia ligeramente hacia el tope (más intenso/blanco)
+          const intensity = s / totalSegments;
+          if (intensity > 0.8) {
+             ctx.fillStyle = '#fff';
+             ctx.shadowColor = '#fff';
+          } else {
+             ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.9)`;
+             ctx.shadowColor = colorHex;
+          }
+
+          ctx.fillRect(x, sy, barWidth, segmentHeight);
+        }
+        ctx.shadowBlur = 0; // reset
+
+        // Dibujar Peak Cap
+        if (peakSegment > 0 && peakSegment < totalSegments) {
+          const py = PLOT_H - (peakSegment * (segmentHeight + segmentGap)) - segmentHeight;
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(x, py, barWidth, segmentHeight);
+        }
+
+        // Dibujar Etiqueta X
+        ctx.fillStyle = '#64748b';
+        ctx.font = '10px monospace';
+        ctx.textAlign = 'center';
+        const labelStr = binLabels[i] !== undefined ? binLabels[i] : '';
+        ctx.fillText(labelStr, x + (barWidth / 2), H - 10);
+      }
+      
+      ctx.restore();
+
+      // Loop solo si hay animaciones pendientes
+      if (needsUpdate || Math.random() < 0.01) { // Pequeño trigger ocasional para suavidad
+         animationFrameId = requestAnimationFrame(render);
+      } else {
+         // Pause loop para no consumir CPU, si cambia "bins" el useEffect se reinicia
+         animationFrameId = requestAnimationFrame(render); 
+      }
+    };
+
+    animationFrameId = requestAnimationFrame(render);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [bins, colorHex, binsCount, binLabels]);
+
+  return canvasRef;
+};
+
+
+const SpectrumAnalyzer = ({ outId, outMeta, colorHex = "#3b82f6", labelPrefix = "OUT 1" }) => {
   const { allSetups, values, averages, mode } = useAppContext();
 
-  // 1. Extraer todos los valores válidos para esta variable
-  const rawValues = useMemo(() => {
-    const valsArray = [];
+  // 1. Extraer los datos reales y normalizarlos
+  const rawData = useMemo(() => {
+    const arr = [];
     if (mode === 'colectivo' && allSetups && allSetups.length > 0) {
       allSetups.forEach(setup => {
-        const vals = setup.values || setup;
-        let v = vals[dbMap[outId]];
-        if (v !== undefined) {
-          if (typeof v === 'boolean') v = v ? 100 : 0;
-          valsArray.push(v);
-        }
+        const v = setup.values ? setup.values[dbMap[outId]] : undefined;
+        if (v !== undefined && v !== null) arr.push(v);
       });
     } else if (mode === 'individual' && values[outId] !== undefined) {
-      valsArray.push(typeof values[outId] === 'boolean' ? (values[outId] ? 100 : 0) : values[outId]);
+      arr.push(values[outId]);
     } else if (averages[outId] !== undefined) {
-      valsArray.push(averages[outId]);
+      arr.push(averages[outId]);
     }
-    return valsArray;
+    return arr;
   }, [allSetups, values, averages, mode, outId]);
 
-  // 2. Definir bandas y generar histograma
-  const binsCount = 16;
-  const { normalizedBins, totalValues, maxBinCount } = useMemo(() => {
-    const bins = new Array(binsCount).fill(0);
-    
-    if (rawValues.length === 0) {
-      return { normalizedBins: bins, totalValues: 0, maxBinCount: 0 };
-    }
+  // 2. Determinar Bins y Distribución Real
+  const { bins, binLabels, maxBinCount, totalValues } = useMemo(() => {
+    if (rawData.length === 0) return { bins: [], binLabels: [], maxBinCount: 0, totalValues: 0 };
 
-    // Determinar min y max absoluto para el rango.
-    // Si es "scale" o booleano asumimos 0-100 para que el espectro sea consistente.
-    // Si es numérico libre, buscamos el max y min reales.
-    let minVal = 0;
-    let maxVal = 100;
+    // Extraer min y max semánticos
+    let sample = getVisualizableData(outId, 50, outMeta.dataType);
+    let min = sample.min !== undefined ? sample.min : 0;
+    let max = sample.max !== undefined ? sample.max : 100;
 
+    // Ajustar min/max si los datos exceden
     if (outMeta.dataType === 'numeric') {
-      minVal = Math.min(...rawValues);
-      maxVal = Math.max(...rawValues);
-      if (minVal === maxVal) { minVal -= 1; maxVal += 1; }
+       const dMin = Math.min(...rawData);
+       const dMax = Math.max(...rawData);
+       if (dMin < min) min = dMin;
+       if (dMax > max) max = dMax;
+    }
+    
+    const range = max - min;
+    let binsCount = 16;
+    let binLabels = [];
+
+    // Si es un dominio pequeño y discreto (ej. 0-5), usamos la cantidad exacta de bandas.
+    if (range <= 10 && Number.isInteger(min) && Number.isInteger(max)) {
+      binsCount = range + 1;
+      for (let i = min; i <= max; i++) binLabels.push(i.toString());
+    } else {
+      // Para rangos numéricos continuos grandes (ej. 0-100), agrupamos en ~12 bandas
+      binsCount = 12;
+      for (let i = 0; i < binsCount; i++) {
+         const val = min + (i / (binsCount - 1)) * range;
+         binLabels.push(Number.isInteger(val) ? val.toString() : val.toFixed(0));
+      }
     }
 
-    const range = maxVal - minVal;
+    const counts = new Array(binsCount).fill(0);
 
-    // Distribuir valores en los bins
-    rawValues.forEach(val => {
-      // Clampear valor por las dudas
-      const clampedVal = Math.max(minVal, Math.min(maxVal, val));
-      let index = Math.floor(((clampedVal - minVal) / range) * binsCount);
-      if (index >= binsCount) index = binsCount - 1; // caso extremo == maxVal
-      bins[index]++;
+    rawData.forEach(val => {
+      let visData = getVisualizableData(outId, val, outMeta.dataType);
+      let pVal = Math.max(min, Math.min(max, visData.value));
+      
+      let index = 0;
+      if (range === 0) {
+        index = 0;
+      } else {
+        index = Math.round(((pVal - min) / range) * (binsCount - 1));
+      }
+      
+      if (index >= binsCount) index = binsCount - 1;
+      if (index < 0) index = 0;
+      counts[index]++;
     });
 
-    const maxBinCount = Math.max(...bins, 1);
-    const normalized = bins.map(b => b / maxBinCount);
+    const maxCount = Math.max(...counts, 1);
+    const normalized = counts.map(c => c / maxCount);
 
-    return { normalizedBins: normalized, totalValues: rawValues.length, maxBinCount };
-  }, [rawValues, outMeta.dataType]);
+    return { bins: normalized, binLabels, maxBinCount: maxCount, totalValues: rawData.length };
+  }, [rawData, outId, outMeta]);
+
+  const canvasRef = useSpectrumCanvas(bins, maxBinCount, colorHex, bins.length, binLabels);
 
   if (totalValues === 0) {
     return (
-      <div className="flex-1 flex items-center justify-center border-2 border-dashed border-[#333] rounded-xl">
-        <span className="text-[#555] uppercase tracking-widest font-bold text-sm">SIN DATOS PARA GRAFICAR</span>
+      <div className="w-full flex-1 flex flex-col relative bg-[#050505] rounded-xl border border-[#111] overflow-hidden shadow-[inset_0_0_50px_rgba(0,0,0,0.8)] items-center justify-center">
+        <span className="text-[#333] font-mono text-[10px] tracking-[0.3em] uppercase">WAITING FOR SIGNAL...</span>
       </div>
     );
   }
 
-  // 3. Dibujar Espectro
   return (
-    <div className="w-full flex-1 flex flex-col relative bg-[#0a0a0a] rounded-xl border border-[#222] p-8 overflow-hidden">
+    <div className="w-full flex-1 flex flex-col relative bg-[#050505] rounded-xl border border-[#111] overflow-hidden shadow-[inset_0_0_50px_rgba(0,0,0,0.8)] p-6">
       
-      <div className="absolute left-4 top-4 text-[#666] text-xs font-bold uppercase tracking-widest">
-        SPECTRUM: <span style={{ color: colorHex }}>{outMeta.label}</span>
+      {/* Etiqueta Técnica Superior Izquierda */}
+      <div className="absolute left-6 top-5 z-20 flex flex-col gap-1 pointer-events-none">
+        <div className="text-[#444] text-[9px] font-mono tracking-widest uppercase">ESPECTRO</div>
+        <div className="text-[11px] font-mono font-bold uppercase tracking-widest flex items-center gap-2" style={{ color: colorHex }}>
+          <div className="w-2 h-2 rounded-full shadow-[0_0_5px]" style={{ backgroundColor: colorHex, boxShadow: `0 0 5px ${colorHex}` }}></div>
+          {labelPrefix} · {outMeta?.label || 'UNKNOWN'}
+        </div>
       </div>
 
-      <div className="absolute right-4 top-4 text-[#444] text-[10px] font-bold uppercase tracking-widest text-right">
+      {/* Información Técnica Superior Derecha */}
+      <div className="absolute right-6 top-5 z-20 text-[#64748b] text-[10px] font-mono font-bold uppercase tracking-widest text-right pointer-events-none">
         N = {totalValues} <br/>
-        PEAK = {maxBinCount}
+        <span className="text-white">PEAK = {maxBinCount}</span>
       </div>
 
-      <div className="w-full h-full relative mt-6">
-        <svg className="w-full h-full overflow-visible" preserveAspectRatio="none">
-          {/* Grilla de fondo sutil */}
-          <line x1="0" y1="25%" x2="100%" y2="25%" stroke="#222" strokeWidth="1" strokeDasharray="4 4" />
-          <line x1="0" y1="50%" x2="100%" y2="50%" stroke="#222" strokeWidth="1" strokeDasharray="4 4" />
-          <line x1="0" y1="75%" x2="100%" y2="75%" stroke="#222" strokeWidth="1" strokeDasharray="4 4" />
-          <line x1="0" y1="100%" x2="100%" y2="100%" stroke={colorHex} strokeWidth="2" strokeOpacity="0.4" />
-
-          {/* Barras del Espectro */}
-          {normalizedBins.map((h, i) => {
-            const barWidth = 100 / binsCount; // %
-            const gap = 1.5; // %
-            const actualWidth = barWidth - gap;
-            
-            // Para darle un toque más de analizador, podemos dibujar las barras compuestas por cuadraditos o sólidas.
-            // Aquí las hacemos sólidas con un gradiente/transparencia.
-            return (
-              <g key={i} className="transition-all duration-300">
-                <rect
-                  x={`${(i * barWidth) + (gap/2)}%`}
-                  y={`${(1 - h) * 100}%`}
-                  width={`${actualWidth}%`}
-                  height={`${h * 100}%`}
-                  fill={colorHex}
-                  className="opacity-80 mix-blend-screen"
-                  style={{
-                    filter: `drop-shadow(0 0 8px ${colorHex}66)`,
-                    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
-                  }}
-                />
-                {/* Un pequeño pico / peak cap arriba de la barra */}
-                {h > 0 && (
-                  <rect
-                    x={`${(i * barWidth) + (gap/2)}%`}
-                    y={`${(1 - h) * 100}%`}
-                    width={`${actualWidth}%`}
-                    height="3"
-                    fill="#fff"
-                    className="opacity-90"
-                    style={{
-                      transform: 'translateY(-2px)'
-                    }}
-                  />
-                )}
-              </g>
-            );
-          })}
-        </svg>
+      {/* Leyenda Secundaria Inferior (Eje Y = Densidad) */}
+      <div className="absolute left-6 bottom-10 z-20 text-[#475569] text-[9px] font-mono tracking-widest uppercase origin-bottom-left -rotate-90 pointer-events-none">
+        DENSIDAD / CONCENTRACIÓN
       </div>
+
+      {/* Explicación Concisa Inferior Derecha */}
+      <div className="absolute right-6 bottom-4 z-20 text-[#444] text-[9px] font-mono tracking-wider pointer-events-none text-right">
+        Distribución de las respuestas<br/>dentro del rango de la variable.
+      </div>
+
+      {/* Analizador de Espectro Canvas */}
+      <div className="w-full h-full relative mt-8">
+        <canvas 
+          ref={canvasRef}
+          className="w-full h-full absolute inset-0"
+        />
+      </div>
+
     </div>
   );
 };

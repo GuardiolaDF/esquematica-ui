@@ -90,13 +90,13 @@ export const dbMetadata = {
     label: "Formato",
     dataType: "categorical",
     routable: true,
-    visualizations: ["spectrum", "association"]
+    visualizations: ["association"]
   },
   "mod1-2": {
     label: "Modo avión (Estudio)",
     dataType: "categorical",
     routable: true,
-    visualizations: ["spectrum", "association"]
+    visualizations: ["association"]
   },
   "mod1-22": {
     label: "Horas en Redes Sociales",
@@ -258,25 +258,25 @@ export const dbMetadata = {
     label: "Pausas programadas",
     dataType: "scale",
     routable: true,
-    visualizations: ["spectrum", "relation", "association"]
+    visualizations: ["relation", "association"]
   },
   "mod2-6": {
     label: "Setup escritorio",
     dataType: "scale",
     routable: true,
-    visualizations: ["spectrum", "relation", "association"]
+    visualizations: ["relation", "association"]
   },
   "mod2-7": {
     label: "Trabajo nocturno",
     dataType: "scale",
     routable: true,
-    visualizations: ["spectrum", "relation", "association"]
+    visualizations: ["relation", "association"]
   },
   "mod2-8": {
     label: "Respaldo nube",
     dataType: "scale",
     routable: true,
-    visualizations: ["spectrum", "relation", "association"]
+    visualizations: ["relation", "association"]
   },
   "mod2-9": {
     label: "Programas simultáneos",
@@ -300,19 +300,19 @@ export const dbMetadata = {
     label: "Versiones vs Sobrescribir",
     dataType: "scale",
     routable: true,
-    visualizations: ["spectrum", "relation", "association"]
+    visualizations: ["relation", "association"]
   },
   "mod2-13": {
     label: "Notificaciones activadas",
     dataType: "scale",
     routable: true,
-    visualizations: ["spectrum", "relation", "association"]
+    visualizations: ["relation", "association"]
   },
   "mod2-14": {
     label: "Comer escritorio",
     dataType: "scale",
     routable: true,
-    visualizations: ["spectrum", "relation", "association"]
+    visualizations: ["relation", "association"]
   },
   "mod2-15": {
     label: "Interrupciones",
@@ -378,43 +378,43 @@ export const dbMetadata = {
     label: "Procrastinas",
     dataType: "scale",
     routable: true,
-    visualizations: ["spectrum", "relation", "association"]
+    visualizations: ["relation", "association"]
   },
   "mod3-9": {
     label: "Proc",
     dataType: "scale",
     routable: true,
-    visualizations: ["spectrum", "relation", "association"]
+    visualizations: ["relation", "association"]
   },
   "mod3-10": {
     label: "Proc",
     dataType: "scale",
     routable: true,
-    visualizations: ["spectrum", "relation", "association"]
+    visualizations: ["relation", "association"]
   },
   "mod3-11": {
     label: "Proc",
     dataType: "scale",
     routable: true,
-    visualizations: ["spectrum", "relation", "association"]
+    visualizations: ["relation", "association"]
   },
   "mod3-12": {
     label: "Proc",
     dataType: "scale",
     routable: true,
-    visualizations: ["spectrum", "relation", "association"]
+    visualizations: ["relation", "association"]
   },
   "mod3-13": {
     label: "Proc",
     dataType: "scale",
     routable: true,
-    visualizations: ["spectrum", "relation", "association"]
+    visualizations: ["relation", "association"]
   },
   "mod3-14": {
     label: "Proc",
     dataType: "scale",
     routable: true,
-    visualizations: ["spectrum", "relation", "association"]
+    visualizations: ["relation", "association"]
   },
   "mod3-15": {
     label: "Momento mayor frustracion",
@@ -432,19 +432,19 @@ export const dbMetadata = {
     label: "Emociones afectan resultado",
     dataType: "scale",
     routable: true,
-    visualizations: ["spectrum", "relation", "association"]
+    visualizations: ["relation", "association"]
   },
   "mod3-18": {
     label: "Tecnicas de concentracion",
     dataType: "scale",
     routable: true,
-    visualizations: ["spectrum", "relation", "association"]
+    visualizations: ["relation", "association"]
   },
   "mod3-19": {
     label: "Sintomas fisicos",
     dataType: "scale",
     routable: true,
-    visualizations: ["spectrum", "relation", "association"]
+    visualizations: ["relation", "association"]
   },
   "demo-age": {
     label: "Filtro",
