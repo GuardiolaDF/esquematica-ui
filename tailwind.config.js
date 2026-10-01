@@ -15,8 +15,38 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Satoshi', 'sans-serif'],
+        sans: ['"Plus Jakarta Sans"', 'Satoshi', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
+        display: ['"Satori TRIAL"', '"Satori"', 'sans-serif']
+      },
+      colors: {
+        synth: {
+          // Fondos principales
+          surface: '#eeebe1',    // Fondo general del sintetizador
+          panel: '#fdfaf2',      // Fondo de los módulos (filters-panel, etc)
+          module: '#ffffff',     // Fondo interno de componentes
+          track: '#efebe2',      // Fondo de los faders
+          
+          // Acentos (LEDs, indicadores)
+          accent: '#ff9479',
+          'accent-light': '#ffab96',
+          
+          // Bordes y metales (Cables, jacks, strokes)
+          border: {
+            light: '#ddd9ce',
+            base: '#898176',
+            dark: '#716962'
+          },
+          
+          // Tintas (Textos, líneas divisorias, etiquetas)
+          ink: {
+            light: '#a89f90',
+            base: '#5c5451',
+            dark: '#423e3d',
+            darker: '#2d2d2d',
+            black: '#000000'
+          }
+        }
       }
     },
   },

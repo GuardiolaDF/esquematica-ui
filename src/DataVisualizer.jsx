@@ -380,7 +380,7 @@ export default function DataVisualizer() {
   };
 
   return (
-    <div className="w-full h-full relative overflow-hidden flex items-end justify-center">
+    <div className="w-full h-full relative overflow-hidden flex items-end justify-center bg-synth-panel rounded-lg">
       
       {/* 1. MODO INDICADOR Y MENÚ DE VISUALIZACIÓN */}
       <div className="absolute top-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-20">
@@ -545,5 +545,6 @@ export default function DataVisualizer() {
     </div>
   );
 }
+
 
 

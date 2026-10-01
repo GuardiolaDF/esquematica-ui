@@ -1,0 +1,752 @@
+- [FRAME] Desktop Data Visualizer  W:1280.0 H:720.0 | Flex(HORIZONTAL) P:12,11,9,10 Gap:8 | bg: #eeebe1
+  - [FRAME] Frame 20 W:419.0 H:700.0 | Flex(VERTICAL) P:0,0,0,0 Gap:8
+    - [FRAME] filters-panel W:419.0 H:228.0 | bg: #fdfaf2
+      - [FRAME] Frame 94 W:389.0 H:217.0 | Flex(VERTICAL) P:0,0,0,0 Gap:16
+        - [INSTANCE] Component 15 W:219.0 H:17.0 | bg: #ffffff
+          - [INSTANCE] Component 1 W:59.0 H:16.0 | bg: #ffffff
+            - [RECTANGLE] Rectangle 1 W:13.0 H:12.0 | bg: #898176
+            - [VECTOR] Vector 1 W:59.0 H:0.0 | border: 1px #898176
+            - [TEXT] 1 W:8.0 H:13.0 | bg: #fdfaf2 | Text(JetBrains Mono 12px w500) | Content: 1
+            - [TEXT] módulo W:45.0 H:16.0 | bg: #898176 | Text(JetBrains Mono 12px w500) | Content: módulo
+          - [TEXT] CONSUMOS CULTURALES |||||| W:196.0 H:16.0 | bg: #a89f90 | Text(Satori TRIAL 12px w100) | Content: CONSUMOS CULTURALES ||||||
+        - [FRAME] Frame 61 W:389.0 H:184.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:22
+          - [FRAME] Frame 44 W:149.0 H:195.0 | Flex(VERTICAL) P:0,0,0,0 Gap:2
+            - [FRAME] Frame 97 W:149.0 H:94.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:0
+              - [FRAME] Frame 43 W:102.0 H:94.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:0
+                - [INSTANCE] Component 18 W:102.0 H:94.0 | bg: #ffffff
+                  - [INSTANCE] main-knob W:64.0 H:64.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #eeebe1 | border: 1px #ddd9ce
+                    - [FRAME] knob-cap W:52.0 H:52.0 | bg: #eeebe1 | border: 0.4000000059604645px #716962
+                      - [FRAME] indicator-wedge W:10.0 H:48.0 | bg: #eeebe1
+                        - [ELLIPSE] Ellipse 1 W:7.0 H:7.0 | bg: #ff9479
+                      - [TEXT] Texto W:0.0 H:14.0 | bg: #000000 | Text(JetBrains Mono 10px w400) | Content: 
+                      - [TEXT] Texto W:30.0 H:14.0 | bg: #000000 | Text(JetBrains Mono 10px w400) | Content: Texto
+                      - [TEXT] Texto W:30.0 H:14.0 | bg: #000000 | Text(JetBrains Mono 10px w400) | Content: Texto
+                    - [LINE] Line 5 W:2.8 H:2.8 | border: 1px #898176
+                    - [LINE] Line 1 W:2.8 H:2.8 | border: 1px #898176
+                    - [LINE] Line 6 W:0.0 H:4.0 | border: 1px #898176
+                  - [TEXT] Largo W:24.0 H:14.0 | bg: #898176 | Text(JetBrains Mono 8px w400) | Content: Largo
+                  - [TEXT] Corto W:24.0 H:14.0 | bg: #898176 | Text(JetBrains Mono 8px w400) | Content: Corto
+                  - [TEXT] Medio W:24.0 H:14.0 | bg: #898176 | Text(JetBrains Mono 8px w400) | Content: Medio
+                  - [RECTANGLE] Rectangle 5 W:53.0 H:11.0 | bg: #716962
+                  - [TEXT] FORMATO W:40.0 H:14.0 | bg: #fdfaf2 | Text(Satori TRIAL 8px w400) | Content: FORMATO
+                  - [LINE] Line 23 W:49.0 H:0.0 | bg: #5c5451 | border: 1px #716962
+                - [INSTANCE] Component 21 W:14.0 H:26.0 | bg: #ffffff
+                  - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                    - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+                  - [FRAME] hugeicons:airplane-mode W:14.0 H:14.0 | bg: #ffffff
+                    - [VECTOR] Vector W:10.5 H:11.7 | border: 1.125px #898176
+            - [INSTANCE] Component 17 W:149.0 H:99.0 | bg: #ffffff
+              - [FRAME] Frame 38 W:149.0 H:87.2 | Flex(HORIZONTAL) P:0,0,0,0 Gap:14 | bg: #eeebe1 | border: 0.5px #898176
+                - [FRAME] Frame 37 W:107.0 H:80.0 | Flex(GRID) P:0,0,0,0 Gap:0
+                  - [INSTANCE] Frame 25 W:23.8 H:24.0 | Flex(HORIZONTAL) P:4,3,3,3 Gap:10 | bg: #eeebe1 | border: 1px #ddd9ce
+                    - [INSTANCE] icon/youtube W:18.0 H:18.0 | bg: #ffffff
+                      - [GROUP] Group W:18.0 H:18.0
+                        - [GROUP] Clip path group W:18.0 H:18.0
+                          - [GROUP] SVGXv8lpc2Y W:18.0 H:18.0
+                            - [VECTOR] Vector W:18.0 H:18.0 | bg: #000000
+                          - [GROUP] Group W:18.0 H:12.0
+                            - [VECTOR] Vector W:18.0 H:12.0 | bg: #a89f90
+                  - [INSTANCE] Frame 28 W:23.8 H:24.0 | Flex(HORIZONTAL) P:4,3,3,3 Gap:10 | bg: #eeebe1 | border: 1px #ddd9ce
+                    - [INSTANCE] icon/spotify W:18.0 H:18.0 | bg: #ffffff
+                      - [VECTOR] Vector W:15.8 H:15.8 | bg: #a89f90
+                  - [INSTANCE] Frame 31 W:23.8 H:24.0 | Flex(HORIZONTAL) P:4,3,3,3 Gap:10 | bg: #eeebe1 | border: 1px #ddd9ce
+                    - [INSTANCE] icon/hbo W:18.0 H:18.0 | bg: #ffffff
+                      - [VECTOR] Vector W:18.0 H:7.4 | bg: #a89f90
+                  - [INSTANCE] Frame 34 W:23.8 H:24.0 | Flex(HORIZONTAL) P:4,3,3,3 Gap:10 | bg: #eeebe1 | border: 1px #ddd9ce
+                    - [INSTANCE] icon/netflix W:18.0 H:18.0 | bg: #ffffff
+                      - [VECTOR] Vector W:8.3 H:15.0 | bg: #a89f90
+                  - [INSTANCE] Frame 26 W:23.8 H:24.0 | Flex(HORIZONTAL) P:4,3,3,3 Gap:10 | bg: #eeebe1 | border: 1px #ddd9ce
+                    - [INSTANCE] icon/stremio W:18.0 H:18.0 | bg: #ffffff
+                      - [VECTOR] Vector W:18.0 H:18.0 | bg: #a89f90
+                  - [INSTANCE] Frame 29 W:23.8 H:24.0 | Flex(HORIZONTAL) P:4,3,3,3 Gap:10 | bg: #eeebe1 | border: 1px #ddd9ce
+                    - [INSTANCE] icon/tik-tok W:18.0 H:18.0 | bg: #ffffff
+                      - [VECTOR] Vector W:12.2 H:14.1 | bg: #a89f90
+                  - [INSTANCE] Frame 32 W:23.8 H:24.0 | Flex(HORIZONTAL) P:4,3,3,3 Gap:10 | bg: #eeebe1 | border: 1px #ddd9ce
+                    - [INSTANCE] icon/disney-plus W:18.0 H:18.0 | bg: #ffffff
+                      - [VECTOR] Vector W:16.7 H:9.4 | bg: #a89f90
+                  - [INSTANCE] Frame 35 W:23.8 H:24.0 | Flex(HORIZONTAL) P:4,3,3,3 Gap:10 | bg: #eeebe1 | border: 1px #ddd9ce
+                    - [INSTANCE] icon/twitch W:18.0 H:18.0 | bg: #ffffff
+                      - [VECTOR] Vector W:16.5 H:16.5 | bg: #a89f90
+                  - [INSTANCE] Frame 27 W:23.8 H:24.0 | Flex(HORIZONTAL) P:4,3,3,3 Gap:10 | bg: #eeebe1 | border: 1px #ddd9ce
+                    - [INSTANCE] icon/mubi W:18.0 H:18.0 | bg: #ffffff
+                      - [VECTOR] Vector W:16.5 H:16.5 | bg: #a89f90
+                  - [INSTANCE] Frame 30 W:23.8 H:24.0 | Flex(HORIZONTAL) P:4,3,3,3 Gap:10 | bg: #eeebe1 | border: 1px #ddd9ce
+                    - [INSTANCE] icon/instagram W:18.0 H:18.0 | bg: #ffffff
+                      - [VECTOR] Vector W:16.5 H:16.5 | bg: #a89f90
+                  - [INSTANCE] Frame 33 W:23.8 H:24.0 | Flex(HORIZONTAL) P:4,3,3,3 Gap:10 | bg: #eeebe1 | border: 1px #ddd9ce
+                    - [INSTANCE] icon/prime W:18.0 H:18.0 | bg: #ffffff
+                      - [VECTOR] Vector W:18.0 H:10.6 | bg: #a89f90
+                  - [INSTANCE] Frame 36 W:23.8 H:24.0 | Flex(HORIZONTAL) P:4,3,3,3 Gap:10 | bg: #eeebe1 | border: 1px #ddd9ce
+                    - [INSTANCE] icon/kick W:18.0 H:18.0 | bg: #ffffff
+                      - [VECTOR] Vector W:14.3 H:16.5 | bg: #a89f90
+                - [INSTANCE] fader-2 W:16.0 H:71.0
+                  - [TEXT] Txto W:10.0 H:53.0 | bg: #898176 | Text(JetBrains Mono 8px w300) | Content: Hs. X día
+                  - [FRAME] Frame 28 W:16.0 H:71.0 | bg: #efebe2
+                  - [FRAME] indicator-wedge W:10.0 H:61.0 | bg: #eeebe1
+                    - [ELLIPSE] Ellipse 1 W:7.0 H:7.0 | bg: #ff9479
+              - [RECTANGLE] Rectangle 4 W:59.0 H:9.8 | bg: #716962
+              - [TEXT] Plataformas W:55.0 H:16.0 | bg: #fdfaf2 | Text(JetBrains Mono 8px w300) | Content: Plataformas
+          - [FRAME] Frame 45 W:229.0 H:195.0 | Flex(VERTICAL) P:0,0,0,0 Gap:7
+            - [INSTANCE] Component 16 W:238.0 H:90.0 | bg: #ffffff
+              - [FRAME] Frame 2 W:222.0 H:71.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:0
+                - [INSTANCE] Component 4 W:34.0 H:71.0 | bg: #ffffff
+                  - [INSTANCE] fader-2 W:16.0 H:71.0 | bg: #efebe2
+                    - [RECTANGLE] track W:14.0 H:71.0
+                    - [FRAME] indicator-wedge W:10.0 H:61.0 | bg: #eeebe1
+                      - [ELLIPSE] Ellipse 1 W:7.0 H:7.0 | bg: #ff9479
+                  - [TEXT] Texto W:10.0 H:62.0 | bg: #5c5451 | Text(JetBrains Mono 8px w300) | Content: Cine
+                - [INSTANCE] Component 5 W:34.0 H:71.0 | bg: #ffffff
+                  - [INSTANCE] fader-2 W:16.0 H:71.0 | bg: #efebe2
+                    - [RECTANGLE] track W:14.0 H:71.0
+                    - [FRAME] indicator-wedge W:10.0 H:61.0 | bg: #eeebe1
+                      - [ELLIPSE] Ellipse 1 W:7.0 H:7.0 | bg: #ff9479
+                  - [TEXT] Texto W:10.0 H:62.0 | bg: #5c5451 | Text(JetBrains Mono 8px w300) | Content: Libros
+                - [INSTANCE] Component 6 W:34.0 H:71.0 | bg: #ffffff
+                  - [INSTANCE] fader-2 W:16.0 H:71.0 | bg: #efebe2
+                    - [RECTANGLE] track W:14.0 H:71.0
+                    - [FRAME] indicator-wedge W:10.0 H:61.0 | bg: #eeebe1
+                      - [ELLIPSE] Ellipse 1 W:7.0 H:7.0 | bg: #ff9479
+                  - [TEXT] Texto W:10.0 H:62.0 | bg: #5c5451 | Text(JetBrains Mono 8px w300) | Content: Podcasts
+                - [INSTANCE] Component 7 W:34.0 H:71.0 | bg: #ffffff
+                  - [INSTANCE] fader-2 W:16.0 H:71.0 | bg: #efebe2
+                    - [RECTANGLE] track W:14.0 H:71.0
+                    - [FRAME] indicator-wedge W:10.0 H:61.0 | bg: #eeebe1
+                      - [ELLIPSE] Ellipse 1 W:7.0 H:7.0 | bg: #ff9479
+                  - [TEXT] Texto W:10.0 H:62.0 | bg: #5c5451 | Text(JetBrains Mono 8px w300) | Content: Música
+                - [INSTANCE] Component 8 W:34.0 H:71.0 | bg: #ffffff
+                  - [INSTANCE] fader-2 W:16.0 H:71.0 | bg: #efebe2
+                    - [RECTANGLE] track W:14.0 H:71.0
+                    - [FRAME] indicator-wedge W:10.0 H:61.0 | bg: #eeebe1
+                      - [ELLIPSE] Ellipse 1 W:7.0 H:7.0 | bg: #ff9479
+                  - [TEXT] Texto W:10.0 H:62.0 | bg: #5c5451 | Text(JetBrains Mono 8px w300) | Content: Series
+                - [INSTANCE] Component 9 W:34.0 H:71.0 | bg: #ffffff
+                  - [INSTANCE] fader-2 W:16.0 H:71.0 | bg: #efebe2
+                    - [RECTANGLE] track W:14.0 H:71.0
+                    - [FRAME] indicator-wedge W:10.0 H:61.0 | bg: #eeebe1
+                      - [ELLIPSE] Ellipse 1 W:7.0 H:7.0 | bg: #ff9479
+                  - [TEXT] Texto W:10.0 H:62.0 | bg: #5c5451 | Text(JetBrains Mono 8px w300) | Content: Videojuegos
+                - [INSTANCE] Component 10 W:34.0 H:71.0 | bg: #ffffff
+                  - [INSTANCE] fader-2 W:16.0 H:71.0 | bg: #efebe2
+                    - [RECTANGLE] track W:14.0 H:71.0
+                    - [FRAME] indicator-wedge W:10.0 H:61.0 | bg: #eeebe1
+                      - [ELLIPSE] Ellipse 1 W:7.0 H:7.0 | bg: #ff9479
+                  - [TEXT] Texto W:10.0 H:62.0 | bg: #5c5451 | Text(JetBrains Mono 8px w300) | Content: Otros
+              - [GROUP] Group 2 W:205.0 H:18.5
+                - [LINE] Line 9 W:205.0 H:0.0 | bg: #716962 | border: 1px #716962
+                - [RECTANGLE] Rectangle 3 W:52.0 H:11.0 | bg: #716962 | border: 1px #716962
+                - [LINE] Line 10 W:166.0 H:0.0 | border: 1px #716962
+                - [LINE] Line 12 W:0.0 H:3.8 | bg: #716962 | border: 1px #716962
+                - [LINE] Line 13 W:0.0 H:3.8 | border: 1px #716962
+                - [LINE] Line 14 W:0.0 H:3.8 | bg: #716962 | border: 1px #716962
+                - [LINE] Line 15 W:0.0 H:3.8 | bg: #716962 | border: 1px #716962
+                - [LINE] Line 16 W:0.0 H:3.8 | bg: #716962 | border: 1px #716962
+                - [LINE] Line 17 W:0.0 H:3.8 | bg: #716962 | border: 1px #716962
+                - [LINE] Line 18 W:0.0 H:17.7 | bg: #716962 | border: 1px #716962
+              - [TEXT] MEDIOS W:34.0 H:11.0 | bg: #ffffff | Text(Satori TRIAL 8px w400) | Content: MEDIOS
+              - [TEXT] Los soportes más consumidos W:130.0 H:10.8 | bg: #a89f90 | Text(JetBrains Mono 8px w100) | Content: Los soportes más consumidos
+            - [INSTANCE] Component 14 W:191.0 H:34.0 | bg: #ffffff
+              - [INSTANCE] fader-2 W:191.0 H:22.0 | bg: #efebe2
+                - [RECTANGLE] track W:71.0 H:14.0
+                - [FRAME] indicator-wedge W:178.0 H:14.0 | bg: #eeebe1
+                  - [ELLIPSE] Ellipse 1 W:10.0 H:10.0 | bg: #ff9479
+                  - [TEXT] 1 W:6.0 H:14.0 | bg: #a89f90 | Text(JetBrains Mono 10px w400) | Content: 1
+                  - [TEXT] 2 W:6.0 H:14.0 | bg: #a89f90 | Text(JetBrains Mono 10px w400) | Content: 2
+                  - [TEXT] 3 W:6.0 H:14.0 | bg: #a89f90 | Text(JetBrains Mono 10px w400) | Content: 3
+                  - [TEXT] 4 W:6.0 H:14.0 | bg: #a89f90 | Text(JetBrains Mono 10px w400) | Content: 4
+                  - [TEXT] 5 W:6.0 H:14.0 | bg: #a89f90 | Text(JetBrains Mono 10px w400) | Content: 5
+                  - [TEXT] 6 W:6.0 H:14.0 | bg: #a89f90 | Text(JetBrains Mono 10px w400) | Content: 6
+              - [TEXT] Hs RRSS x día W:66.0 H:12.0 | bg: #a89f90 | Text(JetBrains Mono 8px w300) | Content: Hs RRSS x día
+            - [FRAME] Frame 46 W:229.0 H:54.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:24
+              - [INSTANCE] Component 20 W:131.0 H:54.0 | bg: #ffffff
+                - [INSTANCE] Frame 43 W:113.0 H:54.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:7
+                  - [FRAME] Frame 40 W:33.0 H:52.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                    - [VECTOR] Vector W:15.0 H:15.0 | bg: #898176 | border: 1.5px #716962
+                    - [INSTANCE] main-knob W:33.0 H:33.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #eeebe1 | border: 1px #ddd9ce
+                      - [ELLIPSE] Ellipse 4 W:2.0 H:2.0 | bg: #a89f90
+                      - [ELLIPSE] Ellipse 3 W:2.0 H:2.0 | bg: #a89f90
+                      - [FRAME] knob-cap W:24.0 H:24.0 | bg: #eeebe1 | border: 0.4000000059604645px #716962
+                        - [ELLIPSE] Ellipse 1 W:5.0 H:5.0 | bg: #ffab96
+                      - [ELLIPSE] cap-highlight W:31.0 H:33.0
+                  - [FRAME] Frame 41 W:33.0 H:52.5 | Flex(VERTICAL) P:0,0,0,0 Gap:6
+                    - [FRAME] Frame 39 W:13.5 H:13.5
+                      - [VECTOR] Vector W:7.5 H:10.5 | bg: #898176 | border: 1.5px #716962
+                      - [VECTOR] Vector W:3.0 H:3.0 | border: 1.5px #716962
+                      - [VECTOR] Vector W:3.0 H:3.0 | border: 1.5px #716962
+                      - [VECTOR] Vector W:3.0 H:3.0 | border: 1.5px #716962
+                    - [INSTANCE] main-knob W:33.0 H:33.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #eeebe1 | border: 1px #ddd9ce
+                      - [ELLIPSE] Ellipse 4 W:2.0 H:2.0 | bg: #a89f90
+                      - [ELLIPSE] Ellipse 3 W:2.0 H:2.0 | bg: #a89f90
+                      - [FRAME] knob-cap W:24.0 H:24.0 | bg: #eeebe1 | border: 0.4000000059604645px #716962
+                        - [ELLIPSE] Ellipse 1 W:5.0 H:5.0 | bg: #ffab96
+                      - [ELLIPSE] cap-highlight W:31.0 H:33.0
+                  - [FRAME] Frame 42 W:33.0 H:54.0 | Flex(VERTICAL) P:0,0,0,0 Gap:3
+                    - [VECTOR] Vector W:17.0 H:18.0 | border: 1.125px #716962
+                    - [INSTANCE] main-knob W:33.0 H:33.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #eeebe1 | border: 1px #ddd9ce
+                      - [ELLIPSE] Ellipse 4 W:2.0 H:2.0 | bg: #a89f90
+                      - [ELLIPSE] Ellipse 3 W:2.0 H:2.0 | bg: #a89f90
+                      - [FRAME] knob-cap W:24.0 H:24.0 | bg: #eeebe1 | border: 0.4000000059604645px #716962
+                        - [ELLIPSE] Ellipse 1 W:5.0 H:5.0 | bg: #ffab96
+                      - [ELLIPSE] cap-highlight W:31.0 H:33.0
+                - [INSTANCE] Referencias W:18.0 H:52.0 | bg: #ffffff
+                  - [TEXT] Referencias W:15.0 H:52.0 | bg: #898176 | Text(JetBrains Mono 7px w400) | Content: Referencias
+              - [INSTANCE] Frame 29 W:74.0 H:44.0 | bg: #eeebe1
+                - [GROUP] Group 1 W:52.0 H:20.0
+                  - [INSTANCE] output-jack-1 W:20.0 H:20.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #898176 | border: 1px #ddd9ce
+                    - [ELLIPSE] Ellipse 2 W:12.0 H:12.0 | bg: #d9d9d9
+                  - [INSTANCE] output-jack-1 W:20.0 H:20.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #898176 | border: 1px #ddd9ce
+                    - [ELLIPSE] Ellipse 2 W:12.0 H:12.0 | bg: #d9d9d9
+                - [RECTANGLE] Rectangle 2 W:87.0 H:16.0 | bg: #423e3d
+                - [TEXT] Salisdas W:52.0 H:14.0 | bg: #ffffff | Text(Satori TRIAL 12px w700) | Content: Salisdas
+    - [FRAME] kpi-panel W:419.0 H:228.0 | bg: #fdfaf2
+      - [FRAME] Frame 92 W:385.0 H:203.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0
+        - [INSTANCE] Component 15 W:219.0 H:17.0 | bg: #ffffff
+          - [INSTANCE] Component 1 W:59.0 H:16.0 | bg: #ffffff
+            - [RECTANGLE] Rectangle 1 W:13.0 H:12.0 | bg: #898176
+            - [VECTOR] Vector 1 W:59.0 H:0.0 | border: 1px #898176
+            - [TEXT] 1 W:8.0 H:13.0 | bg: #fdfaf2 | Text(JetBrains Mono 12px w500) | Content: 2
+            - [TEXT] módulo W:45.0 H:16.0 | bg: #898176 | Text(JetBrains Mono 12px w500) | Content: módulo
+          - [TEXT] CONSUMOS CULTURALES |||||| W:169.0 H:16.0 | bg: #a89f90 | Text(Satori TRIAL 12px w100) | Content: MODOS DE TRABAJO ||||||
+        - [FRAME] Frame 62 W:385.0 H:186.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:0
+          - [FRAME] Frame 54 W:191.0 H:186.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:18
+            - [FRAME] Frame 53 W:191.0 H:188.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0
+              - [FRAME] Frame 51 W:191.0 H:94.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:10
+                - [INSTANCE] Component 29 W:161.0 H:94.0 | bg: #ffffff
+                  - [INSTANCE] main-knob/Variante 3 W:64.0 H:64.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #eeebe1 | border: 1px #ddd9ce
+                    - [LINE] Line 7 W:4.0 H:0.0 | border: 1px #898176
+                    - [FRAME] knob-cap W:52.0 H:52.0 | bg: #eeebe1 | border: 0.4000000059604645px #716962
+                      - [ELLIPSE] cap-highlight W:44.0 H:36.0
+                      - [FRAME] indicator-wedge W:10.0 H:48.0 | bg: #eeebe1
+                        - [ELLIPSE] Ellipse 1 W:7.0 H:7.0 | bg: #ff9479
+                    - [LINE] Line 5 W:2.8 H:2.8 | border: 1px #898176
+                    - [LINE] Line 1 W:2.8 H:2.8 | border: 1px #898176
+                    - [LINE] Line 6 W:0.0 H:4.0 | border: 1px #898176
+                    - [LINE] Line 7 W:4.0 H:0.0 | border: 1px #898176
+                    - [LINE] Line 8 W:4.0 H:0.0 | border: 1px #898176
+                  - [TEXT] A veces W:34.0 H:14.0 | bg: #898176 | Text(JetBrains Mono 8px w400) | Content: A veces
+                  - [TEXT] -/+ W:15.0 H:14.0 | bg: #898176 | Text(JetBrains Mono 8px w400) | Content: -/+
+                  - [TEXT] +/- W:15.0 H:14.0 | bg: #898176 | Text(JetBrains Mono 8px w400) | Content: +/-
+                  - [TEXT] Siepre W:29.0 H:14.0 | bg: #898176 | Text(JetBrains Mono 8px w400) | Content: Siepre
+                  - [TEXT] Nunca W:24.0 H:14.0 | bg: #898176 | Text(JetBrains Mono 8px w400) | Content: Nunca
+                  - [GROUP] Group 5 W:127.0 H:14.0
+                    - [RECTANGLE] Rectangle 6 W:78.0 H:11.0 | bg: #716962
+                    - [TEXT] BOCET A MANO W:67.0 H:14.0 | bg: #fdfaf2 | Text(Satori TRIAL 8px w700) | Content: BOCET A MANO
+                    - [LINE] Line 24 W:49.0 H:0.0 | border: 1px #716962
+                - [INSTANCE] fader-2 W:16.0 H:71.0
+                  - [TEXT] Txto W:10.0 H:53.0 | bg: #5c5451 | Text(JetBrains Mono 8px w300) | Content: Silencio
+                  - [FRAME] Frame 28 W:16.0 H:71.0 | bg: #efebe2
+                  - [FRAME] indicator-wedge W:10.0 H:61.0 | bg: #eeebe1
+                    - [ELLIPSE] Ellipse 1 W:7.0 H:7.0 | bg: #ff9479
+              - [FRAME] Frame 50 W:191.0 H:94.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:39
+                - [INSTANCE] Component 28 W:33.0 H:94.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #ffffff
+                  - [INSTANCE] Component 11 W:33.0 H:47.0 | bg: #ffffff
+                    - [INSTANCE] main-knob W:33.0 H:33.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #eeebe1 | border: 1px #ddd9ce
+                      - [ELLIPSE] Ellipse 4 W:2.0 H:2.0 | bg: #a89f90
+                      - [ELLIPSE] Ellipse 3 W:2.0 H:2.0 | bg: #a89f90
+                      - [FRAME] knob-cap W:24.0 H:24.0 | bg: #eeebe1 | border: 0.4000000059604645px #716962
+                        - [ELLIPSE] Ellipse 1 W:5.0 H:5.0 | bg: #ffab96
+                      - [ELLIPSE] cap-highlight W:31.0 H:33.0
+                    - [TEXT] Perfeccionismo W:75.0 H:12.0 | bg: #5c5451 | Text(JetBrains Mono 8px w400) | Content: Perfeccionismo
+                  - [INSTANCE] Component 27 W:33.0 H:47.0 | bg: #ffffff
+                    - [INSTANCE] main-knob W:33.0 H:33.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #eeebe1 | border: 1px #ddd9ce
+                      - [ELLIPSE] Ellipse 4 W:2.0 H:2.0 | bg: #a89f90
+                      - [ELLIPSE] Ellipse 3 W:2.0 H:2.0 | bg: #a89f90
+                      - [FRAME] knob-cap W:24.0 H:24.0 | bg: #eeebe1 | border: 0.4000000059604645px #716962
+                        - [ELLIPSE] Ellipse 1 W:5.0 H:5.0 | bg: #ffab96
+                      - [ELLIPSE] cap-highlight W:31.0 H:33.0
+                    - [TEXT] Perfeccionismo W:75.0 H:12.0 | bg: #5c5451 | Text(JetBrains Mono 8px w400) | Content: Procrastinación
+                - [INSTANCE] Frame 53 W:47.0 H:61.0 | Flex(GRID) P:0,0,0,0 Gap:0
+                  - [FRAME] Frame 49 W:16.0 H:61.0 | Flex(VERTICAL) P:0,0,0,0 Gap:3
+                    - [FRAME] fluent-mdl2:user-pause W:16.0 H:16.0 | bg: #ffffff
+                      - [VECTOR] Vector W:14.0 H:16.0 | bg: #898176
+                    - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                      - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+                  - [FRAME] Frame 52 W:16.0 H:61.0 | Flex(VERTICAL) P:0,0,0,0 Gap:6
+                    - [VECTOR] Vector W:13.0 H:10.0 | border: 1.125px #898176
+                    - [INSTANCE] status-indicators W:16.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                      - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+                  - [FRAME] Frame 51 W:16.0 H:24.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                    - [VECTOR] Vector W:14.0 H:12.0 | bg: #1e1e1e | border: 0.5625px #898176
+                    - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                      - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+                  - [FRAME] Frame 50 W:16.0 H:0.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0
+                    - [FRAME] akar-icons:cloud-upload W:16.0 H:18.0 | bg: #ffffff
+                      - [GROUP] Group W:13.3 H:13.5
+                        - [VECTOR] Vector W:8.3 H:8.9 | border: 1.5px #898176
+                        - [VECTOR] Vector W:7.2 H:5.6 | border: 1.5px #898176
+                        - [VECTOR] Vector W:5.0 H:7.5 | border: 1.5px #898176
+                    - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                      - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+          - [FRAME] Frame 59 W:210.0 H:186.0 | Flex(VERTICAL) P:0,0,0,0 Gap:15
+            - [FRAME] Frame 52 W:192.0 H:62.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:17
+              - [INSTANCE] Component 2 W:48.0 H:62.0 | bg: #ffffff
+                - [INSTANCE] stepper-1 W:48.0 H:48.0
+                  - [FRAME] Frame 23 W:40.0 H:48.0 | Flex(VERTICAL) P:12,9,12,9 Gap:10 | bg: #eeebe1 | border: 1px #ddd9ce
+                    - [TEXT] 07 W:26.0 H:25.0 | bg: #898176 | Text(Plus Jakarta Sans 20px w400) | Content: 07
+                  - [REGULAR_POLYGON] increment W:6.0 H:6.0 | bg: #716962
+                  - [REGULAR_POLYGON] decrement W:6.0 H:6.0 | bg: #716962
+                - [TEXT] Texto W:62.0 H:14.0 | bg: #5c5451 | Text(JetBrains Mono 8px w300) | Content: Programas
+              - [INSTANCE] Component 2 W:48.0 H:62.0 | bg: #ffffff
+                - [INSTANCE] stepper-1 W:48.0 H:48.0
+                  - [FRAME] Frame 23 W:40.0 H:48.0 | Flex(VERTICAL) P:12,9,12,9 Gap:10 | bg: #eeebe1 | border: 1px #ddd9ce
+                    - [TEXT] 07 W:26.0 H:25.0 | bg: #898176 | Text(Plus Jakarta Sans 20px w400) | Content: 07
+                  - [REGULAR_POLYGON] increment W:6.0 H:6.0 | bg: #716962
+                  - [REGULAR_POLYGON] decrement W:6.0 H:6.0 | bg: #716962
+                - [TEXT] Texto W:62.0 H:14.0 | bg: #5c5451 | Text(JetBrains Mono 8px w300) | Content: Pestañas
+              - [INSTANCE] Component 2 W:48.0 H:62.0 | bg: #ffffff
+                - [INSTANCE] stepper-1 W:48.0 H:48.0
+                  - [FRAME] Frame 23 W:40.0 H:48.0 | Flex(VERTICAL) P:12,9,12,9 Gap:10 | bg: #eeebe1 | border: 1px #ddd9ce
+                    - [TEXT] 07 W:26.0 H:25.0 | bg: #898176 | Text(Plus Jakarta Sans 20px w400) | Content: 07
+                  - [REGULAR_POLYGON] increment W:6.0 H:6.0 | bg: #716962
+                  - [REGULAR_POLYGON] decrement W:6.0 H:6.0 | bg: #716962
+                - [TEXT] Texto W:62.0 H:14.0 | bg: #5c5451 | Text(JetBrains Mono 8px w300) | Content: Archivos s/t
+            - [INSTANCE] Frame 57 W:146.0 H:40.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:13
+              - [FRAME] Frame 56 W:40.0 H:40.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0
+                - [TEXT] Versiones W:40.0 H:10.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: Versiones
+                - [INSTANCE] Frame 27/Variante 2 W:40.0 H:30.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:0
+                  - [INSTANCE] main-knob W:30.0 H:30.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #eeebe1 | border: 1px #ddd9ce
+                    - [ELLIPSE] cap-highlight W:21.0 H:23.0
+                    - [FRAME] knob-cap W:17.0 H:17.0 | bg: #eeebe1 | border: 0.4000000059604645px #716962
+                    - [VECTOR] Vector 1 W:8.0 H:5.0 | border: 3px #716962
+                  - [FRAME] Frame 26 W:10.0 H:30.0 | Flex(VERTICAL) P:0,0,0,0 Gap:3
+                    - [TEXT] Si W:10.0 H:11.0 | bg: #898176 | Text(JetBrains Mono 8px w500) | Content: Si
+                    - [TEXT] No W:10.0 H:11.0 | bg: #898176 | Text(JetBrains Mono 8px w500) | Content: No
+              - [FRAME] Frame 55 W:40.0 H:40.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0
+                - [TEXT] Notif W:40.0 H:10.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: Notif
+                - [INSTANCE] Frame 27/Variante 3 W:40.0 H:30.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:0
+                  - [INSTANCE] main-knob W:30.0 H:30.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #eeebe1 | border: 1px #ddd9ce
+                    - [ELLIPSE] cap-highlight W:21.0 H:23.0
+                    - [FRAME] knob-cap W:17.0 H:17.0 | bg: #eeebe1 | border: 0.4000000059604645px #716962
+                    - [VECTOR] Vector 1 W:8.0 H:5.0 | border: 3px #716962
+                  - [FRAME] Frame 26 W:10.0 H:30.0 | Flex(VERTICAL) P:0,0,0,0 Gap:3
+                    - [TEXT] Si W:10.0 H:11.0 | bg: #898176 | Text(JetBrains Mono 8px w500) | Content: Si
+                    - [TEXT] No W:10.0 H:11.0 | bg: #898176 | Text(JetBrains Mono 8px w500) | Content: No
+              - [FRAME] Frame 54 W:40.0 H:40.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0
+                - [TEXT] Comida W:40.0 H:10.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: Comida
+                - [INSTANCE] Frame 27/Variante 4 W:40.0 H:30.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:0
+                  - [INSTANCE] main-knob W:30.0 H:30.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #eeebe1 | border: 1px #ddd9ce
+                    - [ELLIPSE] cap-highlight W:21.0 H:23.0
+                    - [FRAME] knob-cap W:17.0 H:17.0 | bg: #eeebe1 | border: 0.4000000059604645px #716962
+                    - [VECTOR] Vector 1 W:8.0 H:5.0 | border: 3px #716962
+                  - [FRAME] Frame 26 W:10.0 H:30.0 | Flex(VERTICAL) P:0,0,0,0 Gap:3
+                    - [TEXT] Si W:10.0 H:11.0 | bg: #898176 | Text(JetBrains Mono 8px w500) | Content: Si
+                    - [TEXT] No W:10.0 H:11.0 | bg: #898176 | Text(JetBrains Mono 8px w500) | Content: No
+            - [FRAME] Frame 60 W:210.0 H:51.3 | Flex(HORIZONTAL) P:0,0,0,0 Gap:28
+              - [INSTANCE] Component 26 W:107.0 H:51.3 | bg: #ffffff
+                - [FRAME] Frame 45 W:33.0 H:51.0 | Flex(VERTICAL) P:0,0,0,0 Gap:8
+                  - [GROUP] Group 4 W:17.0 H:10.0
+                    - [VECTOR] Vector W:17.0 H:10.0 | bg: #898176
+                    - [VECTOR] Vector W:9.3 H:2.0 | bg: #898176
+                  - [INSTANCE] main-knob W:33.0 H:33.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #eeebe1 | border: 1px #ddd9ce
+                    - [ELLIPSE] Ellipse 4 W:2.0 H:2.0 | bg: #a89f90
+                    - [ELLIPSE] Ellipse 3 W:2.0 H:2.0 | bg: #a89f90
+                    - [FRAME] knob-cap W:24.0 H:24.0 | bg: #eeebe1 | border: 0.4000000059604645px #716962
+                      - [ELLIPSE] Ellipse 1 W:5.0 H:5.0 | bg: #ffab96
+                    - [ELLIPSE] cap-highlight W:31.0 H:33.0
+                - [FRAME] Frame 48 W:33.0 H:51.3 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                  - [FRAME] Frame 47 W:11.2 H:14.3
+                    - [GROUP] Group W:11.2 H:14.3
+                      - [VECTOR] Vector W:11.2 H:9.7 | bg: #1e1e1e | border: 0.800000011920929px #898176
+                      - [VECTOR] Vector W:6.4 H:5.7 | bg: #1e1e1e | border: 0.800000011920929px #898176
+                      - [VECTOR] Vector W:4.7 H:9.3 | border: 0.800000011920929px #898176
+                  - [INSTANCE] main-knob W:33.0 H:33.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #eeebe1 | border: 1px #ddd9ce
+                    - [ELLIPSE] Ellipse 4 W:2.0 H:2.0 | bg: #a89f90
+                    - [ELLIPSE] Ellipse 3 W:2.0 H:2.0 | bg: #a89f90
+                    - [FRAME] knob-cap W:24.0 H:24.0 | bg: #eeebe1 | border: 0.4000000059604645px #716962
+                      - [ELLIPSE] Ellipse 1 W:5.0 H:5.0 | bg: #ffab96
+                    - [ELLIPSE] cap-highlight W:31.0 H:33.0
+                - [FRAME] Frame 46 W:33.0 H:50.0 | Flex(VERTICAL) P:0,0,0,0 Gap:5
+                  - [VECTOR] Vector W:12.0 H:12.0 | border: 1.3333333730697632px #898176
+                  - [INSTANCE] main-knob W:33.0 H:33.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #eeebe1 | border: 1px #ddd9ce
+                    - [ELLIPSE] Ellipse 4 W:2.0 H:2.0 | bg: #a89f90
+                    - [ELLIPSE] Ellipse 3 W:2.0 H:2.0 | bg: #a89f90
+                    - [FRAME] knob-cap W:24.0 H:24.0 | bg: #eeebe1 | border: 0.4000000059604645px #716962
+                      - [ELLIPSE] Ellipse 1 W:5.0 H:5.0 | bg: #ffab96
+                    - [ELLIPSE] cap-highlight W:31.0 H:33.0
+              - [INSTANCE] Frame 29 W:74.0 H:44.0 | bg: #eeebe1
+                - [GROUP] Group 1 W:52.0 H:20.0
+                  - [INSTANCE] output-jack-1 W:20.0 H:20.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #898176 | border: 1px #ddd9ce
+                    - [ELLIPSE] Ellipse 2 W:12.0 H:12.0 | bg: #d9d9d9
+                  - [INSTANCE] output-jack-1 W:20.0 H:20.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #898176 | border: 1px #ddd9ce
+                    - [ELLIPSE] Ellipse 2 W:12.0 H:12.0 | bg: #d9d9d9
+                - [RECTANGLE] Rectangle 2 W:87.0 H:16.0 | bg: #423e3d
+                - [TEXT] Salisdas W:52.0 H:14.0 | bg: #ffffff | Text(Satori TRIAL 12px w700) | Content: Salisdas
+    - [FRAME] status-legend-panel W:419.0 H:228.0 | bg: #fdfaf2
+      - [FRAME] Frame 96 W:400.0 H:216.0 | Flex(VERTICAL) P:0,0,0,0 Gap:1
+        - [INSTANCE] Component 15 W:219.0 H:17.0 | bg: #ffffff
+          - [INSTANCE] Component 1 W:59.0 H:16.0 | bg: #ffffff
+            - [RECTANGLE] Rectangle 1 W:13.0 H:12.0 | bg: #898176
+            - [VECTOR] Vector 1 W:59.0 H:0.0 | border: 1px #898176
+            - [TEXT] 1 W:8.0 H:13.0 | bg: #fdfaf2 | Text(JetBrains Mono 12px w500) | Content: 1
+            - [TEXT] módulo W:45.0 H:16.0 | bg: #898176 | Text(JetBrains Mono 12px w500) | Content: módulo
+          - [TEXT] CONSUMOS CULTURALES |||||| W:196.0 H:16.0 | bg: #a89f90 | Text(Satori TRIAL 12px w100) | Content: CONSUMOS CULTURALES ||||||
+        - [FRAME] Frame 95 W:379.0 H:198.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:30
+          - [FRAME] Frame 64 W:101.0 H:198.0
+            - [INSTANCE] Component 32 W:89.0 H:94.0 | bg: #ffffff
+              - [INSTANCE] Component 30 W:33.0 H:94.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #ffffff
+                - [INSTANCE] Component 11 W:33.0 H:47.0 | bg: #ffffff
+                  - [INSTANCE] main-knob W:33.0 H:33.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #eeebe1 | border: 1px #ddd9ce
+                    - [ELLIPSE] Ellipse 4 W:2.0 H:2.0 | bg: #a89f90
+                    - [ELLIPSE] Ellipse 3 W:2.0 H:2.0 | bg: #a89f90
+                    - [FRAME] knob-cap W:24.0 H:24.0 | bg: #eeebe1 | border: 0.4000000059604645px #716962
+                      - [ELLIPSE] Ellipse 1 W:5.0 H:5.0 | bg: #ffab96
+                    - [ELLIPSE] cap-highlight W:31.0 H:33.0
+                  - [TEXT] Perfeccionismo W:75.0 H:12.0 | bg: #5c5451 | Text(JetBrains Mono 8px w400) | Content: Presión
+                - [INSTANCE] Component 27 W:33.0 H:47.0 | bg: #ffffff
+                  - [INSTANCE] main-knob W:33.0 H:33.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #eeebe1 | border: 1px #ddd9ce
+                    - [ELLIPSE] Ellipse 4 W:2.0 H:2.0 | bg: #a89f90
+                    - [ELLIPSE] Ellipse 3 W:2.0 H:2.0 | bg: #a89f90
+                    - [FRAME] knob-cap W:24.0 H:24.0 | bg: #eeebe1 | border: 0.4000000059604645px #716962
+                      - [ELLIPSE] Ellipse 1 W:5.0 H:5.0 | bg: #ffab96
+                    - [ELLIPSE] cap-highlight W:31.0 H:33.0
+                  - [TEXT] Perfeccionismo W:75.0 H:12.0 | bg: #5c5451 | Text(JetBrains Mono 8px w400) | Content: Planificar
+              - [INSTANCE] Component 31 W:33.0 H:94.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #ffffff
+                - [INSTANCE] Component 11 W:33.0 H:47.0 | bg: #ffffff
+                  - [INSTANCE] main-knob W:33.0 H:33.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #eeebe1 | border: 1px #ddd9ce
+                    - [ELLIPSE] Ellipse 4 W:2.0 H:2.0 | bg: #a89f90
+                    - [ELLIPSE] Ellipse 3 W:2.0 H:2.0 | bg: #a89f90
+                    - [FRAME] knob-cap W:24.0 H:24.0 | bg: #eeebe1 | border: 0.4000000059604645px #716962
+                      - [ELLIPSE] Ellipse 1 W:5.0 H:5.0 | bg: #ffab96
+                    - [ELLIPSE] cap-highlight W:31.0 H:33.0
+                  - [TEXT] Perfeccionismo W:75.0 H:12.0 | bg: #5c5451 | Text(JetBrains Mono 8px w400) | Content: Confianza
+                - [INSTANCE] Component 27 W:33.0 H:47.0 | bg: #ffffff
+                  - [INSTANCE] main-knob W:33.0 H:33.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #eeebe1 | border: 1px #ddd9ce
+                    - [ELLIPSE] Ellipse 4 W:2.0 H:2.0 | bg: #a89f90
+                    - [ELLIPSE] Ellipse 3 W:2.0 H:2.0 | bg: #a89f90
+                    - [FRAME] knob-cap W:24.0 H:24.0 | bg: #eeebe1 | border: 0.4000000059604645px #716962
+                      - [ELLIPSE] Ellipse 1 W:5.0 H:5.0 | bg: #ffab96
+                    - [ELLIPSE] cap-highlight W:31.0 H:33.0
+                  - [TEXT] Perfeccionismo W:75.0 H:12.0 | bg: #5c5451 | Text(JetBrains Mono 8px w400) | Content: Copararse
+            - [INSTANCE] Component 29 W:161.0 H:94.0 | bg: #ffffff
+              - [INSTANCE] main-knob/Variante 3 W:64.0 H:64.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #eeebe1 | border: 1px #ddd9ce
+                - [LINE] Line 7 W:4.0 H:0.0 | border: 1px #898176
+                - [FRAME] knob-cap W:52.0 H:52.0 | bg: #eeebe1 | border: 0.4000000059604645px #716962
+                  - [ELLIPSE] cap-highlight W:44.0 H:36.0
+                  - [FRAME] indicator-wedge W:10.0 H:48.0 | bg: #eeebe1
+                    - [ELLIPSE] Ellipse 1 W:7.0 H:7.0 | bg: #ff9479
+                - [LINE] Line 5 W:2.8 H:2.8 | border: 1px #898176
+                - [LINE] Line 1 W:2.8 H:2.8 | border: 1px #898176
+                - [LINE] Line 6 W:0.0 H:4.0 | border: 1px #898176
+                - [LINE] Line 7 W:4.0 H:0.0 | border: 1px #898176
+                - [LINE] Line 8 W:4.0 H:0.0 | border: 1px #898176
+              - [TEXT] A veces W:34.0 H:14.0 | bg: #898176 | Text(JetBrains Mono 8px w400) | Content: A veces
+              - [TEXT] -/+ W:15.0 H:14.0 | bg: #898176 | Text(JetBrains Mono 8px w400) | Content: -/+
+              - [TEXT] +/- W:15.0 H:14.0 | bg: #898176 | Text(JetBrains Mono 8px w400) | Content: +/-
+              - [TEXT] Siepre W:29.0 H:14.0 | bg: #898176 | Text(JetBrains Mono 8px w400) | Content: Siepre
+              - [TEXT] Nunca W:24.0 H:14.0 | bg: #898176 | Text(JetBrains Mono 8px w400) | Content: Nunca
+              - [GROUP] Group 5 W:127.0 H:14.0
+                - [RECTANGLE] Rectangle 6 W:78.0 H:11.0 | bg: #423e3d
+                - [TEXT] BOCET A MANO W:67.0 H:14.0 | bg: #fdfaf2 | Text(Satori TRIAL 8px w700) | Content: BOCET A MANO
+                - [LINE] Line 24 W:49.0 H:0.0 | border: 1px #423e3d
+          - [FRAME] Frame 71 W:250.0 H:182.0 | Flex(VERTICAL) P:0,0,0,0 Gap:13
+            - [FRAME] Frame 68 W:250.0 H:66.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:12
+              - [FRAME] Frame 67 W:114.0 H:66.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:18
+                - [INSTANCE] Component 3 W:48.0 H:62.0 | bg: #ffffff
+                  - [INSTANCE] stepper-1 W:48.0 H:48.0
+                    - [FRAME] Frame 23 W:40.0 H:48.0 | Flex(VERTICAL) P:12,9,12,9 Gap:10 | bg: #eeebe1 | border: 1px #ddd9ce
+                      - [TEXT] 07 W:26.0 H:25.0 | bg: #898176 | Text(Plus Jakarta Sans 20px w400) | Content: 07
+                    - [REGULAR_POLYGON] increment W:6.0 H:6.0 | bg: #716962
+                    - [REGULAR_POLYGON] decrement W:6.0 H:6.0 | bg: #716962
+                  - [TEXT] Texto W:62.0 H:14.0 | bg: #5c5451 | Text(JetBrains Mono 8px w300) | Content: sueño
+                - [INSTANCE] Component 2 W:48.0 H:62.0 | bg: #ffffff
+                  - [INSTANCE] stepper-1 W:48.0 H:48.0
+                    - [FRAME] Frame 23 W:40.0 H:48.0 | Flex(VERTICAL) P:12,9,12,9 Gap:10 | bg: #eeebe1 | border: 1px #ddd9ce
+                      - [TEXT] 07 W:26.0 H:25.0 | bg: #898176 | Text(Plus Jakarta Sans 20px w400) | Content: 07
+                    - [REGULAR_POLYGON] increment W:6.0 H:6.0 | bg: #716962
+                    - [REGULAR_POLYGON] decrement W:6.0 H:6.0 | bg: #716962
+                  - [TEXT] Texto W:62.0 H:14.0 | bg: #5c5451 | Text(JetBrains Mono 8px w300) | Content: entregas
+              - [FRAME] Frame 66 W:124.0 H:50.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:2
+                - [INSTANCE] Frame 56 W:42.0 H:40.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0
+                  - [TEXT] Procrastinación W:61.0 H:10.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: Procrast.
+                  - [INSTANCE] Frame 27/Variante 2 W:42.0 H:30.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:0
+                    - [INSTANCE] main-knob W:30.0 H:30.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #eeebe1 | border: 1px #ddd9ce
+                      - [ELLIPSE] cap-highlight W:21.0 H:23.0
+                      - [FRAME] knob-cap W:17.0 H:17.0 | bg: #eeebe1 | border: 0.4000000059604645px #716962
+                      - [VECTOR] Vector 1 W:8.0 H:5.0 | border: 3px #716962
+                    - [FRAME] Frame 26 W:10.0 H:30.0 | Flex(VERTICAL) P:0,0,0,0 Gap:3
+                      - [TEXT] Si W:10.0 H:11.0 | bg: #898176 | Text(JetBrains Mono 8px w500) | Content: Si
+                      - [TEXT] No W:10.0 H:11.0 | bg: #898176 | Text(JetBrains Mono 8px w500) | Content: No
+                - [FRAME] Frame 65 W:64.0 H:50.0 | Flex(GRID) P:0,0,0,0 Gap:0
+                  - [FRAME] Frame 98 W:37.0 H:52.0 | Flex(VERTICAL) P:0,0,0,0 Gap:5
+                    - [INSTANCE] Frame 58 W:37.0 H:14.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:4
+                      - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                        - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+                      - [TEXT] 18-22 W:21.0 H:14.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: RRSS
+                    - [INSTANCE] Frame 59 W:37.0 H:14.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:4
+                      - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                        - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+                      - [TEXT] 18-22 W:25.0 H:14.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: Tareas
+                    - [INSTANCE] Frame 60 W:37.0 H:14.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:4
+                      - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                        - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+                      - [TEXT] 18-22 W:19.0 H:14.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: Gym
+                  - [FRAME] Frame 99 W:35.0 H:52.0 | Flex(VERTICAL) P:0,0,0,0 Gap:5
+                    - [INSTANCE] Frame 58 W:35.0 H:14.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:4
+                      - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                        - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+                      - [TEXT] 18-22 W:26.0 H:14.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: Dormir
+                    - [INSTANCE] Frame 59 W:35.0 H:14.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:4
+                      - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                        - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+                      - [TEXT] 18-22 W:25.0 H:14.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: Orden
+                    - [INSTANCE] Frame 60 W:35.0 H:14.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:4
+                      - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                        - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+                      - [TEXT] 18-22 W:23.0 H:14.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: Otros
+                  - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                    - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+            - [FRAME] Frame 70 W:250.0 H:98.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:6
+              - [INSTANCE] fader-2 W:16.0 H:71.0
+                - [TEXT] Txto W:10.0 H:53.0 | bg: #5c5451 | Text(JetBrains Mono 8px w300) | Content: Ansiedad
+                - [FRAME] Frame 28 W:16.0 H:71.0 | bg: #efebe2
+                - [FRAME] indicator-wedge W:10.0 H:61.0 | bg: #eeebe1
+                  - [ELLIPSE] Ellipse 1 W:7.0 H:7.0 | bg: #ff9479
+              - [FRAME] Frame 69 W:227.0 H:103.0 | Flex(VERTICAL) P:0,0,0,0 Gap:21
+                - [INSTANCE] Component 14 W:191.0 H:34.0 | bg: #ffffff
+                  - [INSTANCE] fader-2 W:191.0 H:22.0 | bg: #efebe2
+                    - [RECTANGLE] track W:71.0 H:14.0
+                    - [FRAME] indicator-wedge W:178.0 H:14.0 | bg: #eeebe1
+                      - [ELLIPSE] Ellipse 1 W:10.0 H:10.0 | bg: #ff9479
+                      - [TEXT] 1 W:6.0 H:14.0 | bg: #a89f90 | Text(JetBrains Mono 10px w400) | Content: 1
+                      - [TEXT] 2 W:6.0 H:14.0 | bg: #a89f90 | Text(JetBrains Mono 10px w400) | Content: 2
+                      - [TEXT] 3 W:6.0 H:14.0 | bg: #a89f90 | Text(JetBrains Mono 10px w400) | Content: 3
+                      - [TEXT] 4 W:6.0 H:14.0 | bg: #a89f90 | Text(JetBrains Mono 10px w400) | Content: 4
+                      - [TEXT] 5 W:6.0 H:14.0 | bg: #a89f90 | Text(JetBrains Mono 10px w400) | Content: 5
+                      - [TEXT] 6 W:6.0 H:14.0 | bg: #a89f90 | Text(JetBrains Mono 10px w400) | Content: 6
+                  - [TEXT] Hs RRSS x día W:66.0 H:12.0 | bg: #a89f90 | Text(JetBrains Mono 8px w300) | Content: Hs RRSS x día
+                - [FRAME] Frame 60 W:227.0 H:44.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:7
+                  - [INSTANCE] Frame 57 W:146.0 H:40.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:13
+                    - [FRAME] Frame 56 W:40.0 H:40.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0
+                      - [TEXT] Versiones W:40.0 H:10.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: Emoción
+                      - [INSTANCE] Frame 27/Variante 2 W:40.0 H:30.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:0
+                        - [INSTANCE] main-knob W:30.0 H:30.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #eeebe1 | border: 1px #ddd9ce
+                          - [ELLIPSE] cap-highlight W:21.0 H:23.0
+                          - [FRAME] knob-cap W:17.0 H:17.0 | bg: #eeebe1 | border: 0.4000000059604645px #716962
+                          - [VECTOR] Vector 1 W:8.0 H:5.0 | border: 3px #716962
+                        - [FRAME] Frame 26 W:10.0 H:30.0 | Flex(VERTICAL) P:0,0,0,0 Gap:3
+                          - [TEXT] Si W:10.0 H:11.0 | bg: #898176 | Text(JetBrains Mono 8px w500) | Content: Si
+                          - [TEXT] No W:10.0 H:11.0 | bg: #898176 | Text(JetBrains Mono 8px w500) | Content: No
+                    - [FRAME] Frame 55 W:40.0 H:40.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0
+                      - [TEXT] Notif W:40.0 H:10.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: Técnica
+                      - [INSTANCE] Frame 27/Variante 3 W:40.0 H:30.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:0
+                        - [INSTANCE] main-knob W:30.0 H:30.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #eeebe1 | border: 1px #ddd9ce
+                          - [ELLIPSE] cap-highlight W:21.0 H:23.0
+                          - [FRAME] knob-cap W:17.0 H:17.0 | bg: #eeebe1 | border: 0.4000000059604645px #716962
+                          - [VECTOR] Vector 1 W:8.0 H:5.0 | border: 3px #716962
+                        - [FRAME] Frame 26 W:10.0 H:30.0 | Flex(VERTICAL) P:0,0,0,0 Gap:3
+                          - [TEXT] Si W:10.0 H:11.0 | bg: #898176 | Text(JetBrains Mono 8px w500) | Content: Si
+                          - [TEXT] No W:10.0 H:11.0 | bg: #898176 | Text(JetBrains Mono 8px w500) | Content: No
+                    - [FRAME] Frame 54 W:40.0 H:40.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0
+                      - [TEXT] Comida W:40.0 H:10.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: Síntomas
+                      - [INSTANCE] Frame 27/Variante 4 W:40.0 H:30.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:0
+                        - [INSTANCE] main-knob W:30.0 H:30.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #eeebe1 | border: 1px #ddd9ce
+                          - [ELLIPSE] cap-highlight W:21.0 H:23.0
+                          - [FRAME] knob-cap W:17.0 H:17.0 | bg: #eeebe1 | border: 0.4000000059604645px #716962
+                          - [VECTOR] Vector 1 W:8.0 H:5.0 | border: 3px #716962
+                        - [FRAME] Frame 26 W:10.0 H:30.0 | Flex(VERTICAL) P:0,0,0,0 Gap:3
+                          - [TEXT] Si W:10.0 H:11.0 | bg: #898176 | Text(JetBrains Mono 8px w500) | Content: Si
+                          - [TEXT] No W:10.0 H:11.0 | bg: #898176 | Text(JetBrains Mono 8px w500) | Content: No
+                  - [INSTANCE] Frame 29 W:74.0 H:44.0 | bg: #eeebe1
+                    - [GROUP] Group 1 W:52.0 H:20.0
+                      - [INSTANCE] output-jack-1 W:20.0 H:20.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #898176 | border: 1px #ddd9ce
+                        - [ELLIPSE] Ellipse 2 W:12.0 H:12.0 | bg: #d9d9d9
+                      - [INSTANCE] output-jack-1 W:20.0 H:20.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #898176 | border: 1px #ddd9ce
+                        - [ELLIPSE] Ellipse 2 W:12.0 H:12.0 | bg: #d9d9d9
+                    - [RECTANGLE] Rectangle 2 W:87.0 H:16.0 | bg: #423e3d
+                    - [TEXT] Salisdas W:52.0 H:14.0 | bg: #ffffff | Text(Satori TRIAL 12px w700) | Content: Salisdas
+  - [FRAME] Frame 21 W:832.0 H:698.0 | Flex(VERTICAL) P:0,0,0,0 Gap:8
+    - [FRAME] main-chart-panel W:832.0 H:541.0 | bg: #fdfaf2
+      - [FRAME] Frame 91 W:297.0 H:63.0 | bg: #eeebe1
+        - [TEXT] ¿En qué plataforma consumís más contenido audiovisual? W:130.0 H:24.0 | bg: #2d2d2d | Text(Satori TRIAL 9px w400) | Content: ¿En qué plataforma consumís  m
+        - [TEXT] DO-1 W:49.0 H:14.0 | bg: #000000 | Text(Plus Jakarta Sans 18px w200) | Content: DO-1
+        - [TEXT] Variable seleccionada W:101.0 H:14.0 | bg: #a89f90 | Text(JetBrains Mono 8px w800) | Content: Variable seleccionada
+        - [LINE] Line 1 W:0.0 H:24.0 | border: 1px #000000
+        - [TEXT] 75% W:26.0 H:12.0 | bg: #000000 | Text(Plus Jakarta Sans 12px w400) | Content: 75%
+        - [TEXT] texto red 2026 W:26.0 H:11.0 | bg: #a89f90 | Text(Satori TRIAL 6px w400) | Content: texto red 2026
+        - [ELLIPSE] Ellipse 1 W:40.0 H:40.0 | border: 1px #c2bcaf
+        - [ELLIPSE] Ellipse 2 W:49.0 H:49.0 | border: 2px #898176
+      - [INSTANCE] Frame 29 W:74.0 H:44.0 | bg: #eeebe1
+        - [GROUP] Group 1 W:52.0 H:20.0
+          - [INSTANCE] output-jack-1 W:20.0 H:20.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #898176 | border: 1px #ddd9ce
+            - [ELLIPSE] Ellipse 2 W:12.0 H:12.0 | bg: #d9d9d9
+          - [INSTANCE] output-jack-1 W:20.0 H:20.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #898176 | border: 1px #ddd9ce
+            - [ELLIPSE] Ellipse 2 W:12.0 H:12.0 | bg: #d9d9d9
+        - [RECTANGLE] Rectangle 2 W:87.0 H:16.0 | bg: #423e3d
+        - [TEXT] Salisdas W:52.0 H:14.0 | bg: #ffffff | Text(Satori TRIAL 12px w700) | Content: Salisdas
+    - [FRAME] data-table-panel W:832.0 H:149.0 | bg: #fdfaf2
+      - [FRAME] Frame 89 W:783.0 H:129.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:40
+        - [FRAME] Frame 85 W:102.0 H:108.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0
+          - [INSTANCE] Component 33 W:60.0 H:14.0 | bg: #ffffff
+            - [INSTANCE] group-indicator W:16.0 H:12.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:0
+              - [ELLIPSE] indicator W:12.0 H:12.0 | bg: #a89f90
+            - [TEXT] Promedio W:40.0 H:14.0 | bg: #5c5451 | Text(Satori TRIAL 8px w700) | Content: Promedio
+          - [INSTANCE] Component 18 W:102.0 H:94.0 | bg: #ffffff
+            - [INSTANCE] main-knob W:64.0 H:64.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #eeebe1 | border: 1px #ddd9ce
+              - [FRAME] knob-cap W:52.0 H:52.0 | bg: #eeebe1 | border: 0.4000000059604645px #716962
+                - [FRAME] indicator-wedge W:10.0 H:48.0 | bg: #eeebe1
+                  - [ELLIPSE] Ellipse 1 W:7.0 H:7.0 | bg: #ff9479
+                - [TEXT] Texto W:0.0 H:14.0 | bg: #000000 | Text(JetBrains Mono 10px w400) | Content: 
+                - [TEXT] Texto W:30.0 H:14.0 | bg: #000000 | Text(JetBrains Mono 10px w400) | Content: Texto
+                - [TEXT] Texto W:30.0 H:14.0 | bg: #000000 | Text(JetBrains Mono 10px w400) | Content: Texto
+              - [LINE] Line 5 W:2.8 H:2.8 | border: 1px #898176
+              - [LINE] Line 1 W:2.8 H:2.8 | border: 1px #898176
+              - [LINE] Line 6 W:0.0 H:4.0 | border: 1px #898176
+            - [TEXT] Largo W:24.0 H:14.0 | bg: #898176 | Text(JetBrains Mono 8px w400) | Content: Largo
+            - [TEXT] Corto W:24.0 H:14.0 | bg: #898176 | Text(JetBrains Mono 8px w400) | Content: Corto
+            - [TEXT] Medio W:24.0 H:14.0 | bg: #898176 | Text(JetBrains Mono 8px w400) | Content: Medio
+            - [RECTANGLE] Rectangle 5 W:53.0 H:11.0 | bg: #423e3d
+            - [TEXT] FORMATO W:42.0 H:14.0 | bg: #fdfaf2 | Text(Satori TRIAL 8px w700) | Content: FORMATO
+            - [LINE] Line 23 W:49.0 H:0.0 | border: 1px #423e3d
+        - [FRAME] Frame 84 W:56.0 H:116.0 | Flex(VERTICAL) P:0,0,0,0 Gap:16
+          - [INSTANCE] Component 33 W:60.0 H:14.0 | bg: #ffffff
+            - [INSTANCE] group-indicator W:16.0 H:12.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:0
+              - [ELLIPSE] indicator W:12.0 H:12.0 | bg: #a89f90
+            - [TEXT] Promedio W:22.0 H:14.0 | bg: #5c5451 | Text(Satori TRIAL 8px w700) | Content: Edad
+          - [FRAME] Frame 83 W:56.0 H:86.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+            - [INSTANCE] Frame 58 W:35.0 H:14.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:4
+              - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+              - [TEXT] 18-22 W:23.0 H:14.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: 18-22
+            - [INSTANCE] Frame 60 W:36.0 H:14.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:4
+              - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+              - [TEXT] 18-22 W:24.0 H:14.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: 23-25
+            - [INSTANCE] Frame 61 W:36.0 H:14.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:4
+              - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+              - [TEXT] 18-22 W:24.0 H:14.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: 26-28
+            - [INSTANCE] Frame 62 W:36.0 H:14.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:4
+              - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+              - [TEXT] 18-22 W:24.0 H:14.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: 29-32
+            - [INSTANCE] Frame 59 W:27.0 H:14.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:4
+              - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+              - [TEXT] 18-22 W:15.0 H:14.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: +33
+        - [FRAME] Frame 87 W:43.0 H:117.0 | Flex(VERTICAL) P:0,0,0,0 Gap:13
+          - [FRAME] Frame 88 W:43.0 H:117.0 | Flex(VERTICAL) P:0,0,0,0 Gap:13
+            - [FRAME] Frame 82 W:43.0 H:52.0 | Flex(VERTICAL) P:0,0,0,0 Gap:8
+              - [INSTANCE] Component 33 W:60.0 H:14.0 | bg: #ffffff
+                - [INSTANCE] group-indicator W:16.0 H:12.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:0
+                  - [ELLIPSE] indicator W:12.0 H:12.0 | bg: #a89f90
+                - [TEXT] Promedio W:30.0 H:14.0 | bg: #5c5451 | Text(Satori TRIAL 8px w700) | Content: Género
+              - [INSTANCE] Frame 27 W:43.0 H:30.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:0
+                - [INSTANCE] main-knob W:30.0 H:30.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #eeebe1 | border: 1px #ddd9ce
+                  - [ELLIPSE] cap-highlight W:21.0 H:23.0
+                  - [FRAME] knob-cap W:17.0 H:17.0 | bg: #eeebe1 | border: 0.4000000059604645px #716962
+                  - [VECTOR] Vector 1 W:8.0 H:5.0 | border: 3px #716962
+                - [FRAME] Frame 26 W:10.0 H:30.0 | Flex(VERTICAL) P:0,0,0,0 Gap:3
+                  - [TEXT] Si W:10.0 H:11.0 | bg: #898176 | Text(JetBrains Mono 8px w500) | Content: Si
+                  - [TEXT] No W:10.0 H:11.0 | bg: #898176 | Text(JetBrains Mono 8px w500) | Content: No
+            - [FRAME] Frame 81 W:43.0 H:52.0 | Flex(VERTICAL) P:0,0,0,0 Gap:8
+              - [INSTANCE] Component 33 W:60.0 H:14.0 | bg: #ffffff
+                - [INSTANCE] group-indicator W:16.0 H:12.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:0
+                  - [ELLIPSE] indicator W:12.0 H:12.0 | bg: #a89f90
+                - [TEXT] Promedio W:18.0 H:14.0 | bg: #5c5451 | Text(Satori TRIAL 8px w700) | Content: País
+              - [INSTANCE] Frame 28 W:43.0 H:30.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:0
+                - [INSTANCE] main-knob W:30.0 H:30.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #eeebe1 | border: 1px #ddd9ce
+                  - [ELLIPSE] cap-highlight W:21.0 H:23.0
+                  - [FRAME] knob-cap W:17.0 H:17.0 | bg: #eeebe1 | border: 0.4000000059604645px #716962
+                  - [VECTOR] Vector 1 W:8.0 H:5.0 | border: 3px #716962
+                - [FRAME] Frame 26 W:10.0 H:30.0 | Flex(VERTICAL) P:0,0,0,0 Gap:3
+                  - [TEXT] Si W:10.0 H:11.0 | bg: #898176 | Text(JetBrains Mono 8px w500) | Content: Si
+                  - [TEXT] No W:10.0 H:11.0 | bg: #898176 | Text(JetBrains Mono 8px w500) | Content: No
+        - [FRAME] Frame 80 W:186.0 H:129.0 | Flex(VERTICAL) P:0,0,0,0 Gap:16
+          - [INSTANCE] Component 33 W:60.0 H:14.0 | bg: #ffffff
+            - [INSTANCE] group-indicator W:16.0 H:12.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:0
+              - [ELLIPSE] indicator W:12.0 H:12.0 | bg: #a89f90
+            - [TEXT] Promedio W:32.0 H:14.0 | bg: #5c5451 | Text(Satori TRIAL 8px w700) | Content: Trabajo
+          - [FRAME] Frame 79 W:131.0 H:99.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:36
+            - [INSTANCE] Frame 29 W:40.0 H:30.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:0
+              - [INSTANCE] main-knob W:30.0 H:30.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #eeebe1 | border: 1px #ddd9ce
+                - [ELLIPSE] cap-highlight W:21.0 H:23.0
+                - [FRAME] knob-cap W:17.0 H:17.0 | bg: #eeebe1 | border: 0.4000000059604645px #716962
+                - [VECTOR] Vector 1 W:8.0 H:5.0 | border: 3px #716962
+              - [FRAME] Frame 26 W:10.0 H:30.0 | Flex(VERTICAL) P:0,0,0,0 Gap:3
+                - [TEXT] Si W:10.0 H:11.0 | bg: #898176 | Text(JetBrains Mono 8px w500) | Content: Si
+                - [TEXT] No W:10.0 H:11.0 | bg: #898176 | Text(JetBrains Mono 8px w500) | Content: No
+            - [FRAME] Frame 78 W:8.0 H:99.0 | Flex(VERTICAL) P:0,0,0,0 Gap:5
+              - [TEXT] Horas W:25.0 H:10.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: Horas
+              - [INSTANCE] Frame 58 W:21.0 H:14.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:4
+                - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                  - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+                - [TEXT] 18-22 W:9.0 H:14.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: -4
+              - [INSTANCE] Frame 59 W:27.0 H:14.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:4
+                - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                  - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+                - [TEXT] 18-22 W:15.0 H:14.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: 4-6
+              - [INSTANCE] Frame 60 W:27.0 H:14.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:4
+                - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                  - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+                - [TEXT] 18-22 W:15.0 H:14.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: 6-8
+              - [INSTANCE] Frame 61 W:22.0 H:14.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:4
+                - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                  - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+                - [TEXT] 18-22 W:10.0 H:14.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: +8
+              - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+            - [FRAME] Frame 77 W:8.0 H:67.0 | Flex(VERTICAL) P:0,0,0,0 Gap:5
+              - [TEXT] Modalidad W:45.0 H:10.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: Modalidad
+              - [INSTANCE] Frame 58 W:52.0 H:14.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:4
+                - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                  - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+                - [TEXT] 18-22 W:40.0 H:14.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: Presencial
+              - [INSTANCE] Frame 58 W:41.0 H:14.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:4
+                - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                  - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+                - [TEXT] 18-22 W:29.0 H:14.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: Hibrido
+              - [INSTANCE] Frame 58 W:43.0 H:14.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:4
+                - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                  - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+                - [TEXT] 18-22 W:31.0 H:14.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: Remoto
+        - [FRAME] Frame 76 W:20.0 H:82.0 | Flex(VERTICAL) P:0,0,0,0 Gap:16
+          - [INSTANCE] Component 33 W:60.0 H:14.0 | bg: #ffffff
+            - [INSTANCE] group-indicator W:16.0 H:12.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:0
+              - [ELLIPSE] indicator W:12.0 H:12.0 | bg: #a89f90
+            - [TEXT] Promedio W:21.0 H:14.0 | bg: #5c5451 | Text(Satori TRIAL 8px w700) | Content: Viaje
+          - [FRAME] Frame 75 W:8.0 H:52.0 | Flex(VERTICAL) P:0,0,0,0 Gap:5
+            - [INSTANCE] Frame 58 W:19.0 H:14.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:4
+              - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+              - [TEXT] 18-22 W:7.0 H:14.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: -1
+            - [INSTANCE] Frame 58 W:25.0 H:14.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:4
+              - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+              - [TEXT] 18-22 W:13.0 H:14.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: 1-2
+            - [INSTANCE] Frame 58 W:22.0 H:14.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:4
+              - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+              - [TEXT] 18-22 W:10.0 H:14.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: +2
+        - [FRAME] Frame 74 W:32.0 H:82.0 | Flex(VERTICAL) P:0,0,0,0 Gap:16
+          - [INSTANCE] Component 33 W:60.0 H:14.0 | bg: #ffffff
+            - [INSTANCE] group-indicator W:16.0 H:12.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:0
+              - [ELLIPSE] indicator W:12.0 H:12.0 | bg: #a89f90
+            - [TEXT] Promedio W:37.0 H:14.0 | bg: #5c5451 | Text(Satori TRIAL 8px w700) | Content: Vivienda
+          - [FRAME] Frame 73 W:8.0 H:52.0 | Flex(VERTICAL) P:0,0,0,0 Gap:5
+            - [INSTANCE] Frame 58 W:39.0 H:14.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:4
+              - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+              - [TEXT] 18-22 W:27.0 H:14.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: Familia
+            - [INSTANCE] Frame 59 W:34.0 H:14.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:4
+              - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+              - [TEXT] 18-22 W:22.0 H:14.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: Solos
+            - [INSTANCE] Frame 60 W:52.0 H:14.0 | Flex(HORIZONTAL) P:0,0,0,0 Gap:4
+              - [INSTANCE] status-indicators W:8.0 H:8.0 | Flex(VERTICAL) P:0,0,0,0 Gap:4
+                - [RECTANGLE] status-2 W:8.0 H:8.0 | bg: #eeebe1
+              - [TEXT] 18-22 W:40.0 H:14.0 | bg: #898176 | Text(Plus Jakarta Sans 8px w300) | Content: Con pares
+        - [FRAME] Frame 86 W:121.0 H:123.0 | Flex(VERTICAL) P:0,0,0,0 Gap:34
+          - [INSTANCE] Component 38 W:121.0 H:38.0 | bg: #ffffff
+            - [INSTANCE] Component 35 W:39.0 H:38.0 | bg: #ffffff
+              - [INSTANCE] Frame 59 W:24.0 H:24.0 | Flex(HORIZONTAL) P:4,3,3,3 Gap:10 | bg: #eeebe1 | border: 1px #ddd9ce
+              - [TEXT] Colectivo W:34.0 H:14.0 | bg: #5c5451 | Text(Satori TRIAL 7px w700) | Content: Colectivo
+            - [INSTANCE] Component 36 W:39.0 H:38.0 | bg: #ffffff
+              - [INSTANCE] Frame 59 W:24.0 H:24.0 | Flex(HORIZONTAL) P:4,3,3,3 Gap:10 | bg: #eeebe1 | border: 1px #ddd9ce
+              - [TEXT] Colectivo W:35.0 H:14.0 | bg: #5c5451 | Text(Satori TRIAL 7px w700) | Content: Indivisual
+            - [INSTANCE] Component 37 W:39.0 H:38.0 | bg: #ffffff
+              - [INSTANCE] Frame 59 W:24.0 H:24.0 | Flex(HORIZONTAL) P:4,3,3,3 Gap:10 | bg: #eeebe1 | border: 1px #ddd9ce
+              - [TEXT] Colectivo W:46.0 H:14.0 | bg: #5c5451 | Text(Satori TRIAL 7px w700) | Content: Especulativo
+          - [INSTANCE] Component 34 W:80.0 H:51.0 | bg: #ffffff
+            - [INSTANCE] Frame 24 W:80.0 H:40.0 | Flex(VERTICAL) P:0,0,0,0 Gap:10
+              - [FRAME] display W:80.0 H:40.0 | Flex(VERTICAL) P:0,0,0,0 Gap:0 | bg: #fdfaf2
+                - [TEXT] 146 W:32.0 H:25.0 | bg: #898176 | Text(Plus Jakarta Sans 20px w400) | Content: 146
+            - [TEXT] Usuarios W:36.0 H:11.0 | bg: #716962 | Text(Satori TRIAL 8px w700) | Content: Usuarios
