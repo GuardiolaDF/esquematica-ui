@@ -16,7 +16,7 @@ const LBL_V = "absolute right-[100%] mr-[4px] top-1/2 -translate-y-1/2 -rotate-9
 const Module3 = () => {
   const { values, averages, mode, showGrid, routingOutputs } = useAppContext();
   
-  // Determinar si el switch de procrastinación está activo
+  // Determinar si el switch de procrastinaciÃ³n estÃ¡ activo
   // En modo colectivo, si el promedio es > 0, lo consideramos activo para iluminar el banco de pads
   const procIsOn = mode === 'colectivo' ? (averages['mod3-8'] > 0) : (values['mod3-8'] === 100 || values['mod3-8'] === true);
 
@@ -25,147 +25,143 @@ const Module3 = () => {
 
   return (
     <ModuleShell disabled={mode === 'colectivo'}>
-      {/* GRILLA DIRECTA 12x7 */}
-      <div className="w-full h-full grid grid-cols-12 grid-rows-7 p-[8px] gap-[2px] relative">
+      <div className="w-full h-full flex flex-col p-[12px] gap-[4px] text-synth-ink-base">
         
-        {/* GRILLA DE COORDENADAS */}
-        {showGrid && rows.map((row, rIdx) => 
-          cols.map((col, cIdx) => (
-            <div 
-              key={`coord-m3-${col}${row}`} 
-              style={{ gridColumnStart: cIdx + 1, gridRowStart: rIdx + 1 }}
-              className="bg-[#FF00FF]/15 flex items-start justify-start p-[2px] pointer-events-none rounded-[1px] z-0"
-            >
-              <span className="text-[9px] font-mono font-bold text-[#FF00FF] opacity-70 leading-none">
-                {col}{row}
-              </span>
-            </div>
-          ))
-        )}
-
-        {/* --- COMPONENTES DEL MÓDULO 3 --- */}
-        {[
-          { c: 1, r: 2, l: 'BAJO PRESIÓN' }, { c: 3, r: 2, l: 'CONFIANZA' },
-          { c: 1, r: 4, l: 'ÚLTIMO MOMENTO' }, { c: 3, r: 4, l: 'COMPARACIÓN' }
-        ].map((pos, i) => (
-          <div key={`mknob-${i}`} style={{ gridColumnStart: pos.c, gridColumnEnd: pos.c + 2, gridRowStart: pos.r }} className="flex items-center justify-center z-10">
-            <Knob label={pos.l} labelClass={LBL_UP} sizeClass="w-[38%]" initialValue={50} compId={`mod3-${1 + i}`} />
+        {/* HEADER */}
+        <div className="flex items-center gap-2">
+          <div className="flex bg-synth-module border border-synth-border-base items-center px-1">
+            <div className="w-[13px] h-[12px] bg-synth-border-base mr-1"></div>
+            <span className="text-synth-ink-black text-[12px] font-mono font-medium leading-none py-[2px]">3 módulo</span>
           </div>
-        ))}
-
-        {/* BIG KNOB: Cols B-C (2-3), Rows 6-7. */}
-        <div className="col-start-2 col-span-2 row-start-6 row-span-2 flex items-center justify-center z-10 pointer-events-none -translate-y-[25%]">
-          <div className="w-[80%] aspect-square rounded-full flex items-start justify-center pointer-events-auto relative">
-             <RotarySwitch 
-               label="EMOCIÓN DOMINANTE" 
-               labelClass={LBL_UP} 
-               sizeClass="w-full h-full" 
-               compId="mod3-5" 
-               optionLabels={['ENTUSIASMO', 'FLOW', 'ANSIEDAD', 'ESTRÉS', 'FRUSTRACIÓN']}
-             />
-          </div>
+          <span className="text-synth-ink-light font-display text-[12px] tracking-widest uppercase">
+            SALUD MENTAL ||||||
+          </span>
         </div>
 
-        {/* 2 SCREENS + ARROWS: Cols E-F, G-H (5-6, 7-8), Rows 2-3 (2 módulos de alto) */}
-        {[
-          { col: 5, l: 'HS SUEÑO' }, 
-          { col: 7, l: 'PRE-ENTREGA' }
-        ].map((item, i) => (
-          <div key={`screen-${i}`} style={{ gridColumnStart: item.col, gridColumnEnd: item.col + 2, gridRowStart: 2, gridRowEnd: 4 }} className="flex flex-row items-center justify-between z-10 w-full h-full pr-1">
-            <Counter label={item.l} labelClass={LBL_UP} compId={`mod3-${6 + i}`} />
-          </div>
-        ))}
-
-        {/* 1 ISOLATED MINI SWITCH: Centrado entre I2, J2, I3, J3 (Cols 9-10, Rows 2-3) */}
-        <div className="col-start-9 col-span-2 row-start-2 row-span-2 flex items-center justify-center z-10">
-          <div className="w-1/2 flex items-center justify-center relative">
-             <ToggleSwitch label="PROCRASTINÁS" labelClass={LBL_UP} sizeClass="w-[45%]" compId="mod3-8" />
-          </div>
-        </div>
-
-        {/* 6 TINY BUTTONS (PROCRASTINATION METHODS): Cols K-L (11-12). Repartidos entre la fila 2 y 3 (Arriba, medio, y abajo) */}
-        {[11, 12].map((col, colIdx) => (
-          <div 
-            key={`col-btns-${col}`} 
-            style={{ gridColumnStart: col, gridRowStart: 2, gridRowEnd: 4 }} 
-            className={`flex flex-col justify-between items-start z-10 w-full h-full transition-all duration-300 ${procIsOn ? 'opacity-100' : 'opacity-30 pointer-events-none'}`}
-          >
-            {[
-              { l: colIdx === 0 ? 'RRSS' : 'DORMIR', i: 0 },
-              { l: colIdx === 0 ? 'ORDENAR' : 'TAREAS', i: 1 },
-              { l: colIdx === 0 ? 'GYM' : 'OTROS', i: 2 }
-            ].map(btn => (
-              <LedButton 
-                key={btn.l}
-                baseClass="w-[30%] aspect-square rounded-[20%]" 
-                label={btn.l} 
-                labelClass={LBL_UP} 
-                compId={`mod3-${9 + (colIdx * 3) + btn.i}`} 
-              />
-            ))}
-          </div>
-        ))}
-
-        {/* HORIZONTAL SLIDER: Cols G-K (7-11), Row 5. */}
-        <div className="col-start-7 col-span-5 row-start-5 flex items-start justify-start z-10 mt-1 relative">
-          <Fader 
-            orientation="horizontal"
-            initialValue={50}
-            trackClass="w-full h-[50%] bg-[#111] rounded-full shadow-inner relative flex items-center mt-2"
-            thumbClass="h-full aspect-square bg-[#FFF] rounded-full absolute shadow-md z-20"
-            label="MOMENTO FRUSTRACIÓN"
-            labelClass={LBL_UP}
-            compId="mod3-15"
-          />
-          {/* Etiquetas del eje temporal */}
-          <span className="absolute left-0 -bottom-[10px] text-[5px] text-[#888] font-bold">INICIO</span>
-          <span className="absolute right-0 -bottom-[10px] text-[5px] text-[#888] font-bold">ENTREGA</span>
-        </div>
-
-        {/* VERTICAL SLIDER: Col E (5), Rows 4-6. Alineado a la derecha */}
-        <div className="col-start-5 col-span-1 row-start-4 row-span-3 flex items-center justify-end z-10">
-          <Fader 
-            orientation="vertical"
-            initialValue={50}
-            trackClass="w-[30%] h-full bg-[#E5E5E5] rounded-full shadow-inner relative flex justify-center"
-            thumbClass="w-full aspect-square bg-[#888] rounded-full absolute shadow-md"
-            label="ANSIEDAD"
-            labelClass={LBL_V}
-            compId="mod3-16"
-          />
-        </div>
-
-        {/* 3 SWITCHES (Bottom): Cols G-I (7-9), Row 6 */}
-        {[
-          { c: 7, l: 'EMOCIÓN RESULTADO' },
-          { c: 8, l: 'TÉCNICAS CONC.' },
-          { c: 9, l: 'SÍNTOMAS FÍS.' }
-        ].map((item, i) => (
-          <div key={`switch-b-${item.c}`} style={{ gridColumnStart: item.c, gridRowStart: 6 }} className="flex items-end justify-start z-10 pb-1 pl-1">
-            <ToggleSwitch label={item.l} labelClass={LBL_UP} compId={`mod3-${17 + i}`} />
-          </div>
-        ))}
-
-        {/* 2 JACKS: Cols K-L (11-12), Row 7 */}
-        {[11, 12].map((item, i) => {
-          const isOut1Active = routingOutputs?.out1?.startsWith('mod3-');
-          const isOut2Active = routingOutputs?.out2?.startsWith('mod3-');
-          const isActive = (i === 0 && isOut1Active) || (i === 1 && isOut2Active);
-          const activeColor = i === 0 ? 'blue-500' : 'orange-500';
+        {/* MAIN SPLIT */}
+        <div className="flex flex-row flex-1 min-h-0 w-full pt-[2%]">
           
-          return (
-            <div key={`jack-mod3--${i}`} style={{ gridColumnStart: 11 + i, gridRowStart: 7 }} className="flex items-end justify-end z-10 w-full h-full">
-              <Jack 
-                id={`out-mod3-${i}`} 
-                type="output" 
-                activeColor={isActive ? activeColor : null} 
+          {/* LEFT COLUMN: 33% */}
+          <div className="flex flex-col w-[33%] h-full justify-between pr-[4%]">
+            {/* 4 Small Knobs */}
+            <div className="grid grid-cols-2 grid-rows-2 gap-[10%] h-[45%] w-full bg-synth-module p-[4%]">
+              {[
+                { l: 'PRESIÓN', id: 'mod3-1' }, { l: 'CONFIANZA', id: 'mod3-2' },
+                { l: 'ÚLT. MOMENTO', id: 'mod3-3' }, { l: 'COMPARAC.', id: 'mod3-4' }
+              ].map((item, i) => (
+                <div key={item.id} className="flex items-center justify-center relative">
+                  <Knob label={item.l} labelClass={LBL_UP} sizeClass="w-[70%] aspect-square" initialValue={50} compId={item.id} />
+                </div>
+              ))}
+            </div>
+
+            {/* BIG KNOB */}
+            <div className="h-[45%] w-full flex items-center justify-center relative bg-synth-module">
+               <RotarySwitch 
+                 label="EMOCIÓN DOMINANTE" 
+                 labelClass={LBL_UP} 
+                 sizeClass="h-[80%] aspect-square" 
+                 compId="mod3-5" 
+                 optionLabels={['ENTUSIASMO', 'FLOW', 'ANSIEDAD', 'ESTRÉS', 'FRUSTRACIÓN']}
+               />
+            </div>
+          </div>
+
+          {/* MIDDLE COLUMN: 12% */}
+          <div className="w-[12%] h-full flex flex-col items-center justify-center pr-[4%]">
+            <div className="h-full w-full flex flex-col items-center justify-center relative bg-synth-module py-[10%]">
+              <Fader 
+                orientation="vertical"
+                initialValue={50}
+                trackClass="w-[30%] h-full bg-[#E5E5E5] rounded-full shadow-inner relative flex justify-center"
+                thumbClass="w-[150%] aspect-square bg-[#888] rounded-full absolute shadow-md z-10"
+                label="ANSIEDAD"
+                labelClass={LBL_V}
+                compId="mod3-16"
               />
             </div>
-          );
-        })}
+          </div>
+
+          {/* RIGHT COLUMN: 55% */}
+          <div className="flex flex-col w-[55%] h-full justify-between">
+            
+            {/* ROW 1: Counters, Switch, and Pads (45%) */}
+            <div className="flex flex-row h-[45%] justify-between">
+              <div className="w-[60%] flex flex-row items-center justify-around bg-synth-module">
+                {[{ l: 'HS SUEÑO', id: 'mod3-6' }, { l: 'PRE-ENTR.', id: 'mod3-7' }].map((item) => (
+                  <div key={item.id} className="w-[35%] h-full flex flex-col items-center justify-center relative">
+                    <Counter label={item.l} labelClass={LBL_UP} compId={item.id} />
+                  </div>
+                ))}
+                
+                <div className="w-[20%] flex items-center justify-center relative">
+                   <ToggleSwitch label="PROCRAST." labelClass={LBL_UP} compId="mod3-8" />
+                </div>
+              </div>
+              
+              <div className={"w-[35%] grid grid-cols-2 grid-rows-3 gap-[4px] bg-synth-surface border border-synth-border-light p-[2%] transition-opacity duration-300 "}>
+                {['RRSS', 'DORMIR', 'ORDENAR', 'TAREAS', 'GYM', 'OTROS'].map((l, i) => (
+                  <div key={l} className="flex items-center justify-center bg-synth-module relative">
+                    <LedButton baseClass="w-[60%] aspect-square rounded-[20%]" label={l} labelClass={LBL_UP} compId={mod3-} />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ROW 2: Horizontal Slider (20%) */}
+            <div className="h-[20%] bg-synth-module flex items-center justify-center px-[8%] relative">
+              <Fader 
+                orientation="horizontal"
+                initialValue={50}
+                trackClass="w-full h-[30%] bg-[#404040] rounded-full shadow-inner relative flex items-center"
+                thumbClass="h-[150%] aspect-square bg-[#FFF] rounded-full absolute shadow-md z-20"
+                label="MOMENTO FRUSTRACIÓN"
+                labelClass={LBL_UP}
+                compId="mod3-15"
+              />
+              <span className="absolute left-[8%] -bottom-1 text-[6px] text-[#888] font-bold">INICIO</span>
+              <span className="absolute right-[8%] -bottom-1 text-[6px] text-[#888] font-bold">ENTREGA</span>
+            </div>
+
+            {/* ROW 3: 3 Switches & 2 Jacks (30%) */}
+            <div className="flex flex-row h-[30%] justify-between bg-synth-surface">
+              {/* SWITCHES */}
+              <div className="w-[60%] flex flex-row items-end justify-around bg-synth-module pb-[2%] px-[2%]">
+                {[{ l: 'RESULTADO', id: 'mod3-17' }, { l: 'TÉCNICAS', id: 'mod3-18' }, { l: 'SÍNTOMAS', id: 'mod3-19' }].map((item) => (
+                  <div key={item.id} className="w-[20%] flex items-end justify-center relative">
+                    <ToggleSwitch label={item.l} labelClass={LBL_UP} compId={item.id} />
+                  </div>
+                ))}
+              </div>
+              
+              {/* JACKS */}
+              <div className="w-[35%] bg-synth-surface flex flex-col justify-center items-center p-[2%] border border-synth-border-light relative">
+                <div className="w-full bg-synth-ink-dark text-white text-[9px] font-display text-center leading-none py-[4%] mb-[4%]">SALIDAS</div>
+                <div className="flex flex-row justify-around w-full px-[4%] flex-1 items-center">
+                  {['JACK 1', 'JACK 2'].map((item, i) => {
+                    const isOut1Active = routingOutputs?.out1?.startsWith('mod3-');
+                    const isOut2Active = routingOutputs?.out2?.startsWith('mod3-');
+                    const isActive = (i === 0 && isOut1Active) || (i === 1 && isOut2Active);
+                    const activeColor = i === 0 ? 'blue-500' : 'orange-500';
+                    return (
+                      <div key={`jack-mod3-${i}`} className="w-[35%] aspect-square">
+                        <Jack 
+                          id={`out-mod3-${i}`} 
+                          type="output" 
+                          activeColor={isActive ? activeColor : null} 
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </ModuleShell>
   );
 };
 
 export default Module3;
+

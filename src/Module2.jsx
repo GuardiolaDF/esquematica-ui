@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import ModuleShell from './ModuleShell';
 import Jack from './components/cables/Jack';
 import Fader from './components/actuators/Fader';
@@ -131,9 +131,9 @@ const Module2 = () => {
                     const isActive = (i === 0 && isOut1Active) || (i === 1 && isOut2Active);
                     const activeColor = i === 0 ? 'blue-500' : 'orange-500';
                     return (
-                      <div key={jack-mod2--} className="w-[35%] aspect-square">
+                      <div key={`jack-mod2-${i}`} className="w-[35%] aspect-square">
                         <Jack 
-                          id={out-mod2-} 
+                          id={`out-mod2-${i}`} 
                           type="output" 
                           label={item}
                           activeColor={isActive ? activeColor : null} 

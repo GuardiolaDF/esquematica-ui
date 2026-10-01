@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { moduleRegistry } from './moduleRegistry';
 
 const RackGrid = () => {
@@ -9,10 +9,10 @@ const RackGrid = () => {
   const ConsoleModule = moduleRegistry['ConsoleModule'];
 
   return (
-    <div className="w-screen h-screen bg-[#0A0A0A] overflow-hidden flex flex-row p-[2px] gap-[2px]">
+    <div className="w-screen h-screen bg-transparent overflow-hidden flex flex-row gap-2">
       
-      {/* Columna Izquierda: Fija en ancho, se estira en alto exactamente a 1/3 cada módulo */}
-      <div className="w-[426px] h-full flex flex-col gap-[2px] flex-shrink-0">
+      {/* Columna Izquierda: Fija en ancho, se estira en alto exactamente a 1/3 cada mÃ³dulo */}
+      <div className="w-1/3 h-full flex flex-col gap-2 flex-shrink-0">
         <div className="w-full flex-1 min-h-0">
           <ControlModule />
         </div>
@@ -25,7 +25,7 @@ const RackGrid = () => {
       </div>
 
       {/* Columna Derecha: Ocupa el resto del ancho de la pantalla */}
-      <div className="flex-grow h-full flex flex-col gap-[2px] min-w-0">
+      <div className="flex-grow h-full flex flex-col gap-2 min-w-0">
         
         {/* Visualizador de Datos: Ocupa todo el espacio alto disponible */}
         <div className="flex-grow w-full min-h-0 relative z-0">
@@ -43,4 +43,5 @@ const RackGrid = () => {
 };
 
 export default RackGrid;
+
 
