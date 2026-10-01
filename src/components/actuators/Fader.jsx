@@ -160,19 +160,18 @@ const Fader = ({
               return (
                 <span 
                   key={i} 
-                  className="absolute left-[150%] text-[6px] text-[#777] font-bold"
+                  className="absolute left-[150%] text-[6px] text-synth-ink-base font-mono font-medium"
                   style={{ bottom: `${pos}%`, transform: 'translateY(50%)' }}
                 >
                   {m}
                 </span>
               );
             } else {
-              // Horizontal markers: empujados un poco hacia adentro (del 4% al 96%) para que no se salgan de la barra
               const pos = 4 + (i / (markers.length - 1)) * 92;
               return (
                 <span 
                   key={i} 
-                  className="absolute top-1/2 -translate-y-1/2 text-[6.5px] uppercase tracking-[0.1em] text-[#999] font-mono font-bold whitespace-nowrap drop-shadow-md"
+                  className="absolute top-1/2 -translate-y-1/2 text-[6.5px] text-synth-ink-base font-mono font-medium whitespace-nowrap"
                   style={{ left: `${pos}%`, transform: 'translate(-50%, -50%)' }}
                 >
                   {m}
@@ -183,10 +182,16 @@ const Fader = ({
         </div>
       )}
 
+      {/* TRACK FIJO SEGÚN FIGMA */}
+      <div className={`absolute ${orientation === 'vertical' ? 'w-[35%] h-full left-1/2 -translate-x-1/2' : 'h-[35%] w-full top-1/2 -translate-y-1/2'} bg-synth-surface border border-synth-border-light rounded-full pointer-events-none`}></div>
+
+      {/* THUMB FIJO SEGÚN FIGMA */}
       <div 
-        className={`${thumbClass} ${thumbGlowClass} pointer-events-none transition-all duration-300`}
+        className={`absolute ${orientation === 'vertical' ? 'w-[200%] h-[20%] left-1/2 -translate-x-1/2' : 'h-[200%] w-[10%] top-1/2 -translate-y-1/2'} bg-synth-surface border-[0.5px] border-synth-border-dark flex items-center justify-center pointer-events-none transition-all duration-300 z-10 ${thumbGlowClass}`}
         style={thumbStyle}
-      ></div>
+      >
+         <div className={`bg-synth-accent ${orientation === 'vertical' ? 'w-full h-[1px]' : 'h-full w-[1px]'}`}></div>
+      </div>
     </div>
   );
 };

@@ -72,7 +72,7 @@ const ToggleSwitch = ({
 
   return (
     <div 
-      className={`${sizeClass} aspect-square rounded-full bg-[#E5E5E5] ${glowClass} relative cursor-pointer transition-shadow duration-300 ${className}`}
+      className={`${sizeClass} aspect-square rounded-full bg-synth-surface border border-synth-border-light ${glowClass} relative cursor-pointer transition-shadow duration-300 ${className} ${isHovered ? 'ring-1 ring-synth-accent/30 z-50' : ''}`}
       onClick={toggle}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -81,13 +81,13 @@ const ToggleSwitch = ({
         <span className={labelClass}>{label}</span>
       )}
       
-      {/* SI / NO Labels (Alineados con la perilla a -45 y +45 grados) */}
-      {onLabel && <span className="absolute text-[4.5px] uppercase font-bold text-[#888] pointer-events-none" style={{ top: '-15%', right: '-40%' }}>{onLabel}</span>}
-      {offLabel && <span className="absolute text-[4.5px] uppercase font-bold text-[#888] pointer-events-none" style={{ bottom: '-15%', right: '-40%' }}>{offLabel}</span>}
+      {/* SI / NO Labels */}
+      {onLabel && <span className="absolute text-[5px] uppercase font-mono font-medium text-synth-ink-base pointer-events-none" style={{ top: '-15%', right: '-40%' }}>{onLabel}</span>}
+      {offLabel && <span className="absolute text-[5px] uppercase font-mono font-medium text-synth-ink-base pointer-events-none" style={{ bottom: '-15%', right: '-40%' }}>{offLabel}</span>}
       
       {/* Palanca (Lever) */}
       <div 
-        className={`absolute top-1/2 left-1/2 w-[110%] h-[35%] bg-[#888] rounded-full -translate-y-1/2 origin-left shadow-sm transition-transform duration-[150ms] ease-in-out ${
+        className={`absolute top-1/2 left-1/2 w-[110%] h-[35%] bg-synth-border-base border-[0.5px] border-synth-border-dark rounded-full -translate-y-1/2 origin-left shadow-sm transition-transform duration-[150ms] ease-in-out ${
           isOn ? '-rotate-45' : 'rotate-45'
         }`}
       ></div>

@@ -48,9 +48,9 @@ const Jack = ({
   const isBlue = activeColor === 'blue-500';
   const rgb = isBlue ? '59,130,246' : '249,115,22';
   
-  let glowClass = 'bg-[#111]';
+  let glowClass = 'bg-synth-ink-dark';
   if (disabled) {
-    glowClass = 'bg-[#333] shadow-inner opacity-50';
+    glowClass = 'bg-synth-border-base shadow-inner opacity-50';
   } else if (activeColor) {
     glowClass = `bg-${activeColor} shadow-[0_0_20px_rgba(${rgb},1)] ring-2 ring-${activeColor}`;
   }
@@ -61,8 +61,8 @@ const Jack = ({
       onMouseDown={handleMouseDown}
       style={{ cursor: disabled ? 'not-allowed' : (type === 'output' && activeColor ? 'grab' : 'default') }}
     >
-      <div className="w-[60%] aspect-square bg-[#CCC] rounded-full shadow-inner border border-[#999] flex items-center justify-center relative">
-         {label && <span className="absolute bottom-[100%] mb-[4px] left-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.2em] text-[#777] font-sans font-bold whitespace-nowrap pointer-events-none">{label}</span>}
+      <div className="w-[60%] aspect-square bg-synth-surface rounded-full shadow-inner border-[0.5px] border-synth-border-base flex items-center justify-center relative">
+         {label && <span className="absolute bottom-[100%] mb-[4px] left-1/2 -translate-x-1/2 text-[7px] text-synth-ink-base font-mono font-medium whitespace-nowrap pointer-events-none">{label}</span>}
          <div 
            ref={jackRef} 
            className={`w-[45%] aspect-square rounded-full transition-all duration-300 ${glowClass}`}

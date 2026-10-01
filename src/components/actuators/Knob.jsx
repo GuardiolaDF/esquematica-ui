@@ -112,7 +112,7 @@ const Knob = ({
 
   return (
     <div 
-      className={`relative flex items-center justify-center ${sizeClass} ${className} ${isHovered ? 'ring-2 ring-yellow-400 rounded-full shadow-[0_0_15px_rgba(251,191,36,0.3)] z-50' : ''} cursor-pointer touch-none transition-all duration-300`} 
+      className={`relative flex items-center justify-center ${sizeClass} ${className} ${isHovered ? 'ring-1 ring-synth-accent/50 rounded-full z-50' : ''} cursor-pointer touch-none transition-all duration-300`} 
       onMouseDown={onMouseDown} 
       onTouchStart={onTouchStart}
       onMouseEnter={handleMouseEnter}
@@ -122,22 +122,26 @@ const Knob = ({
          <span className={labelClass}>{label}</span>
       )}
       
-      {/* Cuerpo de la Perilla */}
+      {/* Cuerpo de la Perilla (main-knob) */}
       <div 
-        className={`w-full aspect-square rounded-full bg-[#E5E5E5] ${glowClass} flex items-start justify-center pt-[2px] pointer-events-none transition-all duration-300`}
+        className={`w-full aspect-square rounded-full bg-synth-surface border border-synth-border-light ${glowClass} flex items-center justify-center pointer-events-none transition-all duration-300`}
         style={{ transform: `rotate(${rotation}deg)` }}
       >
-        <div className="absolute top-[3px] left-1/2 -translate-x-1/2 w-1 h-1 bg-[#444] rounded-full"></div>
+        {/* knob-cap */}
+        <div className="w-[81%] aspect-square rounded-full bg-synth-surface border-[0.5px] border-synth-border-dark relative flex items-start justify-center">
+           {/* Indicator dot */}
+           <div className="w-[12%] aspect-square bg-synth-accent rounded-full absolute top-[6%]"></div>
+        </div>
       </div>
 
       {/* Indicadores Externos */}
-      <div className="absolute top-1/2 left-1/2 w-[150%] h-[150%] -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none">
+      <div className="absolute top-1/2 left-1/2 w-[140%] h-[140%] -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none">
         {renderMarkers.map((marker, i) => (
           <div key={`marker-${i}`} className="absolute top-0 left-0 w-full h-full" style={{ transform: `rotate(${marker.angle}deg)` }}>
              <div className="absolute top-0 left-1/2 -translate-x-1/2 flex flex-col items-center">
-               <div className="w-[2.5px] h-[2.5px] bg-[#333] rounded-full drop-shadow-sm"></div>
+               <div className="w-[1.5px] h-[3px] bg-synth-border-base"></div>
                {marker.label && (
-                 <span className="absolute bottom-full mb-[3px] text-[5px] uppercase tracking-[0.1em] text-[#777] font-mono font-bold" style={{ transform: `rotate(${-marker.angle}deg)` }}>
+                 <span className="absolute bottom-full mb-[2px] text-[7px] text-synth-ink-base font-mono font-medium" style={{ transform: `rotate(${-marker.angle}deg)` }}>
                    {marker.label}
                  </span>
                )}

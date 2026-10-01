@@ -128,7 +128,7 @@ const RotarySwitch = ({
 
   return (
     <div 
-      className={`relative flex items-center justify-center ${sizeClass} ${className} ${isHovered ? 'ring-2 ring-yellow-400 rounded-full shadow-[0_0_15px_rgba(251,191,36,0.3)] z-50' : ''} cursor-pointer touch-none transition-all duration-300`} 
+      className={`relative flex items-center justify-center ${sizeClass} ${className} ${isHovered ? 'ring-1 ring-synth-accent/50 rounded-full z-50' : ''} cursor-pointer touch-none transition-all duration-300`} 
       onMouseDown={onMouseDown} 
       onTouchStart={onTouchStart}
       onMouseEnter={handleMouseEnter}
@@ -139,12 +139,15 @@ const RotarySwitch = ({
          <span className={labelClass} style={{ bottom: '135%' }}>{label}</span>
       )}
       
-      {/* Cuerpo de la Perilla. Exactamente w-full y h-full del contenedor definido por sizeClass */}
+      {/* Cuerpo de la Perilla */}
       <div 
-        className={`w-full h-full rounded-full bg-[#E5E5E5] ${glowClass} relative pointer-events-none transition-all duration-[150ms] ease-out`}
+        className={`w-full aspect-square rounded-full bg-synth-surface border border-synth-border-light ${glowClass} flex items-center justify-center relative pointer-events-none transition-all duration-[150ms] ease-out`}
         style={{ transform: `rotate(${angles[displayStep]}deg)` }}
       >
-        <div className="absolute top-[4px] left-1/2 -translate-x-1/2 w-1.5 h-2.5 bg-[#444] rounded-sm"></div>
+        <div className="w-[81%] aspect-square rounded-full bg-synth-surface border-[0.5px] border-synth-border-dark relative flex items-start justify-center">
+           {/* Indicator dot */}
+           <div className="w-[12%] aspect-square bg-synth-accent rounded-full absolute top-[6%]"></div>
+        </div>
       </div>
 
       {/* Puntos y textos */}
@@ -159,18 +162,16 @@ const RotarySwitch = ({
         const textLeft = `calc(50% + ${dx * textRadius}%)`;
         const textTop = `calc(50% + ${dy * textRadius}%)`;
 
-        // En modo colectivo mostramos calor (opacidad o shadow dependiente de si es popular, pero por ahora solo resaltamos la ganadora)
-        // Podríamos hacer que brille según popularity, pero requeriría data de counts, que no tenemos.
         const isActive = displayStep === i;
 
         return (
           <React.Fragment key={i}>
             {/* Punto */}
             <div 
-              className={`absolute w-1.5 h-1.5 rounded-full shadow-sm transition-all duration-200 -translate-x-1/2 -translate-y-1/2 ${
+              className={`absolute w-1 h-1 rounded-full shadow-sm transition-all duration-200 -translate-x-1/2 -translate-y-1/2 ${
                 isActive 
-                  ? 'bg-[#556b55] shadow-[0_0_6px_rgba(74,222,128,0.5)] border border-green-500/30' 
-                  : 'bg-[#666] border border-transparent'
+                  ? 'bg-synth-accent border border-synth-accent/30' 
+                  : 'bg-synth-border-base border border-transparent'
               }`}
               style={{ left: dotLeft, top: dotTop }}
             ></div>
@@ -180,7 +181,7 @@ const RotarySwitch = ({
               className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center"
               style={{ left: textLeft, top: textTop }}
             >
-              <span className="text-[5.5px] uppercase tracking-[0.1em] text-[#888] font-mono font-bold whitespace-nowrap">
+              <span className="text-[6px] text-synth-ink-base font-mono font-medium whitespace-nowrap">
                 {optionLabels[i] || "TXT"}
               </span>
             </div>
