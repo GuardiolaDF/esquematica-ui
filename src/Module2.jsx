@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import ModuleShell from './ModuleShell';
 import Jack from './components/cables/Jack';
 import Fader from './components/actuators/Fader';
@@ -20,116 +20,136 @@ const Module2 = () => {
 
   return (
     <ModuleShell disabled={mode === 'colectivo'}>
-      {/* GRILLA DIRECTA 12x7. 8px padding, 2px gap (Igual que Módulo 1) */}
-      <div className="w-full h-full grid grid-cols-12 grid-rows-7 p-[8px] gap-[2px] relative">
+      <div className="w-full h-full flex flex-col p-[12px] gap-[4px] text-synth-ink-base">
         
-        {/* GRILLA DE COORDENADAS */}
-        {showGrid && [1, 2, 3, 4, 5, 6, 7].map((row, rIdx) => 
-          ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].map((col, cIdx) => (
-            <div 
-              key={`coord-${col}${row}`} 
-              style={{ gridColumnStart: cIdx + 1, gridRowStart: rIdx + 1 }}
-              className="bg-[#FF00FF]/15 flex items-start justify-start p-[2px] pointer-events-none rounded-[1px] z-0"
-            >
-              <span className="text-[9px] font-mono font-bold text-[#FF00FF] opacity-70 leading-none">
-                {col}{row}
-              </span>
-            </div>
-          ))
-        )}
-
-        {/* --- COMPONENTES DEL MÓDULO 2 --- */}
-
-        {/* BIG KNOB (Rotary Switch): Centro de B-C (Cols 2-3), Rows 2-4. */}
-        <div className="col-start-2 col-span-2 row-start-2 row-span-3 flex items-start justify-center relative z-10 pt-2">
-           <RotarySwitch 
-             label="BOCETO A MANO" 
-             labelClass={LBL_UP} 
-             sizeClass="h-[83.33%] aspect-square" 
-             compId="mod2-1" 
-             optionLabels={['SIEMPRE', 'CASI SIEMPRE', 'A VECES', 'CASI NUNCA', 'NUNCA']}
-           />
+        {/* HEADER */}
+        <div className="flex items-center gap-2">
+          <div className="flex bg-synth-module border border-synth-border-base items-center px-1">
+            <div className="w-[13px] h-[12px] bg-synth-border-base mr-1"></div>
+            <span className="text-synth-ink-black text-[12px] font-mono font-medium leading-none py-[2px]">2 módulo</span>
+          </div>
+          <span className="text-synth-ink-light font-display text-[12px] tracking-widest uppercase">
+            MODOS DE TRABAJO ||||||
+          </span>
         </div>
 
-        {/* 2 MEDIUM KNOBS: Cols B-C (2-3), Rows 5 y 7. Iguales a los de G7 */}
-        {[
-          { r: 5, l: 'PERFECC.' },
-          { r: 7, l: 'PROCRASTINAR' }
-        ].map((item, i) => (
-          <div key={`mknob-${item.r}`} style={{ gridColumnStart: 2, gridColumnEnd: 4, gridRowStart: item.r }} className="flex items-center justify-center z-10">
-            <Knob label={item.l} labelClass={LBL_UP} sizeClass="w-[40%]" initialValue={50} compId={`mod2-${2 + i}`} />
-          </div>
-        ))}
-
-        {/* VERTICAL SLIDER: Col E (5), Rows 2-4. Alineado a la derecha */}
-        <div className="col-start-5 col-span-1 row-start-2 row-span-3 flex items-center justify-end z-10">
-          <Fader 
-            orientation="vertical"
-            initialValue={50}
-            trackClass="w-[30%] h-full bg-[#E5E5E5] rounded-full shadow-inner relative flex justify-center"
-            thumbClass="w-full aspect-square bg-[#888] rounded-full absolute shadow-md"
-            label="SILENCIO"
-            labelClass={LBL_V}
-            compId="mod2-4"
-          />
-        </div>
-
-        {/* 4 TINY BUTTONS (MINI PADS): Cols D-E (4-5), Rows 6-7. Alineados arriba a la izquierda pegados a la celda */}
-        {[
-          { c: 4, r: 6, l: 'PAUSAS' }, { c: 5, r: 6, l: 'ESCRITORIO' },
-          { c: 4, r: 7, l: 'NOCTURNO' }, { c: 5, r: 7, l: 'RESPALDO' }
-        ].map((pos, i) => (
-          <div key={`tbtn-${pos.c}-${pos.r}`} style={{ gridColumnStart: pos.c, gridRowStart: pos.r }} className="flex items-start justify-start z-10">
-            <LedButton baseClass="w-[30%] aspect-square rounded-[20%]" label={pos.l} labelClass={LBL_UP} compId={`mod2-${5 + i}`} />
-          </div>
-        ))}
-
-        {/* 3 SCREENS + ARROWS: Cols G-H, I-J, K-L (7-12), Rows 2-3 */}
-        {[{c:7, l:'PROGRAMAS'}, {c:9, l:'PESTAÑAS'}, {c:11, l:'SIN TÍTULO'}].map((item, i) => (
-          <div key={`screen-${i}`} style={{ gridColumnStart: item.c, gridColumnEnd: item.c + 2, gridRowStart: 2, gridRowEnd: 4 }} className="flex flex-row items-center justify-between z-10 w-full h-full">
-            <Counter label={item.l} labelClass={LBL_UP} compId={`mod2-${9 + i}`} />
-          </div>
-        ))}
-
-        {/* 3 SWITCHES DE PERILLA: Cols G, I, K (7, 9, 11), Row 5. Alineados abajo a la izquierda */}
-        {[{c:7, l:'VERSIONES'}, {c:9, l:'NOTIFICACIONES'}, {c:11, l:'COMIDA'}].map((item, i) => (
-          <div key={`switch-${item.c}`} style={{ gridColumnStart: item.c, gridRowStart: 5 }} className="flex items-end justify-start z-10 pb-1 pl-1">
-            <ToggleSwitch label={item.l} labelClass={LBL_UP} compId={`mod2-${12 + i}`} />
-          </div>
-        ))}
-
-        {/* 3 POTES CHICOS: Cols G-I (7-9), Row 7 */}
-        {[
-          { c: 7, l: 'INTERRUPCIONES' },
-          { c: 8, l: 'IMPOSTOR' },
-          { c: 9, l: 'ORDEN ARCHIVOS' }
-        ].map((item, i) => (
-          <div key={`mpote-${item.c}`} style={{ gridColumnStart: item.c, gridRowStart: 7 }} className="flex items-center justify-center z-10">
-             <Knob label={item.l} labelClass={LBL_UP} sizeClass="w-[80%]" initialValue={50} compId={`mod2-${15 + i}`} />
-          </div>
-        ))}
-
-        {/* 2 JACKS: Cols K-L (11-12), Row 7 */}
-        {[11, 12].map((item, i) => {
-          const isOut1Active = routingOutputs?.out1?.startsWith('mod2-');
-          const isOut2Active = routingOutputs?.out2?.startsWith('mod2-');
-          const isActive = (i === 0 && isOut1Active) || (i === 1 && isOut2Active);
-          const activeColor = i === 0 ? 'blue-500' : 'orange-500';
+        {/* MAIN SPLIT */}
+        <div className="flex flex-row flex-1 min-h-0 w-full">
           
-          return (
-            <div key={`jack-mod2--${i}`} style={{ gridColumnStart: 11 + i, gridRowStart: 7 }} className="flex items-end justify-end z-10 w-full h-full">
-              <Jack 
-                id={`out-mod2-${i}`} 
-                type="output" 
-                label={'TEXTO'}
-                activeColor={isActive ? activeColor : null} 
-              />
+          {/* LEFT COLUMN: 48% */}
+          <div className="flex flex-col w-[48%] h-full justify-between pr-[4%]">
+            
+            {/* ROW 1: Boceto & Silencio (50%) */}
+            <div className="flex flex-row h-[50%] justify-between items-center bg-synth-module border-[0.5px] border-synth-border-light p-[2%]">
+              {/* BOCETO A MANO (RotarySwitch) */}
+              <div className="w-[84%] h-full flex items-center justify-center relative">
+                 <RotarySwitch 
+                   label="BOCETO A MANO" 
+                   labelClass={LBL_UP} 
+                   sizeClass="h-[80%] aspect-square" 
+                   compId="mod2-1" 
+                   optionLabels={['SIEMPRE', 'CASI SIEMPRE', 'A VECES', 'CASI NUNCA', 'NUNCA']}
+                 />
+              </div>
+              
+              {/* SILENCIO (Fader) */}
+              <div className="w-[10%] h-[90%] flex flex-col items-center justify-center relative">
+                <Fader 
+                  orientation="vertical"
+                  initialValue={50}
+                  trackClass="w-[30%] h-full bg-[#E5E5E5] rounded-full shadow-inner relative flex justify-center"
+                  thumbClass="w-[150%] aspect-square bg-[#888] rounded-full absolute shadow-md z-10"
+                  label="SILENCIO"
+                  labelClass={LBL_V}
+                  compId="mod2-4"
+                />
+              </div>
             </div>
-          );
-        })}
+
+            {/* ROW 2: Perfeccionismo, Procrastinar, Icons (50%) */}
+            <div className="flex flex-row h-[48%] justify-between items-center mt-[2%] bg-synth-surface border-[0.5px] border-synth-border-light p-[4%]">
+              {/* 2 SMALL KNOBS */}
+              <div className="flex flex-col h-full justify-around w-[30%] bg-synth-module">
+                {[{ l: 'PERFECC.', id: 'mod2-2' }, { l: 'PROCRAST.', id: 'mod2-3' }].map((item, i) => (
+                  <div key={item.id} className="w-[80%] aspect-square relative self-center">
+                    <Knob label={item.l} labelClass={LBL_UP} sizeClass="w-full h-full" initialValue={50} compId={item.id} />
+                  </div>
+                ))}
+              </div>
+              
+              {/* 4 MINI PADS (Icons) */}
+              <div className="grid grid-cols-2 grid-rows-2 w-[40%] gap-[4px] h-[80%] bg-synth-module p-[2%]">
+                {[{ l: 'PAUSAS', id: 'mod2-5' }, { l: 'ESCRITORIO', id: 'mod2-6' },
+                  { l: 'NOCTURNO', id: 'mod2-7' }, { l: 'RESPALDO', id: 'mod2-8' }].map((pos, i) => (
+                  <div key={pos.id} className="flex items-center justify-center">
+                    <LedButton baseClass="w-full h-full rounded-[20%]" label={pos.l} labelClass={LBL_UP} compId={pos.id} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT COLUMN: 52% */}
+          <div className="flex flex-col w-[52%] h-full justify-between">
+            
+            {/* ROW 1: 3 Counters (33.3%) */}
+            <div className="flex flex-row h-[33.3%] justify-between items-center bg-synth-module px-[2%]">
+              {[{l:'PROGRAMAS', id:'mod2-9'}, {l:'PESTAÑAS', id:'mod2-10'}, {l:'ARCHIVOS', id:'mod2-11'}].map((item, i) => (
+                <div key={item.id} className="w-[28%] h-full flex flex-col items-center justify-center relative">
+                  <Counter label={item.l} labelClass={LBL_UP} compId={item.id} />
+                </div>
+              ))}
+            </div>
+
+            {/* ROW 2: 3 Switches (21.5%) */}
+            <div className="flex flex-row h-[21.5%] justify-between items-end bg-synth-surface pb-[2%] px-[2%]">
+              {[{l:'VERSIONES', id:'mod2-12'}, {l:'NOTIF.', id:'mod2-13'}, {l:'COMIDA', id:'mod2-14'}].map((item, i) => (
+                <div key={item.id} className="w-[28%] flex items-end justify-center relative">
+                  <ToggleSwitch label={item.l} labelClass={LBL_UP} compId={item.id} />
+                </div>
+              ))}
+            </div>
+
+            {/* ROW 3: 3 Knobs & 2 Jacks (27.6%) */}
+            <div className="flex flex-row h-[27.6%] justify-between bg-synth-surface">
+              {/* KNOBS */}
+              <div className="w-[51%] flex flex-row items-center justify-around bg-synth-module px-[2%] relative pt-[4%]">
+                {[{ l: 'INTERRUP.', id: 'mod2-15' }, { l: 'IMPOSTOR', id: 'mod2-16' }, { l: 'ORDEN', id: 'mod2-17' }].map((item, i) => (
+                  <div key={item.id} className="w-[25%] aspect-square relative">
+                    <Knob label={item.l} labelClass={LBL_UP} sizeClass="w-full h-full" initialValue={50} compId={item.id} />
+                  </div>
+                ))}
+              </div>
+              
+              {/* JACKS */}
+              <div className="w-[45%] bg-synth-surface flex flex-col justify-center items-center p-[2%] border border-synth-border-light relative">
+                <div className="w-full bg-synth-ink-dark text-white text-[9px] font-display text-center leading-none py-[4%] mb-[4%]">SALIDAS</div>
+                <div className="flex flex-row justify-around w-full px-[4%] flex-1 items-center">
+                  {['JACK 1', 'JACK 2'].map((item, i) => {
+                    const isOut1Active = routingOutputs?.out1?.startsWith('mod2-');
+                    const isOut2Active = routingOutputs?.out2?.startsWith('mod2-');
+                    const isActive = (i === 0 && isOut1Active) || (i === 1 && isOut2Active);
+                    const activeColor = i === 0 ? 'blue-500' : 'orange-500';
+                    return (
+                      <div key={jack-mod2--} className="w-[35%] aspect-square">
+                        <Jack 
+                          id={out-mod2-} 
+                          type="output" 
+                          label={item}
+                          activeColor={isActive ? activeColor : null} 
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </ModuleShell>
   );
 };
 
 export default Module2;
+
