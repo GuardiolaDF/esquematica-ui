@@ -160,7 +160,7 @@ const Fader = ({
               return (
                 <span 
                   key={i} 
-                  className="absolute left-[150%] text-[6px] text-synth-ink-base font-mono font-medium"
+                  className="absolute left-[150%] text-[6px] text-synth-ink-base font-body font-medium"
                   style={{ bottom: `${pos}%`, transform: 'translateY(50%)' }}
                 >
                   {m}
@@ -171,7 +171,7 @@ const Fader = ({
               return (
                 <span 
                   key={i} 
-                  className="absolute top-1/2 -translate-y-1/2 text-[6.5px] text-synth-ink-base font-mono font-medium whitespace-nowrap"
+                  className="absolute top-1/2 -translate-y-1/2 text-[6.5px] text-synth-ink-base font-body font-medium whitespace-nowrap"
                   style={{ left: `${pos}%`, transform: 'translate(-50%, -50%)' }}
                 >
                   {m}
@@ -183,14 +183,14 @@ const Fader = ({
       )}
 
       {/* TRACK FIJO SEGÚN FIGMA */}
-      <div className={`absolute ${orientation === 'vertical' ? 'w-[35%] h-full left-1/2 -translate-x-1/2' : 'h-[35%] w-full top-1/2 -translate-y-1/2'} bg-synth-surface border border-synth-border-light rounded-full shadow-neo-in pointer-events-none`}></div>
+      <div className={`absolute ${orientation === 'vertical' ? 'w-[35%] h-full left-1/2 -translate-x-1/2' : 'h-[35%] w-full top-1/2 -translate-y-1/2'} bg-control-track shadow-inset-control border border-border-subtle rounded-full shadow-neo-in pointer-events-none`}></div>
 
       {/* THUMB FIJO SEGÚN FIGMA */}
       <div 
-        className={`absolute ${orientation === 'vertical' ? 'w-[200%] h-[20%] left-1/2 -translate-x-1/2' : 'h-[200%] w-[10%] top-1/2 -translate-y-1/2'} bg-synth-surface border-[0.5px] border-synth-border-dark shadow-neo-out rounded-sm flex items-center justify-center pointer-events-none transition-all duration-300 z-10 ${thumbGlowClass}`}
+        className={`absolute ${orientation === 'vertical' ? 'w-[200%] h-[20%] left-1/2 -translate-x-1/2' : 'h-[200%] w-[10%] top-1/2 -translate-y-1/2'} bg-control-track shadow-inset-control border-[0.5px] border-synth-border-dark shadow-neo-out rounded-sm flex items-center justify-center pointer-events-none transition-all duration-300 z-10 ${thumbGlowClass}`}
         style={thumbStyle}
       >
-         <div className={`bg-synth-accent ${orientation === 'vertical' ? 'w-full h-[1px]' : 'h-full w-[1px]'}`}></div>
+         <div className={`bg-indicator-active ${orientation === 'vertical' ? 'w-full h-[1px]' : 'h-full w-[1px]'}`}></div>
       </div>
     </div>
   );

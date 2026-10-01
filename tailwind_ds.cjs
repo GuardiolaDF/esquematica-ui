@@ -1,4 +1,5 @@
-/** @type {import('tailwindcss').Config} */
+const fs = require('fs');
+const config = `/** @type {import('tailwindcss').Config} */
 export default {
   content: [
     "./index.html",
@@ -161,3 +162,5 @@ export default {
   },
   plugins: [],
 }
+`;
+fs.writeFileSync('tailwind.config.js', config, 'utf8');

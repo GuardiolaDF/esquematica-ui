@@ -9,9 +9,9 @@ import LedButton from './components/actuators/LedButton';
 import RotarySwitch from './components/actuators/RotarySwitch';
 import { useAppContext } from './contexts/AppContext';
 
-const LBL_UP = "absolute bottom-[100%] mb-[4px] left-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.25em] text-synth-ink-base font-mono font-bold whitespace-nowrap pointer-events-none";
-const LBL_DN = "absolute top-[100%] mt-[4px] left-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.25em] text-synth-ink-base font-mono font-bold whitespace-nowrap pointer-events-none";
-const LBL_V = "absolute right-[100%] mr-[4px] top-1/2 -translate-y-1/2 -rotate-90 origin-center text-[7px] uppercase tracking-[0.25em] text-synth-ink-dark font-mono font-bold whitespace-nowrap pointer-events-none";
+const LBL_UP = "absolute bottom-[100%] mb-[4px] left-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.25em] text-text-secondary font-body font-bold whitespace-nowrap pointer-events-none";
+const LBL_DN = "absolute top-[100%] mt-[4px] left-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.25em] text-text-secondary font-body font-bold whitespace-nowrap pointer-events-none";
+const LBL_V = "absolute right-[100%] mr-[4px] top-1/2 -translate-y-1/2 -rotate-90 origin-center text-[7px] uppercase tracking-[0.25em] text-text-primary font-body font-bold whitespace-nowrap pointer-events-none";
 
 const Module3 = () => {
   const { showGrid, mode, routingOutputs } = useAppContext();
@@ -20,15 +20,15 @@ const Module3 = () => {
 
   return (
     <ModuleShell disabled={mode === 'colectivo'}>
-      <div className="w-full h-full flex flex-col p-[16px] gap-[20px] text-synth-ink-base">
+      <div className="w-full h-full flex flex-col p-[16px] gap-[20px] text-text-secondary">
         
         {/* HEADER */}
         <div className="flex items-center gap-2 mb-[4px]">
-          <div className="flex border-[0.5px] border-synth-border-base items-center px-[4px] py-[2px] bg-synth-module shadow-neo-out">
+          <div className="flex border-[0.5px] border-border-strong items-center px-[4px] py-[2px] bg-control-bg shadow-elevation-01">
             <div className="w-[10px] h-[10px] bg-synth-border-base mr-2"></div>
-            <span className="text-synth-ink-dark text-[11px] font-mono font-medium leading-none">3 módulo</span>
+            <span className="text-text-primary text-[11px] font-body font-medium leading-none">3 módulo</span>
           </div>
-          <span className="text-synth-ink-base font-display text-[12px] tracking-[0.2em] uppercase">
+          <span className="text-text-secondary font-heading text-[12px] tracking-[0.2em] uppercase">
             SALUD MENTAL ||||||
           </span>
         </div>
@@ -94,7 +94,7 @@ const Module3 = () => {
                 </div>
               </div>
               
-              <div className={"w-[35%] grid grid-cols-2 grid-rows-3 gap-[4px] bg-synth-surface border border-synth-border-light p-[2%] transition-opacity duration-300 "}>
+              <div className={"w-[35%] grid grid-cols-2 grid-rows-3 gap-[4px] bg-bg-base border border-border-subtle p-[2%] transition-opacity duration-300 "}>
                 {['RRSS', 'DORMIR', 'ORDENAR', 'TAREAS', 'GYM', 'OTROS'].map((l, i) => (
                   <div key={l} className="flex items-center justify-center  relative">
                     <LedButton baseClass="w-[60%] aspect-square rounded-[20%]" label={l} labelClass={LBL_UP} compId={`mod3-${9 + i}`} />
@@ -114,12 +114,12 @@ const Module3 = () => {
                 labelClass={LBL_UP}
                 compId="mod3-15"
               />
-              <span className="absolute left-[8%] -bottom-1 text-[6px] text-synth-ink-light font-bold">INICIO</span>
-              <span className="absolute right-[8%] -bottom-1 text-[6px] text-synth-ink-light font-bold">ENTREGA</span>
+              <span className="absolute left-[8%] -bottom-1 text-[6px] text-text-muted font-bold">INICIO</span>
+              <span className="absolute right-[8%] -bottom-1 text-[6px] text-text-muted font-bold">ENTREGA</span>
             </div>
 
             {/* ROW 3: 3 Switches & 2 Jacks (30%) */}
-            <div className="flex flex-row h-[30%] justify-between bg-synth-surface">
+            <div className="flex flex-row h-[30%] justify-between bg-bg-base">
               {/* SWITCHES */}
               <div className="w-[60%] flex flex-row items-end justify-around  pb-[2%] px-[2%]">
                 {[{ l: 'RESULTADO', id: 'mod3-17' }, { l: 'TÃ‰CNICAS', id: 'mod3-18' }, { l: 'SÃNTOMAS', id: 'mod3-19' }].map((item) => (
@@ -130,8 +130,8 @@ const Module3 = () => {
               </div>
               
               {/* JACKS */}
-              <div className="w-[35%] bg-synth-surface flex flex-col justify-center items-center p-[2%] border border-synth-border-light relative">
-                <div className="w-full bg-synth-ink-dark text-white text-[9px] font-sans font-bold text-center leading-none py-[4%] mb-[4%] tracking-widest uppercase text-synth-surface">SALIDAS</div>
+              <div className="w-[35%] bg-bg-base flex flex-col justify-center items-center p-[2%] border border-border-subtle relative">
+                <div className="w-full bg-text-primary text-white text-[9px] font-sans font-bold text-center leading-none py-[4%] mb-[4%] tracking-widest uppercase text-synth-surface">SALIDAS</div>
                 <div className="flex flex-row justify-around w-full px-[4%] flex-1 items-center">
                   {['JACK 1', 'JACK 2'].map((item, i) => {
                     const isOut1Active = routingOutputs?.out1?.startsWith('mod3-');

@@ -6,7 +6,7 @@ import LedButton from './components/actuators/LedButton';
 import { useAppContext } from './contexts/AppContext';
 import { useHover } from './contexts/HoverContext';
 
-const LBL_UP = "absolute bottom-[100%] mb-[4px] left-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.2em] text-synth-ink-light font-mono font-medium whitespace-nowrap pointer-events-none";
+const LBL_UP = "absolute bottom-[100%] mb-[4px] left-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.2em] text-synth-ink-light font-body font-medium whitespace-nowrap pointer-events-none";
 
 const VerticalPads = ({ options, value, onChange, disabled, compId }) => {
   const { setHoveredId } = useHover();
@@ -161,7 +161,7 @@ export default function ConsoleModule({ isCol, saveToDb }) {
             
             <div className={`w-[80%] aspect-[80/51] bg-synth-module shadow-neo-in border-[1.5px] border-synth-border-light rounded-[10px] flex flex-col items-center justify-center relative mt-auto ${!isCol ? 'opacity-30' : ''}`}>
                <span className="text-synth-ink-light text-[8px] font-sans font-bold uppercase mb-1">Usuarios</span>
-               <span className="text-synth-ink-dark font-display text-3xl tracking-wider leading-none">
+               <span className="text-synth-ink-dark font-heading text-3xl tracking-wider leading-none">
                  {(matchCount || 0).toString().padStart(3, '0')}
                </span>
             </div>

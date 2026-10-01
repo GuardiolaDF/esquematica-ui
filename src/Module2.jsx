@@ -9,9 +9,9 @@ import LedButton from './components/actuators/LedButton';
 import RotarySwitch from './components/actuators/RotarySwitch';
 import { useAppContext } from './contexts/AppContext';
 
-const LBL_UP = "absolute bottom-[100%] mb-[4px] left-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.25em] text-synth-ink-base font-mono font-bold whitespace-nowrap pointer-events-none";
-const LBL_DN = "absolute top-[100%] mt-[4px] left-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.25em] text-synth-ink-base font-mono font-bold whitespace-nowrap pointer-events-none";
-const LBL_V = "absolute right-[100%] mr-[4px] top-1/2 -translate-y-1/2 -rotate-90 origin-center text-[7px] uppercase tracking-[0.25em] text-synth-ink-dark font-mono font-bold whitespace-nowrap pointer-events-none";
+const LBL_UP = "absolute bottom-[100%] mb-[4px] left-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.25em] text-text-secondary font-body font-bold whitespace-nowrap pointer-events-none";
+const LBL_DN = "absolute top-[100%] mt-[4px] left-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.25em] text-text-secondary font-body font-bold whitespace-nowrap pointer-events-none";
+const LBL_V = "absolute right-[100%] mr-[4px] top-1/2 -translate-y-1/2 -rotate-90 origin-center text-[7px] uppercase tracking-[0.25em] text-text-primary font-body font-bold whitespace-nowrap pointer-events-none";
 
 const Module2 = () => {
   const { showGrid, mode, routingOutputs } = useAppContext();
@@ -20,15 +20,15 @@ const Module2 = () => {
 
   return (
     <ModuleShell disabled={mode === 'colectivo'}>
-      <div className="w-full h-full flex flex-col p-[16px] gap-[20px] text-synth-ink-base">
+      <div className="w-full h-full flex flex-col p-[16px] gap-[20px] text-text-secondary">
         
         {/* HEADER */}
         <div className="flex items-center gap-2 mb-[4px]">
-          <div className="flex border-[0.5px] border-synth-border-base items-center px-[4px] py-[2px] bg-synth-module shadow-neo-out">
+          <div className="flex border-[0.5px] border-border-strong items-center px-[4px] py-[2px] bg-control-bg shadow-elevation-01">
             <div className="w-[10px] h-[10px] bg-synth-border-base mr-2"></div>
-            <span className="text-synth-ink-dark text-[11px] font-mono font-medium leading-none">2 módulo</span>
+            <span className="text-text-primary text-[11px] font-body font-medium leading-none">2 módulo</span>
           </div>
-          <span className="text-synth-ink-base font-display text-[12px] tracking-[0.2em] uppercase">
+          <span className="text-text-secondary font-heading text-[12px] tracking-[0.2em] uppercase">
             MODOS DE TRABAJO ||||||
           </span>
         </div>
@@ -40,7 +40,7 @@ const Module2 = () => {
           <div className="flex flex-col w-[48%] h-full justify-between pr-[4%]">
             
             {/* ROW 1: Boceto & Silencio (50%) */}
-            <div className="flex flex-row h-[50%] justify-between items-center  border-[0.5px] border-synth-border-light p-[2%]">
+            <div className="flex flex-row h-[50%] justify-between items-center  border-[0.5px] border-border-subtle p-[2%]">
               {/* BOCETO A MANO (RotarySwitch) */}
               <div className="w-[84%] h-full flex items-center justify-center relative">
                  <RotarySwitch 
@@ -67,7 +67,7 @@ const Module2 = () => {
             </div>
 
             {/* ROW 2: Perfeccionismo, Procrastinar, Icons (50%) */}
-            <div className="flex flex-row h-[48%] justify-between items-center mt-[2%] bg-synth-surface border-[0.5px] border-synth-border-light p-[4%]">
+            <div className="flex flex-row h-[48%] justify-between items-center mt-[2%] bg-bg-base border-[0.5px] border-border-subtle p-[4%]">
               {/* 2 SMALL KNOBS */}
               <div className="flex flex-col h-full justify-around w-[30%] ">
                 {[{ l: 'PERFECC.', id: 'mod2-2' }, { l: 'PROCRAST.', id: 'mod2-3' }].map((item, i) => (
@@ -102,7 +102,7 @@ const Module2 = () => {
             </div>
 
             {/* ROW 2: 3 Switches (21.5%) */}
-            <div className="flex flex-row h-[21.5%] justify-between items-end bg-synth-surface pb-[2%] px-[2%]">
+            <div className="flex flex-row h-[21.5%] justify-between items-end bg-bg-base pb-[2%] px-[2%]">
               {[{l:'VERSIONES', id:'mod2-12'}, {l:'NOTIF.', id:'mod2-13'}, {l:'COMIDA', id:'mod2-14'}].map((item, i) => (
                 <div key={item.id} className="w-[28%] flex items-end justify-center relative">
                   <ToggleSwitch label={item.l} labelClass={LBL_UP} compId={item.id} />
@@ -111,7 +111,7 @@ const Module2 = () => {
             </div>
 
             {/* ROW 3: 3 Knobs & 2 Jacks (27.6%) */}
-            <div className="flex flex-row h-[27.6%] justify-between bg-synth-surface">
+            <div className="flex flex-row h-[27.6%] justify-between bg-bg-base">
               {/* KNOBS */}
               <div className="w-[51%] flex flex-row items-center justify-around  px-[2%] relative pt-[4%]">
                 {[{ l: 'INTERRUP.', id: 'mod2-15' }, { l: 'IMPOSTOR', id: 'mod2-16' }, { l: 'ORDEN', id: 'mod2-17' }].map((item, i) => (
@@ -122,8 +122,8 @@ const Module2 = () => {
               </div>
               
               {/* JACKS */}
-              <div className="w-[45%] bg-synth-surface flex flex-col justify-center items-center p-[2%] border border-synth-border-light relative">
-                <div className="w-full bg-synth-ink-dark text-white text-[9px] font-sans font-bold text-center leading-none py-[4%] mb-[4%] tracking-widest uppercase text-synth-surface">SALIDAS</div>
+              <div className="w-[45%] bg-bg-base flex flex-col justify-center items-center p-[2%] border border-border-subtle relative">
+                <div className="w-full bg-text-primary text-white text-[9px] font-sans font-bold text-center leading-none py-[4%] mb-[4%] tracking-widest uppercase text-synth-surface">SALIDAS</div>
                 <div className="flex flex-row justify-around w-full px-[4%] flex-1 items-center">
                   {['JACK 1', 'JACK 2'].map((item, i) => {
                     const isOut1Active = routingOutputs?.out1?.startsWith('mod2-');

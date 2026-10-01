@@ -63,14 +63,14 @@ const LedButton = ({
   const handleMouseLeave = () => { setLocalHover(false); if (compId) setHoveredId(null); };
 
   // Base background (apagado vs encendido)
-  let bgClass = 'bg-synth-module shadow-neo-out border border-synth-border-light text-synth-ink-base';
+  let bgClass = 'bg-control-bg shadow-elevation-01 border border-border-subtle text-synth-ink-base';
   
   if (routeColor) {
     const isBlue = routeColor === 'orange-500';
     const cColor = isBlue ? '249,115,22' : '59,130,246';
-    bgClass = `bg-synth-module ring-2 ring-${routeColor} shadow-[0_0_15px_rgba(${cColor},0.5)] border border-${routeColor} text-synth-ink-dark`;
+    bgClass = `bg-control-bg ring-2 ring-${routeColor} shadow-[0_0_15px_rgba(${cColor},0.5)] border border-${routeColor} text-synth-ink-dark`;
   } else if (isOn) {
-    bgClass = `bg-synth-accent shadow-[0_0_8px_rgba(255,148,121,0.6)] border border-synth-accent text-white`;
+    bgClass = `bg-indicator-active shadow-[0_0_8px_rgba(255,148,121,0.6)] border border-synth-accent text-white`;
   }
 
   // Hover Override/Addition
@@ -80,7 +80,7 @@ const LedButton = ({
     if (isOn) {
       bgClass = bgClass.replace(/shadow-\[.*\]/, 'shadow-[0_0_12px_rgba(255,148,121,1)] border-synth-accent');
     } else {
-      bgClass = 'bg-synth-surface shadow-[0_0_8px_rgba(0,0,0,0.1)] border border-synth-border-base text-synth-ink-dark';
+      bgClass = 'bg-control-bg shadow-[0_0_8px_rgba(0,0,0,0.1)] border border-synth-border-base text-synth-ink-dark';
     }
   } else if (isMissing && !isOn) {
     bgClass = 'bg-red-50 shadow-[0_0_10px_rgba(239,68,68,0.3)] border border-red-500 text-red-500';

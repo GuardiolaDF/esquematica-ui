@@ -141,10 +141,10 @@ const RotarySwitch = ({
       
       {/* Cuerpo de la Perilla */}
       <div 
-        className={`w-full aspect-square rounded-full bg-synth-surface border border-synth-border-light ${glowClass} flex items-center justify-center relative pointer-events-none transition-all duration-[150ms] ease-out`}
+        className={`w-full aspect-square rounded-full bg-control-bg border border-border-subtle ${glowClass} flex items-center justify-center relative pointer-events-none transition-all duration-[150ms] ease-out`}
         style={{ transform: `rotate(${angles[displayStep]}deg)` }}
       >
-        <div className="w-[81%] aspect-square rounded-full bg-synth-surface border-[0.5px] border-synth-border-dark relative flex items-start justify-center">
+        <div className="w-[81%] aspect-square rounded-full bg-control-bg border-[0.5px] border-synth-border-dark relative flex items-start justify-center">
            {/* Indicator dot */}
            <div className="w-[12%] aspect-square bg-synth-accent rounded-full absolute top-[6%]"></div>
         </div>
@@ -181,7 +181,7 @@ const RotarySwitch = ({
               className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center"
               style={{ left: textLeft, top: textTop }}
             >
-              <span className="text-[6px] text-synth-ink-base font-mono font-medium whitespace-nowrap">
+              <span className="text-[6px] text-text-secondary font-mono font-medium whitespace-nowrap">
                 {optionLabels[i] || "TXT"}
               </span>
             </div>

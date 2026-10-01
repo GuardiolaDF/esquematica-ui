@@ -7,7 +7,7 @@ import Jack from './components/cables/Jack';
 import { useAppContext } from './contexts/AppContext';
 import { useHover } from './contexts/HoverContext';
 
-const LBL_UP = "mb-[4px] left-1/2 -translate-x-1/2 text-[8px] uppercase tracking-[0.25em] text-synth-ink-base font-mono font-bold whitespace-nowrap pointer-events-none";
+const LBL_UP = "mb-[4px] left-1/2 -translate-x-1/2 text-[8px] uppercase tracking-[0.25em] text-text-secondary font-body font-bold whitespace-nowrap pointer-events-none";
 
 const ControlModule = () => {
   const { mode, routingOutputs } = useAppContext();
@@ -27,15 +27,15 @@ const ControlModule = () => {
 
   return (
     <ModuleShell disabled={mode === 'colectivo'}>
-      <div className="w-full h-full flex flex-col p-[16px] gap-[20px] text-synth-ink-base">
+      <div className="w-full h-full flex flex-col p-[16px] gap-[20px] text-text-secondary">
         
         {/* HEADER */}
         <div className="flex items-center gap-2 mb-[4px]">
-          <div className="flex border-[0.5px] border-synth-border-base items-center px-[4px] py-[2px] bg-synth-module shadow-neo-out">
+          <div className="flex border-[0.5px] border-border-strong items-center px-[4px] py-[2px] bg-control-bg shadow-elevation-01">
             <div className="w-[10px] h-[10px] bg-synth-border-base mr-2"></div>
-            <span className="text-synth-ink-dark text-[11px] font-mono font-medium leading-none">1 módulo</span>
+            <span className="text-text-primary text-[11px] font-body font-medium leading-none">1 módulo</span>
           </div>
-          <span className="text-synth-ink-base font-display text-[12px] tracking-[0.2em] uppercase">
+          <span className="text-text-secondary font-heading text-[12px] tracking-[0.2em] uppercase">
             CONSUMOS CULTURALES ||||||
           </span>
         </div>
@@ -70,12 +70,12 @@ const ControlModule = () => {
             </div>
 
             {/* ROW 2: PLATAFORMAS */}
-            <div className="flex flex-row h-[52%] bg-synth-surface border-[1px] border-synth-border-light shadow-neo-in p-[3%] rounded-xl justify-between">
+            <div className="flex flex-row h-[52%] bg-bg-base border-[1px] border-border-subtle shadow-inset-control p-[3%] rounded-xl justify-between">
               <div className="w-[75%] grid grid-cols-4 grid-rows-3 gap-[4px]">
                 {Array.from({ length: 12 }).map((_, i) => {
                   const compId = `mod1-${10 + i}`;
                   return (
-                    <div key={`pad-${i}`} className="flex items-center justify-center border border-synth-border-light bg-synth-panel shadow-neo-out rounded-sm p-[10%]">
+                    <div key={`pad-${i}`} className="flex items-center justify-center border border-border-subtle bg-synth-panel shadow-elevation-01 rounded-sm p-[10%]">
                       <LedButton 
                         baseClass="w-full h-full rounded-[15%]" 
                         icon={padIcons[i]} 
@@ -98,7 +98,7 @@ const ControlModule = () => {
                   trackClass={`w-[35%] h-full relative flex justify-center transition-all duration-300 ${isPadHovered ? 'ring-2 ring-yellow-400 shadow-[0_0_15px_rgba(251,191,36,0.5)]' : ''}`}
                   thumbClass={`w-[160%] aspect-[3/1] absolute transition-shadow ${isPadHovered ? 'shadow-[0_0_10px_rgba(251,191,36,0.8)]' : ''}`}
                   label="HRS"
-                  labelClass="mb-[2px] left-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.2em] text-synth-ink-light font-mono font-medium whitespace-nowrap pointer-events-none"
+                  labelClass="mb-[2px] left-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.2em] text-text-muted font-body font-medium whitespace-nowrap pointer-events-none"
                 />
               </div>
             </div>
@@ -116,7 +116,7 @@ const ControlModule = () => {
                     trackClass="w-[30%] h-full relative flex justify-center"
                     thumbClass="w-[180%] aspect-[2/1] absolute z-10"
                     label={text}
-                    labelClass="absolute bottom-[100%] mb-[4px] left-1/2 -translate-x-1/2 -rotate-90 origin-bottom-left text-[7px] uppercase tracking-[0.25em] text-synth-ink-dark font-mono font-bold whitespace-nowrap pointer-events-none"
+                    labelClass="absolute bottom-[100%] mb-[4px] left-1/2 -translate-x-1/2 -rotate-90 origin-bottom-left text-[7px] uppercase tracking-[0.25em] text-text-primary font-body font-bold whitespace-nowrap pointer-events-none"
                     compId={`mod1-${3 + i}`}
                   />
                   <div className="absolute top-[108%] w-full flex justify-center">
@@ -134,7 +134,7 @@ const ControlModule = () => {
                 trackClass="w-full h-[25%] relative flex items-center"
                 thumbClass="h-[180%] aspect-[1/2] absolute z-20"
                 label="HRS X DÍA EN RRSS"
-                labelClass="absolute bottom-[100%] mb-[4px] left-0 text-[7px] uppercase tracking-[0.25em] text-synth-ink-base font-mono font-bold whitespace-nowrap pointer-events-none"
+                labelClass="absolute bottom-[100%] mb-[4px] left-0 text-[7px] uppercase tracking-[0.25em] text-text-secondary font-body font-bold whitespace-nowrap pointer-events-none"
                 markers={['1', '2', '3', '4', '6', '+']}
                 compId="mod1-22"
               />
@@ -143,15 +143,15 @@ const ControlModule = () => {
             {/* KNOBS & JACKS */}
             <div className="h-[25%] flex flex-row justify-between mt-[4%]">
               <div className="w-[55%] flex flex-row items-center justify-around relative border border-transparent pt-[10px]">
-                <span className="absolute top-[-10px] left-1 text-[8px] font-mono font-bold tracking-widest text-synth-ink-light uppercase">Referencias</span>
+                <span className="absolute top-[-10px] left-1 text-[8px] font-body font-bold tracking-widest text-text-muted uppercase">Referencias</span>
                 {['FREC', 'IMP', 'IA'].map((text, i) => (
                   <div key={`knob-${i}`} className="w-[22%] aspect-square relative">
                     <Knob label={text} labelClass={LBL_UP} sizeClass="w-full h-full" initialValue={50} compId={`mod1-${23 + i}`} />
                   </div>
                 ))}
               </div>
-              <div className="w-[40%] bg-synth-surface flex flex-col justify-center items-center p-[2%] border-[1px] border-synth-border-light shadow-neo-in rounded-xl relative">
-                <div className="w-[90%] bg-synth-ink-dark text-synth-border-light text-[9px] font-mono font-bold text-center leading-none py-[4%] mb-[3%] tracking-[0.3em] uppercase rounded-sm drop-shadow-sm">SALIDAS</div>
+              <div className="w-[40%] bg-bg-base flex flex-col justify-center items-center p-[2%] border-[1px] border-border-subtle shadow-inset-control rounded-xl relative">
+                <div className="w-[90%] bg-text-primary text-synth-border-light text-[9px] font-body font-bold text-center leading-none py-[4%] mb-[3%] tracking-[0.3em] uppercase rounded-sm drop-shadow-sm">SALIDAS</div>
                 <div className="flex flex-row justify-around w-full px-[4%] flex-1 items-center">
                   {['JACK 1', 'JACK 2'].map((item, i) => {
                     const isOut1Active = routingOutputs?.out1?.startsWith('mod1-');

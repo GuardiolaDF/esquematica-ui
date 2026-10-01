@@ -32,15 +32,15 @@ const Knob = ({
   const isMissing = useAppContext().missingFields?.includes(compId);
   const isReadOnly = mode === 'colectivo';
   
-  let glowClass = 'shadow-neo-knob border border-synth-border-light';
+  let glowClass = 'shadow-neo-knob border border-border-subtle';
   if (routeColor) {
     glowClass = `ring-4 ring-${routeColor} shadow-[0_0_30px_rgba(${routeColor === 'orange-500' ? '249,115,22' : '59,130,246'},1)] bg-${routeColor}/30`;
   } else if (isReadOnly) {
-    glowClass = isHovered ? 'shadow-[0_0_15px_rgba(255,255,255,0.4)] border border-white' : 'shadow-neo-knob border border-synth-border-light';
+    glowClass = isHovered ? 'shadow-[0_0_15px_rgba(255,255,255,0.4)] border border-white' : 'shadow-neo-knob border border-border-subtle';
   } else {
     glowClass = isHovered 
       ? 'shadow-[0_0_15px_rgba(251,191,36,0.5)] border border-amber-400' 
-      : (isMissing ? 'shadow-[0_0_15px_rgba(239,68,68,0.5)] border border-red-500' : 'shadow-neo-knob border border-synth-border-light');
+      : (isMissing ? 'shadow-[0_0_15px_rgba(239,68,68,0.5)] border border-red-500' : 'shadow-neo-knob border border-border-subtle');
   }
   
   const displayValue = isReadOnly 
@@ -124,13 +124,13 @@ const Knob = ({
       
       {/* Cuerpo de la Perilla (main-knob) */}
       <div 
-        className={`w-full aspect-square rounded-full bg-synth-surface border border-synth-border-light ${glowClass} flex items-center justify-center pointer-events-none transition-all duration-300`}
+        className={`w-full aspect-square rounded-full bg-control-bg shadow-elevation-02 border border-border-subtle ${glowClass} flex items-center justify-center pointer-events-none transition-all duration-300`}
         style={{ transform: `rotate(${rotation}deg)` }}
       >
         {/* knob-cap */}
-        <div className="w-[81%] aspect-square rounded-full bg-synth-surface border-[0.5px] border-synth-border-dark relative flex items-start justify-center">
+        <div className="w-[81%] aspect-square rounded-full bg-control-bg shadow-elevation-02 border-[0.5px] border-border-default relative flex items-start justify-center">
            {/* Indicator dot */}
-           <div className="w-[12%] aspect-square bg-synth-accent rounded-full absolute top-[6%]"></div>
+           <div className="w-[12%] aspect-square bg-indicator-active rounded-full absolute top-[6%]"></div>
         </div>
       </div>
 
@@ -141,7 +141,7 @@ const Knob = ({
              <div className="absolute top-0 left-1/2 -translate-x-1/2 flex flex-col items-center">
                <div className="w-[1.5px] h-[3px] bg-synth-border-base"></div>
                {marker.label && (
-                 <span className="absolute bottom-full mb-[2px] text-[7px] text-synth-ink-base font-mono font-medium" style={{ transform: `rotate(${-marker.angle}deg)` }}>
+                 <span className="absolute bottom-full mb-[2px] text-[7px] text-synth-ink-base font-body font-medium" style={{ transform: `rotate(${-marker.angle}deg)` }}>
                    {marker.label}
                  </span>
                )}

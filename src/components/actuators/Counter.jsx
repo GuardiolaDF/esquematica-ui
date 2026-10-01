@@ -89,11 +89,11 @@ const Counter = ({ label, labelClass, compId }) => {
       onMouseLeave={handleMouseLeave}
     >
       {/* Pantalla Gris Oscura (Reducida 25% desde abajo) */}
-      <div className={`w-[75%] h-[75%] bg-synth-module shadow-neo-in border border-synth-border-light rounded-sm ${glowClass} relative flex items-center justify-center transition-all duration-300`}>
+      <div className={`w-[75%] h-[75%] bg-control-bg shadow-inset-control border border-border-subtle rounded-sm ${glowClass} relative flex items-center justify-center transition-all duration-300`}>
         {label && labelClass && (
           <span className={labelClass}>{label}</span>
         )}
-        <span className="text-synth-ink-dark font-sans text-[20px] tracking-widest select-none pointer-events-none mt-1">
+        <span className="text-text-primary font-sans text-[20px] tracking-widest select-none pointer-events-none mt-1">
           {displayString}
         </span>
       </div>
@@ -102,7 +102,7 @@ const Counter = ({ label, labelClass, compId }) => {
       <div className="w-[20%] h-[75%] flex flex-col justify-between items-end py-1">
         {/* Flecha Arriba */}
         <div 
-          className="w-[12px] h-[9px] text-synth-ink-base cursor-pointer hover:scale-[1.1] active:scale-[0.85] transition-transform origin-bottom flex items-center justify-center select-none"
+          className="w-[12px] h-[9px] text-text-secondary cursor-pointer hover:scale-[1.1] active:scale-[0.85] transition-transform origin-bottom flex items-center justify-center select-none"
           onMouseDown={startIncrement}
           onMouseUp={stopInterval}
           onMouseLeave={stopInterval}
@@ -116,7 +116,7 @@ const Counter = ({ label, labelClass, compId }) => {
         
         {/* Flecha Abajo */}
         <div 
-          className="w-[12px] h-[9px] text-synth-ink-base cursor-pointer hover:scale-[1.1] active:scale-[0.85] transition-transform origin-top flex items-center justify-center select-none"
+          className="w-[12px] h-[9px] text-text-secondary cursor-pointer hover:scale-[1.1] active:scale-[0.85] transition-transform origin-top flex items-center justify-center select-none"
           onMouseDown={startDecrement}
           onMouseUp={stopInterval}
           onMouseLeave={stopInterval}

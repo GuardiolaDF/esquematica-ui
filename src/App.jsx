@@ -11,7 +11,7 @@ function App() {
   return (
     <HoverProvider>
       <CableProvider>
-      <div className="w-full h-screen bg-synth-surface flex items-center justify-center p-[10px] overflow-hidden font-sans relative">
+      <div className="w-full h-screen bg-bg-sunken text-text-primary flex items-center justify-center p-[10px] overflow-hidden font-sans relative">
         <RackGrid />
         <CableOverlay />
         
