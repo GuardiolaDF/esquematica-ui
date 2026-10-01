@@ -9,9 +9,9 @@ import LedButton from './components/actuators/LedButton';
 import RotarySwitch from './components/actuators/RotarySwitch';
 import { useAppContext } from './contexts/AppContext';
 
-const LBL_UP = "absolute bottom-[100%] mb-[4px] left-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.2em] text-[#777] font-sans font-bold whitespace-nowrap pointer-events-none";
-const LBL_DN = "absolute top-[100%] mt-[4px] left-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.2em] text-[#777] font-sans font-bold whitespace-nowrap pointer-events-none";
-const LBL_V = "absolute right-[100%] mr-[4px] top-1/2 -translate-y-1/2 -rotate-90 origin-center text-[7px] uppercase tracking-[0.2em] text-[#777] font-sans font-bold whitespace-nowrap pointer-events-none";
+const LBL_UP = "absolute bottom-[100%] mb-[4px] left-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.25em] text-synth-ink-base font-mono font-bold whitespace-nowrap pointer-events-none";
+const LBL_DN = "absolute top-[100%] mt-[4px] left-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.25em] text-synth-ink-base font-mono font-bold whitespace-nowrap pointer-events-none";
+const LBL_V = "absolute right-[100%] mr-[4px] top-1/2 -translate-y-1/2 -rotate-90 origin-center text-[7px] uppercase tracking-[0.25em] text-synth-ink-dark font-mono font-bold whitespace-nowrap pointer-events-none";
 
 const Module2 = () => {
   const { showGrid, mode, routingOutputs } = useAppContext();
@@ -20,15 +20,15 @@ const Module2 = () => {
 
   return (
     <ModuleShell disabled={mode === 'colectivo'}>
-      <div className="w-full h-full flex flex-col p-[12px] gap-[4px] text-synth-ink-base">
+      <div className="w-full h-full flex flex-col p-[16px] gap-[20px] text-synth-ink-base">
         
         {/* HEADER */}
-        <div className="flex items-center gap-2">
-          <div className="flex bg-synth-module border border-synth-border-base items-center px-1">
-            <div className="w-[13px] h-[12px] bg-synth-border-base mr-1"></div>
-            <span className="text-synth-ink-black text-[12px] font-mono font-medium leading-none py-[2px]">2 módulo</span>
+        <div className="flex items-center gap-2 mb-[4px]">
+          <div className="flex border-[0.5px] border-synth-border-base items-center px-[4px] py-[2px] bg-synth-module shadow-neo-out">
+            <div className="w-[10px] h-[10px] bg-synth-border-base mr-2"></div>
+            <span className="text-synth-ink-dark text-[11px] font-mono font-medium leading-none">2 módulo</span>
           </div>
-          <span className="text-synth-ink-light font-display text-[12px] tracking-widest uppercase">
+          <span className="text-synth-ink-base font-display text-[12px] tracking-[0.2em] uppercase">
             MODOS DE TRABAJO ||||||
           </span>
         </div>
@@ -40,7 +40,7 @@ const Module2 = () => {
           <div className="flex flex-col w-[48%] h-full justify-between pr-[4%]">
             
             {/* ROW 1: Boceto & Silencio (50%) */}
-            <div className="flex flex-row h-[50%] justify-between items-center bg-synth-module border-[0.5px] border-synth-border-light p-[2%]">
+            <div className="flex flex-row h-[50%] justify-between items-center  border-[0.5px] border-synth-border-light p-[2%]">
               {/* BOCETO A MANO (RotarySwitch) */}
               <div className="w-[84%] h-full flex items-center justify-center relative">
                  <RotarySwitch 
@@ -57,8 +57,8 @@ const Module2 = () => {
                 <Fader 
                   orientation="vertical"
                   initialValue={50}
-                  trackClass="w-[30%] h-full bg-[#E5E5E5] rounded-full shadow-inner relative flex justify-center"
-                  thumbClass="w-[150%] aspect-square bg-[#888] rounded-full absolute shadow-md z-10"
+                  trackClass="w-[30%] h-full    relative flex justify-center"
+                  thumbClass="w-[150%] aspect-square   absolute  z-10"
                   label="SILENCIO"
                   labelClass={LBL_V}
                   compId="mod2-4"
@@ -69,7 +69,7 @@ const Module2 = () => {
             {/* ROW 2: Perfeccionismo, Procrastinar, Icons (50%) */}
             <div className="flex flex-row h-[48%] justify-between items-center mt-[2%] bg-synth-surface border-[0.5px] border-synth-border-light p-[4%]">
               {/* 2 SMALL KNOBS */}
-              <div className="flex flex-col h-full justify-around w-[30%] bg-synth-module">
+              <div className="flex flex-col h-full justify-around w-[30%] ">
                 {[{ l: 'PERFECC.', id: 'mod2-2' }, { l: 'PROCRAST.', id: 'mod2-3' }].map((item, i) => (
                   <div key={item.id} className="w-[80%] aspect-square relative self-center">
                     <Knob label={item.l} labelClass={LBL_UP} sizeClass="w-full h-full" initialValue={50} compId={item.id} />
@@ -78,7 +78,7 @@ const Module2 = () => {
               </div>
               
               {/* 4 MINI PADS (Icons) */}
-              <div className="grid grid-cols-2 grid-rows-2 w-[40%] gap-[4px] h-[80%] bg-synth-module p-[2%]">
+              <div className="grid grid-cols-2 grid-rows-2 w-[40%] gap-[4px] h-[80%]  p-[2%]">
                 {[{ l: 'PAUSAS', id: 'mod2-5' }, { l: 'ESCRITORIO', id: 'mod2-6' },
                   { l: 'NOCTURNO', id: 'mod2-7' }, { l: 'RESPALDO', id: 'mod2-8' }].map((pos, i) => (
                   <div key={pos.id} className="flex items-center justify-center">
@@ -93,7 +93,7 @@ const Module2 = () => {
           <div className="flex flex-col w-[52%] h-full justify-between">
             
             {/* ROW 1: 3 Counters (33.3%) */}
-            <div className="flex flex-row h-[33.3%] justify-between items-center bg-synth-module px-[2%]">
+            <div className="flex flex-row h-[33.3%] justify-between items-center  px-[2%]">
               {[{l:'PROGRAMAS', id:'mod2-9'}, {l:'PESTAÑAS', id:'mod2-10'}, {l:'ARCHIVOS', id:'mod2-11'}].map((item, i) => (
                 <div key={item.id} className="w-[28%] h-full flex flex-col items-center justify-center relative">
                   <Counter label={item.l} labelClass={LBL_UP} compId={item.id} />
@@ -113,7 +113,7 @@ const Module2 = () => {
             {/* ROW 3: 3 Knobs & 2 Jacks (27.6%) */}
             <div className="flex flex-row h-[27.6%] justify-between bg-synth-surface">
               {/* KNOBS */}
-              <div className="w-[51%] flex flex-row items-center justify-around bg-synth-module px-[2%] relative pt-[4%]">
+              <div className="w-[51%] flex flex-row items-center justify-around  px-[2%] relative pt-[4%]">
                 {[{ l: 'INTERRUP.', id: 'mod2-15' }, { l: 'IMPOSTOR', id: 'mod2-16' }, { l: 'ORDEN', id: 'mod2-17' }].map((item, i) => (
                   <div key={item.id} className="w-[25%] aspect-square relative">
                     <Knob label={item.l} labelClass={LBL_UP} sizeClass="w-full h-full" initialValue={50} compId={item.id} />
@@ -123,7 +123,7 @@ const Module2 = () => {
               
               {/* JACKS */}
               <div className="w-[45%] bg-synth-surface flex flex-col justify-center items-center p-[2%] border border-synth-border-light relative">
-                <div className="w-full bg-synth-ink-dark text-white text-[9px] font-display text-center leading-none py-[4%] mb-[4%]">SALIDAS</div>
+                <div className="w-full bg-synth-ink-dark text-white text-[9px] font-sans font-bold text-center leading-none py-[4%] mb-[4%] tracking-widest uppercase text-synth-surface">SALIDAS</div>
                 <div className="flex flex-row justify-around w-full px-[4%] flex-1 items-center">
                   {['JACK 1', 'JACK 2'].map((item, i) => {
                     const isOut1Active = routingOutputs?.out1?.startsWith('mod2-');

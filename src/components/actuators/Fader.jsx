@@ -106,7 +106,7 @@ const Fader = ({
   const isHovered = (compId && hoveredId === compId) || localHover || isDragging;
   const isMissing = useAppContext().missingFields?.includes(compId);
   
-  let thumbGlowClass = 'shadow-md border border-transparent';
+  let thumbGlowClass = '';
   let trackGlowClass = '';
   
   if (routeColor) {
@@ -117,7 +117,7 @@ const Fader = ({
   } else {
     thumbGlowClass = isHovered 
       ? 'shadow-[0_0_15px_rgba(251,191,36,0.8)] border border-yellow-400 bg-yellow-100' 
-      : (isMissing ? 'shadow-[0_0_15px_rgba(239,68,68,0.8)] border border-red-500 bg-red-100' : 'shadow-md border border-transparent');
+      : (isMissing ? 'shadow-[0_0_15px_rgba(239,68,68,0.8)] border border-red-500 bg-red-100' : '');
     trackGlowClass = isHovered 
       ? 'ring-2 ring-yellow-400 shadow-[0_0_15px_rgba(251,191,36,0.3)]' 
       : (isMissing ? 'ring-2 ring-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)]' : '');
@@ -183,11 +183,11 @@ const Fader = ({
       )}
 
       {/* TRACK FIJO SEGÚN FIGMA */}
-      <div className={`absolute ${orientation === 'vertical' ? 'w-[35%] h-full left-1/2 -translate-x-1/2' : 'h-[35%] w-full top-1/2 -translate-y-1/2'} bg-synth-surface border border-synth-border-light rounded-full pointer-events-none`}></div>
+      <div className={`absolute ${orientation === 'vertical' ? 'w-[35%] h-full left-1/2 -translate-x-1/2' : 'h-[35%] w-full top-1/2 -translate-y-1/2'} bg-synth-surface border border-synth-border-light rounded-full shadow-neo-in pointer-events-none`}></div>
 
       {/* THUMB FIJO SEGÚN FIGMA */}
       <div 
-        className={`absolute ${orientation === 'vertical' ? 'w-[200%] h-[20%] left-1/2 -translate-x-1/2' : 'h-[200%] w-[10%] top-1/2 -translate-y-1/2'} bg-synth-surface border-[0.5px] border-synth-border-dark flex items-center justify-center pointer-events-none transition-all duration-300 z-10 ${thumbGlowClass}`}
+        className={`absolute ${orientation === 'vertical' ? 'w-[200%] h-[20%] left-1/2 -translate-x-1/2' : 'h-[200%] w-[10%] top-1/2 -translate-y-1/2'} bg-synth-surface border-[0.5px] border-synth-border-dark shadow-neo-out rounded-sm flex items-center justify-center pointer-events-none transition-all duration-300 z-10 ${thumbGlowClass}`}
         style={thumbStyle}
       >
          <div className={`bg-synth-accent ${orientation === 'vertical' ? 'w-full h-[1px]' : 'h-full w-[1px]'}`}></div>

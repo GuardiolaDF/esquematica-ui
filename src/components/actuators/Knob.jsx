@@ -32,15 +32,15 @@ const Knob = ({
   const isMissing = useAppContext().missingFields?.includes(compId);
   const isReadOnly = mode === 'colectivo';
   
-  let glowClass = 'shadow-md border border-[#333]';
+  let glowClass = 'shadow-neo-knob border border-synth-border-light';
   if (routeColor) {
     glowClass = `ring-4 ring-${routeColor} shadow-[0_0_30px_rgba(${routeColor === 'orange-500' ? '249,115,22' : '59,130,246'},1)] bg-${routeColor}/30`;
   } else if (isReadOnly) {
-    glowClass = isHovered ? 'shadow-[0_0_15px_rgba(255,255,255,0.4)] border border-white' : 'shadow-md border border-[#333]';
+    glowClass = isHovered ? 'shadow-[0_0_15px_rgba(255,255,255,0.4)] border border-white' : 'shadow-neo-knob border border-synth-border-light';
   } else {
     glowClass = isHovered 
       ? 'shadow-[0_0_15px_rgba(251,191,36,0.5)] border border-amber-400' 
-      : (isMissing ? 'shadow-[0_0_15px_rgba(239,68,68,0.5)] border border-red-500' : 'shadow-md border border-[#333]');
+      : (isMissing ? 'shadow-[0_0_15px_rgba(239,68,68,0.5)] border border-red-500' : 'shadow-neo-knob border border-synth-border-light');
   }
   
   const displayValue = isReadOnly 

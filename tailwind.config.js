@@ -17,33 +17,32 @@ export default {
       fontFamily: {
         sans: ['"Plus Jakarta Sans"', 'Satoshi', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
-        display: ['"Satori TRIAL"', '"Satori"', 'sans-serif']
+        display: ['"Satori"', 'sans-serif']
+      },
+                  boxShadow: {
+        'neo-out': '3px 3px 8px rgba(45, 45, 45, 0.18), -2px -2px 6px rgba(255, 255, 255, 0.82)',
+        'neo-in': 'inset 1px 2px 4px rgba(45, 45, 45, 0.22), inset -1px -1px 2px rgba(255, 255, 255, 0.78)',
+        'neo-knob': '3px 4px 8px rgba(45, 45, 45, 0.22), inset 1px 1px 2px rgba(255, 255, 255, 0.75)',
+        'neo-panel': '6px 8px 20px rgba(45, 45, 45, 0.22), -4px -4px 10px rgba(255, 255, 255, 0.9)'
       },
       colors: {
         synth: {
-          // Fondos principales
-          surface: '#eeebe1',    // Fondo general del sintetizador
-          panel: '#fdfaf2',      // Fondo de los módulos (filters-panel, etc)
-          module: '#ffffff',     // Fondo interno de componentes
-          track: '#efebe2',      // Fondo de los faders
-          
-          // Acentos (LEDs, indicadores)
-          accent: '#ff9479',
-          'accent-light': '#ffab96',
-          
-          // Bordes y metales (Cables, jacks, strokes)
+          surface: '#DFDCD1',
+          panel: '#FBF9F1',
+          module: '#DFDCD1',
+          track: '#EAE6DB',
+          accent: '#F89680',
+          'accent-alt': '#005E5D',
           border: {
-            light: '#ddd9ce',
-            base: '#898176',
-            dark: '#716962'
+            light: '#FFFFFF',
+            base: '#AAA399',
+            dark: '#66615C'
           },
-          
-          // Tintas (Textos, líneas divisorias, etiquetas)
           ink: {
-            light: '#a89f90',
-            base: '#5c5451',
-            dark: '#423e3d',
-            darker: '#2d2d2d',
+            light: '#AAA399',
+            base: '#66615C',
+            dark: '#323232',
+            darker: '#1A1A1A',
             black: '#000000'
           }
         }
@@ -52,3 +51,4 @@ export default {
   },
   plugins: [],
 }
+

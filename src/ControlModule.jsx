@@ -1,57 +1,54 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ModuleShell from './ModuleShell';
-import Jack from './components/cables/Jack';
-import Fader from './components/actuators/Fader';
 import Knob from './components/actuators/Knob';
+import Fader from './components/actuators/Fader';
 import LedButton from './components/actuators/LedButton';
-import { SiYoutube, SiSpotify, SiHbo, SiNetflix, SiStremio, SiTiktok, SiTwitch, SiMubi, SiInstagram, SiKick } from 'react-icons/si';
-import { TbBrandDisney } from 'react-icons/tb';
-import { FaAmazon } from 'react-icons/fa';
+import Jack from './components/cables/Jack';
 import { useAppContext } from './contexts/AppContext';
 import { useHover } from './contexts/HoverContext';
 
-const padIcons = [
-  SiYoutube, SiSpotify, SiHbo, SiNetflix,
-  SiStremio, SiTiktok, TbBrandDisney, SiTwitch,
-  SiMubi, SiInstagram, FaAmazon, SiKick
-];
-
-const LBL_UP = "absolute bottom-[100%] mb-[4px] left-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.2em] text-[#777] font-sans font-bold whitespace-nowrap pointer-events-none";
-const LBL_DN = "absolute top-[100%] mt-[4px] left-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.2em] text-[#777] font-sans font-bold whitespace-nowrap pointer-events-none";
-const LBL_V = "absolute right-[100%] mr-[4px] top-1/2 -translate-y-1/2 -rotate-90 origin-center text-[7px] uppercase tracking-[0.2em] text-[#777] font-sans font-bold whitespace-nowrap pointer-events-none";
-const LBL_PAD = "absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.2em] text-[#777] font-sans font-bold whitespace-nowrap pointer-events-none z-20";
+const LBL_UP = "mb-[4px] left-1/2 -translate-x-1/2 text-[8px] uppercase tracking-[0.25em] text-synth-ink-base font-mono font-bold whitespace-nowrap pointer-events-none";
 
 const ControlModule = () => {
-  const { activePlatform, setActivePlatform, values, setValue, showGrid, mode, routingOutputs } = useAppContext();
-  const { hoveredId } = useHover();
-  
-  // Determinamos si algún pad está siendo "hovered" para iluminar el fader vertical
-  const isPadHovered = hoveredId && hoveredId.startsWith('mod1-') && parseInt(hoveredId.split('-')[1]) >= 10 && parseInt(hoveredId.split('-')[1]) <= 21;
+  const { mode, routingOutputs } = useAppContext();
+  const [activePlatform, setActivePlatform] = useState(null);
+  const { setHoveredId } = useHover();
+  const isPadHovered = activePlatform !== null;
+
+  const padIcons = [
+    ({className}) => <svg viewBox="0 0 24 24" className={className}><path d="M12 2L2 12h3v8h14v-8h3L12 2z" fill="currentColor"/></svg>, // cine
+    ({className}) => <svg viewBox="0 0 24 24" className={className}><path d="M4 4h16v16H4z M4 8h16" fill="currentColor"/></svg>, // libros
+    ({className}) => <svg viewBox="0 0 24 24" className={className}><path d="M12 2a8 8 0 00-8 8v8h4v-8a4 4 0 018 0v8h4v-8a8 8 0 00-8-8z" fill="currentColor"/></svg>, // podcast
+    ({className}) => <svg viewBox="0 0 24 24" className={className}><path d="M9 18V5l12-2v13 M9 9l12-2" fill="none" stroke="currentColor" strokeWidth="2"/></svg>, // musica
+    ({className}) => <svg viewBox="0 0 24 24" className={className}><path d="M2 4h20v14H2z M12 4v14" fill="none" stroke="currentColor" strokeWidth="2"/></svg>, // series
+    ({className}) => <svg viewBox="0 0 24 24" className={className}><path d="M4 8h16v8H4z M10 8v8 M14 8v8" fill="none" stroke="currentColor" strokeWidth="2"/></svg>, // juegos
+    ({className}) => <svg viewBox="0 0 24 24" className={className}><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" strokeWidth="2"/></svg> // otros
+  ];
 
   return (
     <ModuleShell disabled={mode === 'colectivo'}>
-      <div className="w-full h-full flex flex-col p-[12px] gap-[16px] text-synth-ink-base">
+      <div className="w-full h-full flex flex-col p-[16px] gap-[20px] text-synth-ink-base">
         
-        {/* HEADER: Component 15 */}
-        <div className="flex items-center gap-2">
-          <div className="flex bg-synth-module border border-synth-border-base items-center px-1">
-            <div className="w-[13px] h-[12px] bg-synth-border-base mr-1"></div>
-            <span className="text-synth-ink-black text-[12px] font-mono font-medium leading-none py-[2px]">1 módulo</span>
+        {/* HEADER */}
+        <div className="flex items-center gap-2 mb-[4px]">
+          <div className="flex border-[0.5px] border-synth-border-base items-center px-[4px] py-[2px] bg-synth-module shadow-neo-out">
+            <div className="w-[10px] h-[10px] bg-synth-border-base mr-2"></div>
+            <span className="text-synth-ink-dark text-[11px] font-mono font-medium leading-none">1 módulo</span>
           </div>
-          <span className="text-synth-ink-light font-display text-[12px] tracking-widest uppercase">
+          <span className="text-synth-ink-base font-display text-[12px] tracking-[0.2em] uppercase">
             CONSUMOS CULTURALES ||||||
           </span>
         </div>
 
-        {/* MAIN SPLIT: Frame 61 */}
-        <div className="flex flex-row flex-1 gap-[22px] min-h-0">
+        {/* MAIN SPLIT */}
+        <div className="flex flex-row flex-1 gap-[5.5%] min-h-0 pt-[10px]">
           
-          {/* LEFT COLUMN: Frame 44 */}
-          <div className="flex flex-col w-[38.3%] justify-between min-w-0">
-            {/* ROW 1: FORMATO y MODO AVION */}
-            <div className="flex flex-row h-[48.2%] justify-between">
-              <div className="w-[68.4%] h-full flex flex-col items-center justify-center relative bg-synth-module">
-                 <div className="w-[65%] aspect-square relative mt-2">
+          {/* LEFT COLUMN: 44% */}
+          <div className="flex flex-col w-[44%] justify-between min-w-0">
+            {/* ROW 1: FORMATO y MODO AVIÓN */}
+            <div className="flex flex-row h-[42%] justify-between items-center">
+              <div className="w-[60%] h-full flex flex-col items-center justify-center relative mt-[10px]">
+                 <div className="w-[70%] aspect-square relative">
                    <Knob 
                      label="FORMATO" 
                      labelClass={LBL_UP} 
@@ -62,9 +59,9 @@ const ControlModule = () => {
                    />
                  </div>
               </div>
-              <div className="w-[12%] h-full flex items-center justify-center relative bg-synth-module">
+              <div className="w-[20%] h-full flex items-center justify-center relative mt-[10px]">
                 <LedButton 
-                  baseClass="w-[60%] aspect-square rounded-[20%]" 
+                  baseClass="w-[70%] aspect-square rounded-[20%]" 
                   label="AVIÓN" 
                   labelClass={LBL_UP} 
                   compId="mod1-2" 
@@ -72,13 +69,13 @@ const ControlModule = () => {
               </div>
             </div>
 
-            {/* ROW 2: PLATAFORMAS (Component 17) */}
-            <div className="flex flex-row h-[50.7%] bg-synth-surface border-[0.5px] border-synth-border-base p-[2%] justify-between">
-              <div className="w-[78%] grid grid-cols-4 grid-rows-3 gap-[2px]">
+            {/* ROW 2: PLATAFORMAS */}
+            <div className="flex flex-row h-[52%] bg-synth-surface border-[1px] border-synth-border-light shadow-neo-in p-[3%] rounded-xl justify-between">
+              <div className="w-[75%] grid grid-cols-4 grid-rows-3 gap-[4px]">
                 {Array.from({ length: 12 }).map((_, i) => {
                   const compId = `mod1-${10 + i}`;
                   return (
-                    <div key={`pad-${i}`} className="flex items-center justify-center bg-synth-module border border-synth-border-light p-[10%]">
+                    <div key={`pad-${i}`} className="flex items-center justify-center border border-synth-border-light bg-synth-panel shadow-neo-out rounded-sm p-[10%]">
                       <LedButton 
                         baseClass="w-full h-full rounded-[15%]" 
                         icon={padIcons[i]} 
@@ -93,69 +90,68 @@ const ControlModule = () => {
               </div>
               
               {/* VERTICAL FADER */}
-              <div className="w-[15%] h-full flex flex-col items-center justify-center relative pb-2 pt-1">
+              <div className="w-[18%] h-full flex flex-col items-center justify-center relative">
                 <Fader 
                   orientation="vertical"
                   initialValue={50}
                   compId={activePlatform}
-                  trackClass={`w-[30%] h-full bg-[#E5E5E5] rounded-full shadow-inner relative flex justify-center transition-all duration-300 ${isPadHovered ? 'ring-2 ring-yellow-400 shadow-[0_0_15px_rgba(251,191,36,0.5)]' : ''}`}
-                  thumbClass={`w-full aspect-square bg-[#888] rounded-full absolute shadow-md transition-shadow ${isPadHovered ? 'shadow-[0_0_10px_rgba(251,191,36,0.8)]' : ''}`}
+                  trackClass={`w-[35%] h-full relative flex justify-center transition-all duration-300 ${isPadHovered ? 'ring-2 ring-yellow-400 shadow-[0_0_15px_rgba(251,191,36,0.5)]' : ''}`}
+                  thumbClass={`w-[160%] aspect-[3/1] absolute transition-shadow ${isPadHovered ? 'shadow-[0_0_10px_rgba(251,191,36,0.8)]' : ''}`}
                   label="HRS"
-                  labelClass={LBL_UP}
+                  labelClass="mb-[2px] left-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.2em] text-synth-ink-light font-mono font-medium whitespace-nowrap pointer-events-none"
                 />
               </div>
             </div>
           </div>
 
-          {/* RIGHT COLUMN: Frame 45 */}
-          <div className="flex flex-col w-[58.8%] justify-between min-w-0">
+          {/* RIGHT COLUMN: 50.5% */}
+          <div className="flex flex-col w-[50.5%] justify-between min-w-0">
             {/* MEDIOS (7 Faders) */}
-            <div className="flex flex-row h-[46.1%] bg-synth-module justify-around items-end pb-[8%] pt-[12%] px-[2%]">
+            <div className="flex flex-row h-[42%] justify-around items-end pb-[2%] mt-[10px]">
               {['CINE', 'LIBROS', 'PODCAST', 'MÚSICA', 'SERIES', 'JUEGOS', 'OTROS'].map((text, i) => (
                 <div key={`fader-${i}`} className="h-full flex items-center justify-center relative w-[10%]">
                   <Fader 
                     orientation="vertical"
                     initialValue={50}
-                    trackClass="w-[30%] h-full bg-[#E5E5E5] rounded-full shadow-inner relative flex justify-center"
-                    thumbClass="w-[150%] aspect-square bg-[#888] rounded-full absolute shadow-md z-10"
+                    trackClass="w-[30%] h-full relative flex justify-center"
+                    thumbClass="w-[180%] aspect-[2/1] absolute z-10"
                     label={text}
-                    labelClass={LBL_UP}
+                    labelClass="absolute bottom-[100%] mb-[4px] left-1/2 -translate-x-1/2 -rotate-90 origin-bottom-left text-[7px] uppercase tracking-[0.25em] text-synth-ink-dark font-mono font-bold whitespace-nowrap pointer-events-none"
                     compId={`mod1-${3 + i}`}
                   />
-                  {/* Tiny button below the fader */}
-                  <div className="absolute top-[110%] w-full flex justify-center">
-                    <LedButton baseClass="w-[40%] aspect-square rounded-[20%]" compId={`mod1-${3 + i}`} />
+                  <div className="absolute top-[108%] w-full flex justify-center">
+                    <LedButton baseClass="w-[50%] aspect-square rounded-full" compId={`mod1-${3 + i}`} />
                   </div>
                 </div>
               ))}
             </div>
             
             {/* HORIZONTAL SLIDER */}
-            <div className="h-[17.4%] bg-synth-module flex items-center justify-center px-[8%] relative">
+            <div className="h-[18%] flex items-center justify-center relative mt-[8%]">
               <Fader 
                 orientation="horizontal"
                 initialValue={50}
-                trackClass="w-full h-[30%] bg-[#404040] rounded-full shadow-inner relative flex items-center"
-                thumbClass="h-[150%] aspect-square bg-[#FFF] rounded-full absolute shadow-md z-20"
+                trackClass="w-full h-[25%] relative flex items-center"
+                thumbClass="h-[180%] aspect-[1/2] absolute z-20"
                 label="HRS X DÍA EN RRSS"
-                labelClass="absolute bottom-[100%] mb-[4px] left-0 text-[7px] uppercase tracking-[0.2em] text-[#777] font-sans font-bold whitespace-nowrap pointer-events-none"
+                labelClass="absolute bottom-[100%] mb-[4px] left-0 text-[7px] uppercase tracking-[0.25em] text-synth-ink-base font-mono font-bold whitespace-nowrap pointer-events-none"
                 markers={['1', '2', '3', '4', '6', '+']}
                 compId="mod1-22"
               />
             </div>
 
             {/* KNOBS & JACKS */}
-            <div className="h-[27.6%] flex flex-row justify-between">
-              <div className="w-[57.2%] flex flex-row items-center justify-around bg-synth-module px-[2%] relative pt-[4%]">
-                <span className="absolute top-1 left-2 text-[7px] font-mono text-synth-ink-base">Referencias</span>
+            <div className="h-[25%] flex flex-row justify-between mt-[4%]">
+              <div className="w-[55%] flex flex-row items-center justify-around relative border border-transparent pt-[10px]">
+                <span className="absolute top-[-10px] left-1 text-[8px] font-mono font-bold tracking-widest text-synth-ink-light uppercase">Referencias</span>
                 {['FREC', 'IMP', 'IA'].map((text, i) => (
-                  <div key={`knob-${i}`} className="w-[20%] aspect-square relative">
+                  <div key={`knob-${i}`} className="w-[22%] aspect-square relative">
                     <Knob label={text} labelClass={LBL_UP} sizeClass="w-full h-full" initialValue={50} compId={`mod1-${23 + i}`} />
                   </div>
                 ))}
               </div>
-              <div className="w-[32.3%] bg-synth-surface flex flex-col justify-center items-center p-[2%] border border-synth-border-light relative">
-                <div className="w-full bg-synth-ink-dark text-white text-[9px] font-display text-center leading-none py-[4%] mb-[4%]">SALIDAS</div>
+              <div className="w-[40%] bg-synth-surface flex flex-col justify-center items-center p-[2%] border-[1px] border-synth-border-light shadow-neo-in rounded-xl relative">
+                <div className="w-[90%] bg-synth-ink-dark text-synth-border-light text-[9px] font-mono font-bold text-center leading-none py-[4%] mb-[3%] tracking-[0.3em] uppercase rounded-sm drop-shadow-sm">SALIDAS</div>
                 <div className="flex flex-row justify-around w-full px-[4%] flex-1 items-center">
                   {['JACK 1', 'JACK 2'].map((item, i) => {
                     const isOut1Active = routingOutputs?.out1?.startsWith('mod1-');
@@ -183,4 +179,3 @@ const ControlModule = () => {
   );
 };
 export default ControlModule;
-

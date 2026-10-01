@@ -89,11 +89,11 @@ const Counter = ({ label, labelClass, compId }) => {
       onMouseLeave={handleMouseLeave}
     >
       {/* Pantalla Gris Oscura (Reducida 25% desde abajo) */}
-      <div className={`w-[75%] h-[75%] bg-synth-ink-dark rounded-sm ${glowClass} relative flex items-center justify-center transition-all duration-300`}>
+      <div className={`w-[75%] h-[75%] bg-synth-module shadow-neo-in border border-synth-border-light rounded-sm ${glowClass} relative flex items-center justify-center transition-all duration-300`}>
         {label && labelClass && (
           <span className={labelClass}>{label}</span>
         )}
-        <span className="text-synth-surface font-display text-[1.5rem] tracking-widest select-none pointer-events-none mt-1">
+        <span className="text-synth-ink-dark font-sans text-[20px] tracking-widest select-none pointer-events-none mt-1">
           {displayString}
         </span>
       </div>

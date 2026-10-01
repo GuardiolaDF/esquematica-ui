@@ -32,17 +32,17 @@ const ToggleSwitch = ({
   
   const isReadOnly = mode === 'colectivo' && !(compId && compId.startsWith('demo-'));
   
-  let glowClass = 'shadow-md border border-transparent';
+  let glowClass = '';
   if (routeColor) {
     const isBlue = routeColor === 'orange-500';
     const cColor = isBlue ? '249,115,22' : '59,130,246';
     glowClass = `ring-4 ring-${routeColor} shadow-[0_0_30px_rgba(${cColor},1)] bg-${routeColor}/40 border border-${routeColor}`;
   } else if (isReadOnly) {
-    glowClass = isHovered ? 'shadow-[0_0_15px_rgba(255,255,255,0.4)] border border-white' : 'shadow-md border border-[#333]';
+    glowClass = isHovered ? 'shadow-[0_0_15px_rgba(255,255,255,0.4)] border border-white' : '';
   } else {
     glowClass = isHovered 
       ? 'shadow-[0_0_15px_rgba(251,191,36,0.5)] border border-amber-400/30' 
-      : (isMissing ? 'shadow-[0_0_15px_rgba(239,68,68,0.5)] border border-red-500/50' : 'shadow-md border border-transparent');
+      : (isMissing ? 'shadow-[0_0_15px_rgba(239,68,68,0.5)] border border-red-500/50' : '');
   }
 
   let isOn = localIsOn;
@@ -72,7 +72,7 @@ const ToggleSwitch = ({
 
   return (
     <div 
-      className={`${sizeClass} aspect-square rounded-full bg-synth-surface border border-synth-border-light ${glowClass} relative cursor-pointer transition-shadow duration-300 ${className} ${isHovered ? 'ring-1 ring-synth-accent/30 z-50' : ''}`}
+      className={`${sizeClass} aspect-square rounded-full bg-synth-surface border border-synth-border-light shadow-neo-in ${glowClass} relative cursor-pointer transition-shadow duration-300 ${className} ${isHovered ? 'ring-1 ring-synth-accent/30 z-50' : ''}`}
       onClick={toggle}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -87,7 +87,7 @@ const ToggleSwitch = ({
       
       {/* Palanca (Lever) */}
       <div 
-        className={`absolute top-1/2 left-1/2 w-[110%] h-[35%] bg-synth-border-base border-[0.5px] border-synth-border-dark rounded-full -translate-y-1/2 origin-left shadow-sm transition-transform duration-[150ms] ease-in-out ${
+        className={`absolute top-1/2 left-1/2 w-[110%] h-[35%] bg-synth-surface border-[0.5px] border-synth-border-dark shadow-neo-knob rounded-full -translate-y-1/2 origin-left shadow-sm transition-transform duration-[150ms] ease-in-out ${
           isOn ? '-rotate-45' : 'rotate-45'
         }`}
       ></div>

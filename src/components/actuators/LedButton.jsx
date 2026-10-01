@@ -63,7 +63,7 @@ const LedButton = ({
   const handleMouseLeave = () => { setLocalHover(false); if (compId) setHoveredId(null); };
 
   // Base background (apagado vs encendido)
-  let bgClass = 'bg-synth-module shadow-sm border border-synth-border-light text-synth-ink-base';
+  let bgClass = 'bg-synth-module shadow-neo-out border border-synth-border-light text-synth-ink-base';
   
   if (routeColor) {
     const isBlue = routeColor === 'orange-500';
