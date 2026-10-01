@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import ModuleShell from './ModuleShell';
 import Jack from './components/cables/Jack';
 import Fader from './components/actuators/Fader';
@@ -16,7 +16,7 @@ const LBL_V = "absolute right-[100%] mr-[4px] top-1/2 -translate-y-1/2 -rotate-9
 const Module3 = () => {
   const { values, averages, mode, showGrid, routingOutputs } = useAppContext();
   
-  // Determinar si el switch de procrastinaciÃ³n estÃ¡ activo
+  // Determinar si el switch de procrastinaciÃƒÂ³n estÃƒÂ¡ activo
   // En modo colectivo, si el promedio es > 0, lo consideramos activo para iluminar el banco de pads
   const procIsOn = mode === 'colectivo' ? (averages['mod3-8'] > 0) : (values['mod3-8'] === 100 || values['mod3-8'] === true);
 
@@ -31,7 +31,7 @@ const Module3 = () => {
         <div className="flex items-center gap-2">
           <div className="flex bg-synth-module border border-synth-border-base items-center px-1">
             <div className="w-[13px] h-[12px] bg-synth-border-base mr-1"></div>
-            <span className="text-synth-ink-black text-[12px] font-mono font-medium leading-none py-[2px]">3 módulo</span>
+            <span className="text-synth-ink-black text-[12px] font-mono font-medium leading-none py-[2px]">3 mÃ³dulo</span>
           </div>
           <span className="text-synth-ink-light font-display text-[12px] tracking-widest uppercase">
             SALUD MENTAL ||||||
@@ -46,8 +46,8 @@ const Module3 = () => {
             {/* 4 Small Knobs */}
             <div className="grid grid-cols-2 grid-rows-2 gap-[10%] h-[45%] w-full bg-synth-module p-[4%]">
               {[
-                { l: 'PRESIÓN', id: 'mod3-1' }, { l: 'CONFIANZA', id: 'mod3-2' },
-                { l: 'ÚLT. MOMENTO', id: 'mod3-3' }, { l: 'COMPARAC.', id: 'mod3-4' }
+                { l: 'PRESIÃ“N', id: 'mod3-1' }, { l: 'CONFIANZA', id: 'mod3-2' },
+                { l: 'ÃšLT. MOMENTO', id: 'mod3-3' }, { l: 'COMPARAC.', id: 'mod3-4' }
               ].map((item, i) => (
                 <div key={item.id} className="flex items-center justify-center relative">
                   <Knob label={item.l} labelClass={LBL_UP} sizeClass="w-[70%] aspect-square" initialValue={50} compId={item.id} />
@@ -58,11 +58,11 @@ const Module3 = () => {
             {/* BIG KNOB */}
             <div className="h-[45%] w-full flex items-center justify-center relative bg-synth-module">
                <RotarySwitch 
-                 label="EMOCIÓN DOMINANTE" 
+                 label="EMOCIÃ“N DOMINANTE" 
                  labelClass={LBL_UP} 
                  sizeClass="h-[80%] aspect-square" 
                  compId="mod3-5" 
-                 optionLabels={['ENTUSIASMO', 'FLOW', 'ANSIEDAD', 'ESTRÉS', 'FRUSTRACIÓN']}
+                 optionLabels={['ENTUSIASMO', 'FLOW', 'ANSIEDAD', 'ESTRÃ‰S', 'FRUSTRACIÃ“N']}
                />
             </div>
           </div>
@@ -88,7 +88,7 @@ const Module3 = () => {
             {/* ROW 1: Counters, Switch, and Pads (45%) */}
             <div className="flex flex-row h-[45%] justify-between">
               <div className="w-[60%] flex flex-row items-center justify-around bg-synth-module">
-                {[{ l: 'HS SUEÑO', id: 'mod3-6' }, { l: 'PRE-ENTR.', id: 'mod3-7' }].map((item) => (
+                {[{ l: 'HS SUEÃ‘O', id: 'mod3-6' }, { l: 'PRE-ENTR.', id: 'mod3-7' }].map((item) => (
                   <div key={item.id} className="w-[35%] h-full flex flex-col items-center justify-center relative">
                     <Counter label={item.l} labelClass={LBL_UP} compId={item.id} />
                   </div>
@@ -102,7 +102,7 @@ const Module3 = () => {
               <div className={"w-[35%] grid grid-cols-2 grid-rows-3 gap-[4px] bg-synth-surface border border-synth-border-light p-[2%] transition-opacity duration-300 "}>
                 {['RRSS', 'DORMIR', 'ORDENAR', 'TAREAS', 'GYM', 'OTROS'].map((l, i) => (
                   <div key={l} className="flex items-center justify-center bg-synth-module relative">
-                    <LedButton baseClass="w-[60%] aspect-square rounded-[20%]" label={l} labelClass={LBL_UP} compId={mod3-} />
+                    <LedButton baseClass="w-[60%] aspect-square rounded-[20%]" label={l} labelClass={LBL_UP} compId={mod3-${9 + i}} />
                   </div>
                 ))}
               </div>
@@ -115,7 +115,7 @@ const Module3 = () => {
                 initialValue={50}
                 trackClass="w-full h-[30%] bg-[#404040] rounded-full shadow-inner relative flex items-center"
                 thumbClass="h-[150%] aspect-square bg-[#FFF] rounded-full absolute shadow-md z-20"
-                label="MOMENTO FRUSTRACIÓN"
+                label="MOMENTO FRUSTRACIÃ“N"
                 labelClass={LBL_UP}
                 compId="mod3-15"
               />
@@ -127,7 +127,7 @@ const Module3 = () => {
             <div className="flex flex-row h-[30%] justify-between bg-synth-surface">
               {/* SWITCHES */}
               <div className="w-[60%] flex flex-row items-end justify-around bg-synth-module pb-[2%] px-[2%]">
-                {[{ l: 'RESULTADO', id: 'mod3-17' }, { l: 'TÉCNICAS', id: 'mod3-18' }, { l: 'SÍNTOMAS', id: 'mod3-19' }].map((item) => (
+                {[{ l: 'RESULTADO', id: 'mod3-17' }, { l: 'TÃ‰CNICAS', id: 'mod3-18' }, { l: 'SÃNTOMAS', id: 'mod3-19' }].map((item) => (
                   <div key={item.id} className="w-[20%] flex items-end justify-center relative">
                     <ToggleSwitch label={item.l} labelClass={LBL_UP} compId={item.id} />
                   </div>
@@ -164,4 +164,6 @@ const Module3 = () => {
 };
 
 export default Module3;
+
+
 
