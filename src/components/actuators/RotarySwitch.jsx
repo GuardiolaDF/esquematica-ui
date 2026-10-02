@@ -1,11 +1,16 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { useHover } from '../../contexts/HoverContext';
 import { useAppContext } from '../../contexts/AppContext';
+import KnobFace, { KnobTick, knobRing, u } from './KnobFace';
 
-const RotarySwitch = ({ 
-  sizeClass = "w-[85%]", 
-  label, 
-  labelClass, 
+// Selector de posiciones fijas. Figma: Components › Component 18 "FORMATO" (3 posiciones) y Component 29 "BOCET A MANO" (5).
+// Misma cara que el Knob (KnobFace) con una marca por posición y etiquetas Typography/Micro en text/muted.
+const LABEL_RADIUS = 46; // u desde el centro (grilla de 64)
+
+const RotarySwitch = ({
+  sizeClass = "w-[85%]",
+  label,
+  labelClass,
   initialStep,
   angles = [-90, -45, 0, 45, 90],
   optionLabels = [],
@@ -16,7 +21,7 @@ const RotarySwitch = ({
   stepIndex
 }) => {
   const startStep = initialStep !== undefined ? initialStep : Math.floor(angles.length / 2);
-  const { mode, values, setValue: setGlobalValue, averages , visualizationMode, routingOutputs, toggleRoutingSource } = useAppContext();
+  const { mode, values, setValue: setGlobalValue, averages, visualizationMode, routingOutputs, toggleRoutingSource, missingFields } = useAppContext();
 
   const isRoutingMode = mode === 'colectivo' && visualizationMode !== 'general';
   let routeColor = null;
@@ -28,20 +33,11 @@ const RotarySwitch = ({
   const [localStep, setLocalStep] = useState(startStep);
   const { hoveredId, setHoveredId } = useHover();
   const [localHover, setLocalHover] = useState(false);
-  
+  const dragging = useRef(false);
+
   const isHovered = (compId && hoveredId === compId) || localHover;
-  const isMissing = useAppContext().missingFields?.includes(compId);
   const isReadOnly = mode === 'colectivo' && !(compId && compId.startsWith('demo-'));
-  let glowClass = 'shadow-md border border-transparent';
-  if (routeColor) {
-    glowClass = `ring-4 ring-${routeColor} shadow-[0_0_30px_rgba(${routeColor === 'orange-500' ? '249,115,22' : '59,130,246'},1)] bg-${routeColor}/20`;
-  } else if (isReadOnly) {
-    glowClass = isHovered ? 'shadow-[0_0_15px_rgba(255,255,255,0.4)] border border-white' : 'shadow-md border border-[#333]';
-  } else {
-    glowClass = isHovered 
-      ? 'shadow-[0_0_15px_rgba(251,191,36,0.5)] border border-amber-400' 
-      : (isMissing ? 'shadow-[0_0_15px_rgba(239,68,68,0.5)] border border-red-500/50' : 'shadow-md border border-[#333]');
-  }
+  const isMissing = !isReadOnly && missingFields?.includes(compId);
 
   const stepToValue = (step) => 100 - (step * 25);
   const valueToStep = (val) => {
@@ -49,9 +45,7 @@ const RotarySwitch = ({
     return Math.max(0, Math.min(4, 4 - Math.round(val / 25)));
   };
 
-  // displayStep logic
   let displayStep = localStep;
-  
   if (stepIndex !== undefined) {
     displayStep = stepIndex;
   } else if (value !== undefined) {
@@ -63,128 +57,74 @@ const RotarySwitch = ({
     displayStep = valueToStep(values[compId]);
   }
 
+  // Elige la posición más cercana al ángulo del puntero respecto del centro
   const handleInteraction = useCallback((clientX, clientY, rect) => {
     if (isReadOnly && compId) return;
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    const dx = clientX - cx;
-    const dy = clientY - cy;
-    
-    let angleDeg = (Math.atan2(dy, dx) * 180) / Math.PI; 
-    let cssAngle = angleDeg + 90;
-    
+    const dx = clientX - (rect.left + rect.width / 2);
+    const dy = clientY - (rect.top + rect.height / 2);
+    let cssAngle = (Math.atan2(dy, dx) * 180) / Math.PI + 90;
     if (cssAngle > 180) cssAngle -= 360;
     if (cssAngle < -180) cssAngle += 360;
-    
+
     let closestStep = 0;
     let minDiff = Infinity;
     angles.forEach((a, index) => {
       const diff = Math.abs(a - cssAngle);
-      if (diff < minDiff) {
-        minDiff = diff;
-        closestStep = index;
-      }
+      if (diff < minDiff) { minDiff = diff; closestStep = index; }
     });
-    
+
     setLocalStep(closestStep);
     if (compId) setGlobalValue(compId, stepToValue(closestStep));
     if (onChange) onChange(closestStep, angles[closestStep]);
-  }, [angles, mode, compId, setGlobalValue, onChange]);
+  }, [angles, isReadOnly, compId, setGlobalValue, onChange]);
 
-  const onMouseDown = (e) => {
+  const onPointerDown = (e) => {
     if (isRoutingMode && compId) { e.preventDefault(); toggleRoutingSource(compId); return; }
     e.preventDefault();
-    const rect = e.currentTarget.getBoundingClientRect();
-    handleInteraction(e.clientX, e.clientY, rect);
-    
-    const onMouseMove = (moveEvent) => handleInteraction(moveEvent.clientX, moveEvent.clientY, rect);
-    const onMouseUp = () => {
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-    };
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
+    e.currentTarget.setPointerCapture(e.pointerId);
+    dragging.current = true;
+    handleInteraction(e.clientX, e.clientY, e.currentTarget.getBoundingClientRect());
   };
-
-  const onTouchStart = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    handleInteraction(e.touches[0].clientX, e.touches[0].clientY, rect);
-    
-    const onTouchMove = (moveEvent) => handleInteraction(moveEvent.touches[0].clientX, moveEvent.touches[0].clientY, rect);
-    const onTouchEnd = () => {
-      document.removeEventListener('touchmove', onTouchMove);
-      document.removeEventListener('touchend', onTouchEnd);
-    };
-    document.addEventListener('touchmove', onTouchMove, { passive: false });
-    document.addEventListener('touchend', onTouchEnd);
+  const onPointerMove = (e) => {
+    if (dragging.current) handleInteraction(e.clientX, e.clientY, e.currentTarget.getBoundingClientRect());
   };
+  const endDrag = () => { dragging.current = false; };
 
-  // Aumentamos el radio para que los puntos y textos floten separados como en un círculo transparente más grande
-  const dotRadius = 60; // % del centro
-  const textRadius = 82; // % del centro
-
-  const handleMouseEnter = () => { setLocalHover(true); if (compId) setHoveredId(compId); };
-  const handleMouseLeave = () => { setLocalHover(false); if (compId) setHoveredId(null); };
+  const handlePointerEnter = () => { setLocalHover(true); if (compId) setHoveredId(compId); };
+  const handlePointerLeave = () => { setLocalHover(false); if (compId) setHoveredId(null); };
 
   return (
-    <div 
-      className={`relative flex items-center justify-center ${sizeClass} ${className} ${isHovered ? 'ring-1 ring-indicator-active/50 rounded-full z-50' : ''} cursor-pointer touch-none transition-all duration-300`} 
-      onMouseDown={onMouseDown} 
-      onTouchStart={onTouchStart}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+    <div
+      className={`relative aspect-square shrink-0 [container-type:inline-size] ${sizeClass} ${className} ${isHovered ? 'z-50' : ''} cursor-pointer touch-none select-none`}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={endDrag}
+      onPointerCancel={endDrag}
+      onPointerEnter={handlePointerEnter}
+      onPointerLeave={handlePointerLeave}
     >
-      {/* Etiqueta principal movida dinámicamente muy por encima para no tapar los textos */}
       {label && labelClass && (
          <span className={labelClass} style={{ bottom: '135%' }}>{label}</span>
       )}
-      
-      {/* Cuerpo de la Perilla */}
-      <div 
-        className={`w-full aspect-square rounded-full bg-control-bg border border-border-subtle ${glowClass} flex items-center justify-center relative pointer-events-none transition-all duration-[150ms] ease-out`}
-        style={{ transform: `rotate(${angles[displayStep]}deg)` }}
-      >
-        <div className="w-[81%] aspect-square rounded-full bg-control-bg border-[0.5px] border-border-strong relative flex items-start justify-center">
-           {/* Indicator dot */}
-           <div className="w-[12%] aspect-square bg-indicator-active rounded-full absolute top-[6%]"></div>
-        </div>
-      </div>
 
-      {/* Puntos y textos */}
+      <KnobFace rotation={angles[displayStep] ?? 0} ring={knobRing({ routeColor, isHovered, isMissing })} animate />
+
       {angles.map((ang, i) => {
         const rad = (ang * Math.PI) / 180;
-        const dx = Math.sin(rad);
-        const dy = -Math.cos(rad);
-        
-        const dotLeft = `calc(50% + ${dx * dotRadius}%)`;
-        const dotTop = `calc(50% + ${dy * dotRadius}%)`;
-        
-        const textLeft = `calc(50% + ${dx * textRadius}%)`;
-        const textTop = `calc(50% + ${dy * textRadius}%)`;
-
-        const isActive = displayStep === i;
-
         return (
           <React.Fragment key={i}>
-            {/* Punto */}
-            <div 
-              className={`absolute w-1 h-1 rounded-full shadow-sm transition-all duration-200 -translate-x-1/2 -translate-y-1/2 ${
-                isActive 
-                  ? 'bg-indicator-active border border-indicator-active/30' 
-                  : 'bg-neutral-400 border border-transparent'
-              }`}
-              style={{ left: dotLeft, top: dotTop }}
-            ></div>
-            
-            {/* Texto */}
-            <div 
-              className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center"
-              style={{ left: textLeft, top: textTop }}
-            >
-              <span className="text-[6px] text-text-secondary font-body font-medium whitespace-nowrap">
-                {optionLabels[i] || "TXT"}
+            <KnobTick angle={ang} />
+            {optionLabels[i] && (
+              <span
+                className={`absolute -translate-x-1/2 -translate-y-1/2 type-micro whitespace-nowrap pointer-events-none transition-colors duration-standard ${displayStep === i ? 'text-text-primary' : 'text-text-muted'}`}
+                style={{
+                  left: `calc(50% + ${u(Math.sin(rad) * LABEL_RADIUS)})`,
+                  top: `calc(50% - ${u(Math.cos(rad) * LABEL_RADIUS)})`,
+                }}
+              >
+                {optionLabels[i]}
               </span>
-            </div>
+            )}
           </React.Fragment>
         );
       })}
@@ -193,4 +133,3 @@ const RotarySwitch = ({
 };
 
 export default RotarySwitch;
-

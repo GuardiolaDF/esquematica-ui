@@ -74,6 +74,7 @@ export const typography = {
   },
   weight: { regular: 400, medium: 500, 'heading-default': 500, 'heading-strong': 700 },
   'font-size': {
+    micro: 8, // extensión del sistema: etiquetas de perillas y switches en Figma
     caption: 10, 'label-sm': 11, 'body-sm': 12, 'body-md': 13, 'body-lg': 14,
     'heading-h4': 16, 'heading-h3': 18, 'heading-h2': 22, 'heading-h1': 28,
   },
@@ -96,6 +97,9 @@ export const textStyles = {
   'label-m': style('body', 'medium', ty['font-size']['body-sm'], ty['line-height'].compact, ty['letter-spacing'].label),
   'label-s': style('body', 'medium', ty['font-size']['label-sm'], ty['line-height'].tight, ty['letter-spacing'].label),
   caption: style('body', 'regular', ty['font-size'].caption, ty['line-height'].tight),
+  // Extensión: Figma usa 8 px en las etiquetas de posición de perillas (regular) y en Sí/No de switches (medium)
+  micro: style('body', 'regular', ty['font-size'].micro, ty['line-height'].tight),
+  'micro-label': style('body', 'medium', ty['font-size'].micro, ty['line-height'].tight, ty['letter-spacing'].label),
   control: style('body', 'medium', ty['font-size']['label-sm'], ty['line-height'].tight),
   data: style('body', 'medium', ty['font-size']['body-sm'], ty['line-height'].compact),
   h1: style('heading', 'heading-strong', ty['font-size']['heading-h1'], ty['line-height']['heading-h1'], ty['letter-spacing']['heading-tight']),
