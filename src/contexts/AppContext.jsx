@@ -139,12 +139,16 @@ Object.keys(data.values || {}).forEach(dbKey => {
   }, [mode, averages]);
 
   const validateAndSave = async () => {
-    const requiredKeys = Object.keys(dbMap);
-    const missing = requiredKeys.filter(compId => values[compId] === undefined);
+    // Se exige responder todas las preguntas de los módulos. Quedan afuera: los filtros de la consola (la demografía
+    // sale de los filtros; algunos, como carrera o experiencia, no tienen control) y las horas por plataforma
+    // (mod1-10…mod1-21), donde no tocar una plataforma significa 0 horas.
+    const PLATFORM_HOURS = /^mod1-(1[0-9]|2[01])$/;
+    const requiredKeys = Object.keys(dbMap).filter(id => id.startsWith('mod'));
+    const missing = requiredKeys.filter(compId => !PLATFORM_HOURS.test(compId) && values[compId] === undefined);
     
     if (missing.length > 0) {
       setMissingFields(missing);
-      return false; // Failed
+      return 'missing'; // Faltan respuestas (no es un error de envío)
     }
     
     setMissingFields([]);
@@ -152,7 +156,7 @@ Object.keys(data.values || {}).forEach(dbKey => {
     try {
       const dbValues = {};
       requiredKeys.forEach(compId => {
-        dbValues[dbMap[compId]] = values[compId];
+        dbValues[dbMap[compId]] = values[compId] ?? (PLATFORM_HOURS.test(compId) ? 0 : null);
       });
 
       await addDoc(collection(db, 'setups'), {

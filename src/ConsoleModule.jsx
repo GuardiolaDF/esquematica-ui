@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ModuleShell from './ModuleShell';
 import RotarySwitch from './components/actuators/RotarySwitch';
 import ToggleSwitch from './components/actuators/ToggleSwitch';
@@ -69,11 +69,23 @@ const ModeButton = ({ label, active, onClick }) => (
   </div>
 );
 
-export default function ConsoleModule({ isCol, saveToDb, compact = false }) {
+export default function ConsoleModule({ isCol, compact = false }) {
   const {
     filters, setFilters, distributions,
     mode, setMode,
+    saveToDb, isSaving, missingFields,
   } = useAppContext();
+  const [saveFailed, setSaveFailed] = useState(false);
+  const missingCount = missingFields?.length || 0;
+  const handleSave = async () => {
+    if (isSaving) return;
+    setSaveFailed(false);
+    const ok = await saveToDb();
+    // 'missing' → el botón ya muestra cuántos datos faltan; false → falló el envío (red, permisos)
+    if (ok === false) setSaveFailed(true);
+  };
+  // El aviso se limpia al seguir completando
+  useEffect(() => { setSaveFailed(false); }, [mode]);
 
   const isColective = isCol ?? mode === 'colectivo';
   const matchCount = Math.max(0, ...Object.values(distributions || {}).map(arr => arr?.length || 0));
@@ -188,6 +200,24 @@ export default function ConsoleModule({ isCol, saveToDb, compact = false }) {
                 <ModeButton label={m.label} active={mode === m.id} onClick={() => setMode(m.id)} />
               </div>
             ))}
+
+            {/* Guardar: solo en modo individual, debajo de los modos. Sube tus respuestas a la base y vuelve al colectivo. */}
+            {mode === 'individual' && (
+              <button
+                type="button"
+                onClick={handleSave}
+                disabled={isSaving}
+                className={`absolute left-0 right-0 top-[44px] h-[22px] rounded-md type-micro-label uppercase flex items-center justify-center cursor-pointer select-none transition-[background-color,box-shadow,color] duration-fast disabled:cursor-default focus-visible:outline-none focus-visible:shadow-focus-soft ${
+                  missingCount || saveFailed
+                    ? 'bg-status-danger-background text-status-danger-foreground'
+                    : 'bg-action-primary-default text-action-primary-text hover:bg-action-primary-hover active:bg-action-primary-pressed'
+                }`}
+                style={{ boxShadow: missingCount || saveFailed ? undefined : '2px 2px 5px rgba(45,45,45,0.25), -2px -2px 4px #FFFFFF' }}
+                aria-live="polite"
+              >
+                {isSaving ? 'Enviando…' : saveFailed ? 'Error · reintentar' : missingCount ? `Faltan ${missingCount} datos` : 'Guardar'}
+              </button>
+            )}
           </div>
 
           <div className={`relative w-[80px] h-[51px] transition-opacity duration-slow ${isColective ? '' : 'opacity-disabled'}`}>
