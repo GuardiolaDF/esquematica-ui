@@ -38,10 +38,10 @@ function describeArc(x, y, radius, startAngle, endAngle) {
 
 const GEOMETRY = {
   desktop: { w: 800, h: 450, cx: 400, cy: 715, start: -34, end: 34, bounds: [350, 460, 570, 680], viewBox: '0 0 800 450', align: 'xMidYMax meet' },
-  compact: { w: 360, h: 430, cx: 180, cy: 630, start: -17, end: 17, bounds: [220, 347, 473, 600], viewBox: '0 20 360 400', align: 'xMidYMid meet' },
+  compact: { w: 360, h: 470, cx: 180, cy: 700, start: -15, end: 15, bounds: [250, 393, 537, 680], viewBox: '0 20 360 440', align: 'xMidYMid meet' },
 };
 
-export default function DataVisualizer({ compact = false }) {
+export default function DataVisualizer({ compact = false, hint = null }) {
   const visLabels = {
     general: 'COLECTIVO',
     spectrum: 'DISTRIBUCIÓN',
@@ -390,8 +390,9 @@ export default function DataVisualizer({ compact = false }) {
         <>
           {/* 2. EXTREMOS DEL VÚMETRO */}
           {compact ? (
-            <div className="absolute inset-x-1 bottom-0 z-10 flex justify-between font-heading font-bold text-[12px] uppercase tracking-label text-text-secondary pointer-events-none">
+            <div className="absolute inset-x-1 bottom-0 z-10 flex items-end justify-between font-heading font-bold text-[12px] uppercase tracking-label text-text-secondary pointer-events-none">
               <span>+ Relax</span>
+              {hint && <span className="type-caption normal-case tracking-normal font-body font-normal text-text-muted text-center">{hint}</span>}
               <span>+ Estrés</span>
             </div>
           ) : (

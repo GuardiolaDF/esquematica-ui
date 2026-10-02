@@ -32,6 +32,10 @@ const HelpDialog = ({ open, onClose }) => {
           Esta es una versión reducida de Esquemática: muestra el modo colectivo y un panel de filtros acotado.
         </p>
         <p className="type-body-m text-text-secondary">
+          Tocá cualquier carril del vúmetro para ver qué variable es: el panel de arriba muestra su pregunta y cuánta gente la respondió.
+          Los controles de abajo filtran los datos.
+        </p>
+        <p className="type-body-m text-text-secondary">
           Para ver el proyecto completo —los tres módulos, todos los modos de visualización y el panel de control entero—
           abrilo desde una computadora o una tablet.
         </p>

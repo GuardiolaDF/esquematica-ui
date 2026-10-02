@@ -10,7 +10,14 @@ import { variableInfo, cellCode, responseStats } from '../variableInfo';
 const RING_R = 19;
 const RING_LEN = 2 * Math.PI * RING_R;
 
-const VariablePanel = ({ compId }) => {
+// Medidas por variante (Figma): escritorio 297×63 · bolsillo 229×63
+const LAYOUT = {
+  full: { w: 297, code: 'left-[24px] w-[49px] text-[18px]', divider: 'left-[79px]', q: 'left-[91px] w-[112px] text-[9px] leading-[11px]', label: 'right-[50px]', ring: 'left-[247px]' },
+  compact: { w: 229, code: 'left-[11px] w-[35px] text-[12px]', divider: 'left-[46px]', q: 'left-[59px] w-[92px] text-[7px] leading-[9px]', label: 'right-[55px]', ring: 'left-[174px]' },
+};
+
+const VariablePanel = ({ compId, compact = false, emptyText = 'Pasá el cursor por un control para ver qué pregunta responde.' }) => {
+  const L = compact ? LAYOUT.compact : LAYOUT.full;
   const { allSetups } = useAppContext();
   const info = compId ? variableInfo[compId] : null;
   const fallbackLabel = compId ? dbMap[compId] : null;
@@ -19,35 +26,35 @@ const VariablePanel = ({ compId }) => {
   const percent = stats?.percent ?? null;
 
   const question = info?.question
-    || (fallbackLabel ? `¿${fallbackLabel}?` : 'Pasá el cursor por un control para ver qué pregunta responde.');
+    || (fallbackLabel ? `¿${fallbackLabel}?` : emptyText);
 
   return (
-    <div className="relative w-[297px] h-[63px] rounded-md bg-surface-subtle shadow-elevation-03 overflow-clip select-none">
+    <div className={`relative h-[63px] rounded-md bg-surface-subtle shadow-elevation-03 overflow-clip select-none ${compact ? 'w-[229px]' : 'w-[297px]'}`}>
       <span className="absolute left-[11px] top-[7px] font-body font-bold text-[8px] leading-[14px] text-text-disabled whitespace-nowrap">
         Variable seleccionada
       </span>
 
       {/* Código de celda */}
-      <div className="absolute left-[24px] top-[25px] h-[24px] w-[49px] flex items-center">
-        <span className="font-body font-extralight text-[18px] leading-none text-text-primary whitespace-nowrap">
+      <div className={`absolute top-[25px] h-[24px] flex items-center ${L.code.split(' ').filter(x => !x.startsWith('text-')).join(' ')}`}>
+        <span className={`font-body font-extralight leading-none text-text-primary whitespace-nowrap ${L.code.split(' ').find(x => x.startsWith('text-'))}`}>
           {compId ? cellCode(compId) : '—'}
         </span>
       </div>
-      <span className="absolute left-[79px] top-[25px] w-px h-[24px] bg-text-primary" />
+      <span className={`absolute top-[25px] w-px h-[24px] bg-text-primary ${L.divider}`} />
 
       {/* Pregunta */}
-      <div className="absolute left-[91px] top-[20px] h-[34px] w-[112px] flex items-center">
-        <p className={`font-heading text-[9px] leading-[11px] line-clamp-3 ${compId ? 'text-text-primary' : 'text-text-muted'}`}>
+      <div className={`absolute top-[20px] h-[34px] flex items-center ${L.q.split(' ').filter(x => x.startsWith('left') || x.startsWith('w-')).join(' ')}`}>
+        <p className={`font-heading ${L.q.split(' ').filter(x => x.startsWith('text-') || x.startsWith('leading')).join(' ')} line-clamp-3 ${compId ? 'text-text-primary' : 'text-text-muted'}`}>
           {question}
         </p>
       </div>
 
       {/* Respuestas */}
-      <div className="absolute right-[50px] top-[13px] w-[44px] text-right font-heading text-[6px] leading-[6px] text-text-disabled pointer-events-none">
+      <div className={`absolute top-[13px] w-[44px] text-right ${L.label} font-heading text-[6px] leading-[6px] text-text-disabled pointer-events-none`}>
         <p>respondieron</p>
         <p>{stats && stats.total ? `${stats.answered} de ${stats.total}` : '— de —'}</p>
       </div>
-      <div className="absolute left-[247px] top-[12px] w-[40px] h-[40px]">
+      <div className={`absolute top-[12px] w-[40px] h-[40px] ${L.ring}`}>
         <svg width="40" height="40" viewBox="0 0 40 40" className="absolute inset-0" fill="none">
           <circle cx="20" cy="20" r="19.5" stroke="var(--neutral-300)" strokeWidth="1" />
           <circle
