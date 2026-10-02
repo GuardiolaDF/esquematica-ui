@@ -5,7 +5,9 @@ import KnobFace, { KnobTick, knobRing, u } from './KnobFace';
 
 // Selector de posiciones fijas. Figma: Components › Component 18 "FORMATO" (3 posiciones) y Component 29 "BOCET A MANO" (5).
 // Misma cara que el Knob (KnobFace) con una marca por posición y etiquetas Typography/Micro en text/muted.
-const LABEL_RADIUS = 46; // u desde el centro (grilla de 64)
+const LABEL_RADIUS = 45;      // u desde el centro (grilla de 64): posiciones diagonales
+const TOP_LABEL_RADIUS = 43;  // posición superior
+const SIDE_LABEL_RADIUS = 38; // extremos laterales (borde del texto)
 
 const RotarySwitch = ({
   sizeClass = "w-[85%]",
@@ -111,15 +113,22 @@ const RotarySwitch = ({
 
       {angles.map((ang, i) => {
         const rad = (ang * Math.PI) / 180;
+        const sin = Math.sin(rad);
+        const cos = Math.cos(rad);
+        // Figma (Component 29): los extremos laterales se anclan por el borde exterior, no por el centro del texto
+        const isSide = Math.abs(sin) > 0.99;
+        const radius = isSide ? SIDE_LABEL_RADIUS : Math.abs(cos) > 0.99 ? TOP_LABEL_RADIUS : LABEL_RADIUS;
+        const anchorX = isSide ? (sin < 0 ? '-100%' : '0%') : '-50%';
         return (
           <React.Fragment key={i}>
             <KnobTick angle={ang} />
             {optionLabels[i] && (
               <span
-                className={`absolute -translate-x-1/2 -translate-y-1/2 type-micro whitespace-nowrap pointer-events-none transition-colors duration-standard ${displayStep === i ? 'text-text-primary' : 'text-text-muted'}`}
+                className={`absolute type-micro whitespace-nowrap pointer-events-none transition-colors duration-standard ${displayStep === i ? 'text-text-primary' : 'text-text-muted'}`}
                 style={{
-                  left: `calc(50% + ${u(Math.sin(rad) * LABEL_RADIUS)})`,
-                  top: `calc(50% - ${u(Math.cos(rad) * LABEL_RADIUS)})`,
+                  left: `calc(50% + ${u(sin * radius)})`,
+                  top: `calc(50% - ${u(cos * radius)})`,
+                  transform: `translate(${anchorX}, -50%)`,
                 }}
               >
                 {optionLabels[i]}
