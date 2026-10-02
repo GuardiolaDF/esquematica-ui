@@ -1,11 +1,30 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef } from 'react';
 import { useHover } from '../../contexts/HoverContext';
 import { useAppContext } from '../../contexts/AppContext';
+import indicatorWedge from '../../assets/figma/knob-indicator-wedge.svg';
 
-const Knob = ({ 
-  sizeClass = "w-[80%]", 
-  label, 
-  labelClass, 
+// Figma: Components › main-knob (2166:594 / 2185:1036). Diseñado en una grilla de 64 px que escala con el ancho del contenedor:
+// todas las medidas se expresan en `u` (1/64 del ancho) mediante container query units.
+//  - base: background/sunken, border/default border/subtle, Effects/Inset/Control
+//  - cap 52 px (inset 5): surface/subtle, borde 0.4 px neutral/600 al 75 %, brillo radial y sombras fijas (no rotan)
+//  - indicator-wedge (SVG de Figma) con el punto coral: es lo único que rota
+const u = (n) => `calc(${n} * 100cqw / 64)`;
+
+const CAP_SHADOW = [
+  `${u(3)} ${u(4)} ${u(8)} rgba(0,0,0,0.22)`,
+  `${u(1)} ${u(2)} ${u(3)} rgba(0,0,0,0.10)`,
+  `inset ${u(-2)} ${u(-2)} ${u(4)} rgba(255,255,255,0.90)`,
+  `inset ${u(2)} ${u(3)} ${u(6)} rgba(0,0,0,0.12)`,
+].join(', ');
+const BASE_SHADOW = `inset ${u(-1)} ${u(-1)} ${u(2)} #FFFFFFC7, inset ${u(1)} ${u(2)} ${u(4)} #2D2D2D38`;
+const CAP_HIGHLIGHT = `radial-gradient(${u(22)} ${u(18)} at ${u(12)} ${u(4)}, rgba(255,255,255,0.72), rgba(255,255,255,0))`;
+
+const ROUTE_RGB = { 'blue-500': '59,130,246', 'orange-500': '249,115,22' };
+
+const Knob = ({
+  sizeClass = "w-[80%]",
+  label,
+  labelClass,
   initialValue = 50,
   className = "",
   compId,
@@ -14,7 +33,7 @@ const Knob = ({
   markers = [], // Array of objects: { angle: number, label?: string }
   onChange
 }) => {
-  const { mode, values, setValue: setGlobalValue, averages , visualizationMode, routingOutputs, toggleRoutingSource } = useAppContext();
+  const { mode, values, setValue: setGlobalValue, averages, visualizationMode, routingOutputs, toggleRoutingSource, missingFields } = useAppContext();
 
   const isRoutingMode = mode === 'colectivo' && visualizationMode !== 'general';
   let routeColor = null;
@@ -27,128 +46,116 @@ const Knob = ({
   const { hoveredId, setHoveredId } = useHover();
   const [localHover, setLocalHover] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  
+
   const isHovered = (compId && hoveredId === compId) || localHover || isDragging;
-  const isMissing = useAppContext().missingFields?.includes(compId);
+  const isMissing = missingFields?.includes(compId);
   const isReadOnly = mode === 'colectivo';
-  
-  let glowClass = 'shadow-md border border-[#333]';
+
+  // Estado → anillo exterior (tokens: border/focus para hover, action/destructive para faltante)
+  let ringStyle = {};
   if (routeColor) {
-    glowClass = `ring-4 ring-${routeColor} shadow-[0_0_30px_rgba(${routeColor === 'orange-500' ? '249,115,22' : '59,130,246'},1)] bg-${routeColor}/30`;
-  } else if (isReadOnly) {
-    glowClass = isHovered ? 'shadow-[0_0_15px_rgba(255,255,255,0.4)] border border-white' : 'shadow-md border border-[#333]';
-  } else {
-    glowClass = isHovered 
-      ? 'shadow-[0_0_15px_rgba(251,191,36,0.5)] border border-amber-400' 
-      : (isMissing ? 'shadow-[0_0_15px_rgba(239,68,68,0.5)] border border-red-500' : 'shadow-md border border-[#333]');
+    ringStyle = { boxShadow: `0 0 0 ${u(3)} rgb(${ROUTE_RGB[routeColor]}), 0 0 ${u(24)} rgba(${ROUTE_RGB[routeColor]},0.9)` };
+  } else if (isHovered) {
+    ringStyle = { boxShadow: `0 0 0 ${u(2)} #39787D61` }; // Effects/Focus/Soft
+  } else if (isMissing && !isReadOnly) {
+    ringStyle = { boxShadow: `0 0 0 ${u(2)} #BF6F5B` }; // action/destructive/default
   }
-  
-  const displayValue = isReadOnly 
-    ? (averages[compId] ?? initialValue) 
+
+  const displayValue = isReadOnly
+    ? (averages[compId] ?? initialValue)
     : (compId ? (values[compId] ?? initialValue) : localValue);
 
   const startY = useRef(null);
   const startVal = useRef(null);
 
-  const handleMove = useCallback((clientY) => {
-    if (isReadOnly) return;
+  const applyValue = (clientY) => {
     if (startY.current === null) return;
-    const deltaY = startY.current - clientY;
-    let newVal = startVal.current + (deltaY * 1.2);
-    newVal = Math.max(0, Math.min(100, newVal));
+    const newVal = Math.max(0, Math.min(100, startVal.current + (startY.current - clientY) * 1.2));
     setLocalValue(newVal);
-    if (onChange) {
-      onChange(newVal);
-    } else if (compId) {
-      setGlobalValue(compId, newVal);
-    }
-  }, [compId, setGlobalValue, isReadOnly, onChange]);
+    if (onChange) onChange(newVal);
+    else if (compId) setGlobalValue(compId, newVal);
+  };
 
-  const onMouseDown = (e) => {
+  const onPointerDown = (e) => {
     if (isRoutingMode && compId) { e.preventDefault(); toggleRoutingSource(compId); return; }
     if (isReadOnly) return;
     e.preventDefault();
+    e.currentTarget.setPointerCapture(e.pointerId);
     startY.current = e.clientY;
-    startVal.current = displayValue; // use displayValue so it doesn't jump
+    startVal.current = displayValue; // parte del valor visible para no saltar
     setIsDragging(true);
-    
-    const onMouseMove = (moveEvent) => handleMove(moveEvent.clientY);
-    const onMouseUp = () => {
-      setIsDragging(false);
-      startY.current = null;
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-    };
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
   };
-
-  const onTouchStart = (e) => {
-    if (isReadOnly) return;
-    startY.current = e.touches[0].clientY;
-    startVal.current = displayValue;
-    setIsDragging(true);
-    
-    const onTouchMove = (moveEvent) => handleMove(moveEvent.touches[0].clientY);
-    const onTouchEnd = () => {
-      setIsDragging(false);
-      document.removeEventListener('touchmove', onTouchMove);
-      document.removeEventListener('touchend', onTouchEnd);
-    };
-    document.addEventListener('touchmove', onTouchMove, { passive: false });
-    document.addEventListener('touchend', onTouchEnd);
+  const onPointerMove = (e) => { if (isDragging) applyValue(e.clientY); };
+  const endDrag = () => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    startY.current = null;
   };
 
   const rotation = startAngle + (displayValue / 100) * (endAngle - startAngle);
 
-  const handleMouseEnter = () => { setLocalHover(true); if (compId) setHoveredId(compId); };
-  const handleMouseLeave = () => { setLocalHover(false); if (compId && !isDragging) setHoveredId(null); };
-
-  // Generate default markers if none provided
-  const renderMarkers = markers.length > 0 ? markers : [
-    { angle: startAngle },
-    { angle: endAngle }
-  ];
+  const handlePointerEnter = () => { setLocalHover(true); if (compId) setHoveredId(compId); };
+  const handlePointerLeave = () => { setLocalHover(false); if (compId && !isDragging) setHoveredId(null); };
 
   return (
-    <div 
-      className={`relative flex items-center justify-center ${sizeClass} ${className} ${isHovered ? 'ring-1 ring-indicator-active/50 rounded-full z-50' : ''} cursor-pointer touch-none transition-all duration-300`} 
-      onMouseDown={onMouseDown} 
-      onTouchStart={onTouchStart}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+    <div
+      className={`relative aspect-square shrink-0 [container-type:inline-size] ${sizeClass} ${className} ${isHovered ? 'z-50' : ''} cursor-pointer touch-none select-none`}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={endDrag}
+      onPointerCancel={endDrag}
+      onPointerEnter={handlePointerEnter}
+      onPointerLeave={handlePointerLeave}
     >
       {label && labelClass && (
          <span className={labelClass}>{label}</span>
       )}
-      
-      {/* Cuerpo de la Perilla (main-knob) */}
-      <div 
-        className={`w-full aspect-square rounded-full bg-surface-subtle border border-border-subtle ${glowClass} flex items-center justify-center pointer-events-none transition-all duration-300`}
-        style={{ transform: `rotate(${rotation}deg)` }}
+
+      {/* Área táctil ampliada para knobs chicos (mín. ~44 px en tablet) */}
+      <div className="absolute rounded-pill" style={{ inset: `min(0px, calc(50cqw - 22px))` }} />
+
+      {/* Base (main-knob) */}
+      <div
+        className="absolute inset-0 rounded-pill bg-background-sunken border-border-subtle transition-shadow duration-standard"
+        style={{ borderWidth: u(1), boxShadow: [BASE_SHADOW, ringStyle.boxShadow].filter(Boolean).join(', ') }}
+      />
+
+      {/* Cap: luz y sombras fijas */}
+      <div
+        className="absolute rounded-pill bg-surface-subtle overflow-hidden"
+        style={{
+          left: u(5), top: u(5), width: u(52), height: u(52),
+          border: `${u(0.4)} solid rgba(113,105,99,0.75)`,
+          boxShadow: CAP_SHADOW,
+          backgroundImage: CAP_HIGHLIGHT,
+        }}
       >
-        {/* knob-cap */}
-        <div className="w-[81%] aspect-square rounded-full bg-surface-subtle border-[0.5px] border-border-strong relative flex items-start justify-center">
-           {/* Indicator dot */}
-           <div className="w-[12%] aspect-square bg-indicator-active rounded-full absolute top-[6%]"></div>
+        {/* Indicador: rota alrededor del centro del cap */}
+        <div className="absolute inset-0" style={{ transform: `rotate(${rotation}deg)` }}>
+          <img
+            src={indicatorWedge}
+            alt=""
+            draggable={false}
+            className="absolute block max-w-none pointer-events-none"
+            style={{ left: u(20.8), top: u(1.8), width: u(13.9), height: u(51.9) }}
+          />
         </div>
       </div>
 
-      {/* Indicadores Externos */}
-      <div className="absolute top-1/2 left-1/2 w-[140%] h-[140%] -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none">
-        {renderMarkers.map((marker, i) => (
-          <div key={`marker-${i}`} className="absolute top-0 left-0 w-full h-full" style={{ transform: `rotate(${marker.angle}deg)` }}>
-             <div className="absolute top-0 left-1/2 -translate-x-1/2 flex flex-col items-center">
-               <div className="w-[1.5px] h-[3px] bg-neutral-400"></div>
-               {marker.label && (
-                 <span className="absolute bottom-full mb-[2px] text-[7px] text-text-secondary font-body font-medium" style={{ transform: `rotate(${-marker.angle}deg)` }}>
-                   {marker.label}
-                 </span>
-               )}
-             </div>
-          </div>
-        ))}
-      </div>
+      {/* Marcas de posición (Variante 2): trazo de 4 px por fuera del anillo y etiqueta Typography/Caption */}
+      {markers.map((marker, i) => (
+        <div key={`marker-${i}`} className="absolute inset-0 pointer-events-none" style={{ transform: `rotate(${marker.angle}deg)` }}>
+          <div className="absolute left-1/2 -translate-x-1/2 bg-border-strong" style={{ top: u(-6), width: u(1), height: u(4) }} />
+          {marker.label && (
+            <span
+              className="absolute left-1/2 type-caption text-text-primary whitespace-nowrap"
+              style={{ bottom: `calc(100% + ${u(6)})`, transform: `translateX(-50%) rotate(${-marker.angle}deg)` }}
+            >
+              {marker.label}
+            </span>
+          )}
+        </div>
+      ))}
     </div>
   );
 };
