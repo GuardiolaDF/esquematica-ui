@@ -10,7 +10,7 @@ import stepperDown from '../../assets/figma/stepper-down.svg';
 const SCREEN_SHADOW = 'inset -2px -2px 1px rgba(250,248,248,0.5), inset 2px 2px 1px rgba(0,0,0,0.25)';
 
 const Counter = ({ label, compId, className = '' }) => {
-  const { mode, values, setValue: setGlobalValue, averages, missingFields } = useAppContext();
+  const { mode, values, setValue: setGlobalValue, averages, distributions, missingFields } = useAppContext();
 
   const [localValue, setLocalValue] = useState(0);
   const { hoveredId, setHoveredId } = useHover();
@@ -24,15 +24,22 @@ const Counter = ({ label, compId, className = '' }) => {
   if (isHovered) ring = '0 0 0 2px #39787D61'; // Effects/Focus/Soft
   else if (isMissing) ring = '0 0 0 1.5px #BF6F5B'; // action/destructive/default
 
+  // Colectivo: lo que la muestra (filtrada) "suele" responder → mediana, que no se deja arrastrar por respuestas extremas
+  // (con la media, unas pocas respuestas desmedidas inflaban el número). Individual: tu valor, desde 0.
   useEffect(() => {
-    if (compId) {
-      if (isReadOnly && averages[compId] !== undefined) {
+    if (!compId) return;
+    if (isReadOnly) {
+      const nums = (distributions[compId] || []).map(d => Number(d.val)).filter(Number.isFinite).sort((a, b) => a - b);
+      if (nums.length) {
+        const m = Math.floor(nums.length / 2);
+        setLocalValue(Math.round(nums.length % 2 ? nums[m] : (nums[m - 1] + nums[m]) / 2));
+      } else if (averages[compId] !== undefined) {
         setLocalValue(Math.round(averages[compId]));
-      } else if (!isReadOnly && values[compId] !== undefined) {
-        setLocalValue(Math.round(values[compId]));
       }
+    } else {
+      setLocalValue(values[compId] !== undefined ? Math.round(values[compId]) : 0);
     }
-  }, [compId, isReadOnly, values, averages]);
+  }, [compId, isReadOnly, values, averages, distributions]);
 
   const step = (delta) => {
     if (isReadOnly) return;
