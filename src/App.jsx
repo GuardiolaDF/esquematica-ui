@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import RackGrid from './RackGrid';
 import Stage from './Stage';
 import { HoverProvider } from './contexts/HoverContext';
@@ -7,11 +8,33 @@ import { CableProvider } from './contexts/CableContext';
 import CableOverlay from './components/cables/CableOverlay';
 import MobileApp from './MobileApp';
 import { useIsPhone } from './useDeviceClass';
+import Hero from './intro/Hero';
+import Onboarding from './intro/Onboarding';
+import PocketOnboarding from './intro/PocketOnboarding';
+
+// Antes del instrumento: hero → onboarding → instrumento. Para entrar directo (desarrollo): ?intro=0
+const initialScreen = () => (new URLSearchParams(window.location.search).get('intro') === '0' ? 'app' : 'hero');
+const fade = { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 }, transition: { duration: 0.45 } };
 
 function App() {
   const { showGrid, setShowGrid } = useAppContext();
   // Teléfono → versión de bolsillo; tablet y escritorio → versión completa (ver useDeviceClass)
   const isPhone = useIsPhone();
+  const [screen, setScreen] = useState(initialScreen);
+
+  if (screen !== 'app') {
+    return (
+      <AnimatePresence mode="wait">
+        <motion.div key={screen} {...fade} className="fixed inset-0">
+          {screen === 'hero'
+            ? <Hero compact={isPhone} onStart={() => setScreen('onboarding')} />
+            : isPhone
+              ? <PocketOnboarding onDone={() => setScreen('app')} />
+              : <Onboarding onDone={() => setScreen('app')} />}
+        </motion.div>
+      </AnimatePresence>
+    );
+  }
 
   return (
     <HoverProvider>
