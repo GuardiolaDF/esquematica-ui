@@ -225,18 +225,18 @@ const RelationXY = ({ out1Id, out2Id, out1Meta, out2Meta, hasSource1, hasSource2
     <div className="w-full flex-1 flex flex-col relative bg-[#050505] rounded-xl border border-[#111] overflow-hidden shadow-[inset_0_0_50px_rgba(0,0,0,0.8)]">
       
       {/* Explicación concisa secundaria (Top Right) */}
-      <div className="absolute right-4 top-4 text-[#444] text-[9px] font-mono tracking-wider z-20 pointer-events-none text-right">
+      <div className="absolute right-4 top-4 text-[#444] text-[9px] font-body tracking-wider z-20 pointer-events-none text-right">
         Compara dos variables para observar<br/>cómo se relacionan entre sí.
       </div>
 
       {/* Etiqueta EJE Y (NARANJA) */}
-      <div className="absolute left-10 top-3 text-[#f97316] text-[11px] font-mono font-bold uppercase tracking-widest z-20 flex items-center gap-2">
+      <div className="absolute left-10 top-3 text-[#f97316] text-[11px] font-body font-bold uppercase tracking-widest z-20 flex items-center gap-2">
         <div className="w-2 h-2 rounded-full bg-[#f97316] shadow-[0_0_5px_#f97316]"></div>
         {hasSource2 ? `OUT 2 · ${out2Meta?.label || 'UNKNOWN'}` : 'OUT 2 · WAITING'}
       </div>
       
       {/* Etiqueta EJE X (AZUL) */}
-      <div className="absolute right-6 bottom-3 text-[#3b82f6] text-[11px] font-mono font-bold uppercase tracking-widest z-20 flex items-center justify-end gap-2 text-right">
+      <div className="absolute right-6 bottom-3 text-[#3b82f6] text-[11px] font-body font-bold uppercase tracking-widest z-20 flex items-center justify-end gap-2 text-right">
         {hasSource1 ? `OUT 1 · ${out1Meta?.label || 'UNKNOWN'}` : 'OUT 1 · WAITING'}
         <div className="w-2 h-2 rounded-full bg-[#3b82f6] shadow-[0_0_5px_#3b82f6]"></div>
       </div>
@@ -246,7 +246,7 @@ const RelationXY = ({ out1Id, out2Id, out1Meta, out2Meta, hasSource1, hasSource2
         {!isWaiting && renderCartesianGrid()}
 
         {isWaiting ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#333] font-mono text-[10px] tracking-[0.3em] pointer-events-none">
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#333] font-body text-[10px] tracking-[0.3em] pointer-events-none">
             {!isCompatible && hasSource1 && hasSource2 
               ? 'NO SYNC - INCOMPATIBLE FORMATS' 
               : hasSource1 && !hasSource2 

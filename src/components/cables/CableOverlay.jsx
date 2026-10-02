@@ -6,18 +6,20 @@ const CableOverlay = () => {
   const { dragging, updateDrag, endDrag, connections, jackRefs } = useCables();
   const { routingOutputs } = useAppContext();
 
-  // Handle global mouse move/up
+  // Arrastre global con pointer events (mouse, touch y lápiz)
   useEffect(() => {
     if (!dragging) return;
 
     const handleMouseMove = (e) => updateDrag(e.clientX, e.clientY);
     const handleMouseUp = () => endDrag();
 
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener('pointermove', handleMouseMove);
+    window.addEventListener('pointerup', handleMouseUp);
+    window.addEventListener('pointercancel', handleMouseUp);
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('pointermove', handleMouseMove);
+      window.removeEventListener('pointerup', handleMouseUp);
+      window.removeEventListener('pointercancel', handleMouseUp);
     };
   }, [dragging, updateDrag, endDrag]);
 

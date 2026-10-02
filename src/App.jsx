@@ -1,5 +1,6 @@
 import React from 'react';
 import RackGrid from './RackGrid';
+import Stage from './Stage';
 import { HoverProvider } from './contexts/HoverContext';
 import { useAppContext } from './contexts/AppContext';
 import { CableProvider } from './contexts/CableContext';
@@ -11,8 +12,10 @@ function App() {
   return (
     <HoverProvider>
       <CableProvider>
-      <div className="w-full h-screen bg-bg-sunken text-text-primary flex items-center justify-center p-[10px] overflow-hidden font-sans relative">
-        <RackGrid />
+      <div className="w-screen h-screen bg-bg-sunken text-text-primary overflow-hidden font-body relative">
+        <Stage>
+          <RackGrid />
+        </Stage>
         <CableOverlay />
         
         {/* Toggle Grid Button (Oculto a pedido del usuario) */}

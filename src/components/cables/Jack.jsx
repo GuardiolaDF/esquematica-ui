@@ -58,8 +58,8 @@ const Jack = ({
   return (
     <div
       ref={jackRef}
-      className={`relative size-[20px] shrink-0 rounded-pill z-10 ${disabled ? 'pointer-events-none opacity-disabled grayscale' : ''} ${className}`}
-      onMouseDown={handleMouseDown}
+      className={`relative size-[20px] shrink-0 rounded-pill z-10 touch-none ${disabled ? 'pointer-events-none opacity-disabled grayscale' : ''} ${className}`}
+      onPointerDown={handleMouseDown}
       style={{ cursor: disabled ? 'not-allowed' : (canDrag ? 'grab' : 'default') }}
     >
       <img src={jackSvg} alt="" width={20} height={20} draggable={false} className="block pointer-events-none select-none" />

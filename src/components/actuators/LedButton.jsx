@@ -63,14 +63,14 @@ const LedButton = ({
   const handleMouseLeave = () => { setLocalHover(false); if (compId) setHoveredId(null); };
 
   // Base background (apagado vs encendido)
-  let bgClass = 'bg-control-bg shadow-elevation-01 border border-border-subtle text-synth-ink-base';
+  let bgClass = 'bg-control-bg shadow-elevation-01 border border-border-subtle text-text-secondary';
   
   if (routeColor) {
     const isBlue = routeColor === 'orange-500';
     const cColor = isBlue ? '249,115,22' : '59,130,246';
-    bgClass = `bg-control-bg ring-2 ring-${routeColor} shadow-[0_0_15px_rgba(${cColor},0.5)] border border-${routeColor} text-synth-ink-dark`;
+    bgClass = `bg-control-bg ring-2 ring-${routeColor} shadow-[0_0_15px_rgba(${cColor},0.5)] border border-${routeColor} text-text-primary`;
   } else if (isOn) {
-    bgClass = `bg-indicator-active shadow-[0_0_8px_rgba(255,148,121,0.6)] border border-synth-accent text-white`;
+    bgClass = `bg-indicator-active shadow-[0_0_8px_rgba(255,148,121,0.6)] border border-indicator-active text-white`;
   }
 
   // Hover Override/Addition
@@ -78,9 +78,9 @@ const LedButton = ({
   
   if (isHovered && mode !== 'colectivo' && !isRoutingMode) {
     if (isOn) {
-      bgClass = bgClass.replace(/shadow-\[.*\]/, 'shadow-[0_0_12px_rgba(255,148,121,1)] border-synth-accent');
+      bgClass = bgClass.replace(/shadow-\[.*\]/, 'shadow-[0_0_12px_rgba(255,148,121,1)] border-indicator-active');
     } else {
-      bgClass = 'bg-control-bg shadow-[0_0_8px_rgba(0,0,0,0.1)] border border-synth-border-base text-synth-ink-dark';
+      bgClass = 'bg-control-bg shadow-[0_0_8px_rgba(0,0,0,0.1)] border border-neutral-400 text-text-primary';
     }
   } else if (isMissing && !isOn) {
     bgClass = 'bg-red-50 shadow-[0_0_10px_rgba(239,68,68,0.3)] border border-red-500 text-red-500';
@@ -88,7 +88,7 @@ const LedButton = ({
 
   return (
     <div 
-      className={`relative flex items-center justify-center cursor-pointer transition-all duration-300 ${baseClass} ${bgClass} ${isHovered ? 'ring-1 ring-synth-accent/30 z-50' : ''}`}
+      className={`relative flex items-center justify-center cursor-pointer transition-all duration-300 ${baseClass} ${bgClass} ${isHovered ? 'ring-1 ring-indicator-active/30 z-50' : ''}`}
       onClick={toggle}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -98,7 +98,7 @@ const LedButton = ({
       )}
       {Icon && (
         <div className="absolute inset-0 p-[22%] flex items-center justify-center pointer-events-none">
-          <Icon className={`w-full h-full ${isOn ? 'text-synth-module drop-shadow-[0_0_2px_currentColor]' : 'text-synth-ink-base opacity-50'}`} />
+          <Icon className={`w-full h-full ${isOn ? 'text-background-sunken drop-shadow-[0_0_2px_currentColor]' : 'text-text-secondary opacity-50'}`} />
         </div>
       )}
     </div>

@@ -25,7 +25,7 @@ const Module2 = () => {
         {/* HEADER */}
         <div className="flex items-center gap-2 mb-[4px]">
           <div className="flex border-[0.5px] border-border-strong items-center px-[4px] py-[2px] bg-control-bg shadow-elevation-01">
-            <div className="w-[10px] h-[10px] bg-synth-border-base mr-2"></div>
+            <div className="w-[10px] h-[10px] bg-neutral-400 mr-2"></div>
             <span className="text-text-primary text-[11px] font-body font-medium leading-none">2 módulo</span>
           </div>
           <span className="text-text-secondary font-heading text-[12px] tracking-[0.2em] uppercase">

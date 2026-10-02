@@ -112,7 +112,7 @@ const Knob = ({
 
   return (
     <div 
-      className={`relative flex items-center justify-center ${sizeClass} ${className} ${isHovered ? 'ring-1 ring-synth-accent/50 rounded-full z-50' : ''} cursor-pointer touch-none transition-all duration-300`} 
+      className={`relative flex items-center justify-center ${sizeClass} ${className} ${isHovered ? 'ring-1 ring-indicator-active/50 rounded-full z-50' : ''} cursor-pointer touch-none transition-all duration-300`} 
       onMouseDown={onMouseDown} 
       onTouchStart={onTouchStart}
       onMouseEnter={handleMouseEnter}
@@ -124,13 +124,13 @@ const Knob = ({
       
       {/* Cuerpo de la Perilla (main-knob) */}
       <div 
-        className={`w-full aspect-square rounded-full bg-synth-surface border border-synth-border-light ${glowClass} flex items-center justify-center pointer-events-none transition-all duration-300`}
+        className={`w-full aspect-square rounded-full bg-surface-subtle border border-border-subtle ${glowClass} flex items-center justify-center pointer-events-none transition-all duration-300`}
         style={{ transform: `rotate(${rotation}deg)` }}
       >
         {/* knob-cap */}
-        <div className="w-[81%] aspect-square rounded-full bg-synth-surface border-[0.5px] border-synth-border-dark relative flex items-start justify-center">
+        <div className="w-[81%] aspect-square rounded-full bg-surface-subtle border-[0.5px] border-border-strong relative flex items-start justify-center">
            {/* Indicator dot */}
-           <div className="w-[12%] aspect-square bg-synth-accent rounded-full absolute top-[6%]"></div>
+           <div className="w-[12%] aspect-square bg-indicator-active rounded-full absolute top-[6%]"></div>
         </div>
       </div>
 
@@ -139,9 +139,9 @@ const Knob = ({
         {renderMarkers.map((marker, i) => (
           <div key={`marker-${i}`} className="absolute top-0 left-0 w-full h-full" style={{ transform: `rotate(${marker.angle}deg)` }}>
              <div className="absolute top-0 left-1/2 -translate-x-1/2 flex flex-col items-center">
-               <div className="w-[1.5px] h-[3px] bg-synth-border-base"></div>
+               <div className="w-[1.5px] h-[3px] bg-neutral-400"></div>
                {marker.label && (
-                 <span className="absolute bottom-full mb-[2px] text-[7px] text-synth-ink-base font-mono font-medium" style={{ transform: `rotate(${-marker.angle}deg)` }}>
+                 <span className="absolute bottom-full mb-[2px] text-[7px] text-text-secondary font-body font-medium" style={{ transform: `rotate(${-marker.angle}deg)` }}>
                    {marker.label}
                  </span>
                )}

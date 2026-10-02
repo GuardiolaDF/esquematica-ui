@@ -6,7 +6,7 @@ import LedButton from './components/actuators/LedButton';
 import { useAppContext } from './contexts/AppContext';
 import { useHover } from './contexts/HoverContext';
 
-const LBL_UP = "absolute bottom-[100%] mb-[4px] left-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.2em] text-synth-ink-light font-body font-medium whitespace-nowrap pointer-events-none";
+const LBL_UP = "absolute bottom-[100%] mb-[4px] left-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.2em] text-text-muted font-body font-medium whitespace-nowrap pointer-events-none";
 
 const VerticalPads = ({ options, value, onChange, disabled, compId }) => {
   const { setHoveredId } = useHover();
@@ -15,7 +15,7 @@ const VerticalPads = ({ options, value, onChange, disabled, compId }) => {
   const isRoutingMode = mode === 'colectivo' && visualizationMode !== 'general';
   let routeColor = null;
   if (isRoutingMode && compId) {
-    if (routingOutputs.out1 === compId) routeColor = 'synth-accent';
+    if (routingOutputs.out1 === compId) routeColor = 'indicator-active';
     else if (routingOutputs.out2 === compId) routeColor = 'blue-500';
   }
 
@@ -27,12 +27,12 @@ const VerticalPads = ({ options, value, onChange, disabled, compId }) => {
     >
       {options.map(opt => {
         const isSelected = value === opt.value;
-        let boxClass = isSelected ? 'bg-synth-ink-dark shadow-neo-in' : 'bg-synth-surface border-[0.5px] border-synth-border-light shadow-neo-out';
+        let boxClass = isSelected ? 'bg-text-primary shadow-inset-control' : 'bg-surface-subtle border-[0.5px] border-border-subtle shadow-elevation-02';
         
         if (routeColor) {
-          boxClass = `bg-${routeColor} shadow-neo-in`;
+          boxClass = `bg-${routeColor} shadow-inset-control`;
         } else if (isRoutingMode) {
-          boxClass = 'bg-synth-surface border-[0.5px] border-synth-border-light shadow-neo-out';
+          boxClass = 'bg-surface-subtle border-[0.5px] border-border-subtle shadow-elevation-02';
         }
 
         return (
@@ -48,9 +48,9 @@ const VerticalPads = ({ options, value, onChange, disabled, compId }) => {
             }}
           >
             <div className={`w-[10px] h-[10px] shrink-0 rounded-[2px] transition-all flex items-center justify-center ${boxClass}`}>
-               {isSelected && <div className="w-[4px] h-[4px] bg-synth-accent rounded-full shadow-[0_0_4px_#ff9479]"></div>}
+               {isSelected && <div className="w-[4px] h-[4px] bg-indicator-active rounded-full shadow-[0_0_4px_#ff9479]"></div>}
             </div>
-            <span className={`text-[8px] font-sans font-bold whitespace-nowrap transition-colors ${isSelected || routeColor ? 'text-synth-ink-dark' : 'text-synth-ink-light group-hover:text-synth-ink-base'}`}>
+            <span className={`text-[8px] font-body font-bold whitespace-nowrap transition-colors ${isSelected || routeColor ? 'text-text-primary' : 'text-text-muted group-hover:text-text-secondary'}`}>
               {opt.label}
             </span>
           </div>
@@ -151,17 +151,17 @@ export default function ConsoleModule({ isCol, saveToDb }) {
             <div className="w-full flex flex-row justify-between">
               {modes.map(m => (
                 <div key={m.id} className="flex flex-col items-center gap-[4px]">
-                  <span className="text-[6px] font-sans font-bold text-synth-ink-base uppercase">{m.label}</span>
-                  <div className={`w-[14px] h-[14px] rounded-[3px] transition-all cursor-pointer flex items-center justify-center ${mode === m.id ? 'bg-synth-ink-dark shadow-neo-in' : 'bg-synth-surface border-[0.5px] border-synth-border-light shadow-neo-out'}`} onClick={() => setMode(m.id)}>
-                    {mode === m.id && <div className="w-[6px] h-[6px] bg-synth-accent rounded-full shadow-[0_0_4px_#ff9479]"></div>}
+                  <span className="text-[6px] font-body font-bold text-text-secondary uppercase">{m.label}</span>
+                  <div className={`w-[14px] h-[14px] rounded-[3px] transition-all cursor-pointer flex items-center justify-center ${mode === m.id ? 'bg-text-primary shadow-inset-control' : 'bg-surface-subtle border-[0.5px] border-border-subtle shadow-elevation-02'}`} onClick={() => setMode(m.id)}>
+                    {mode === m.id && <div className="w-[6px] h-[6px] bg-indicator-active rounded-full shadow-[0_0_4px_#ff9479]"></div>}
                   </div>
                 </div>
               ))}
             </div>
             
-            <div className={`w-[80%] aspect-[80/51] bg-synth-module shadow-neo-in border-[1.5px] border-synth-border-light rounded-[10px] flex flex-col items-center justify-center relative mt-auto ${!isCol ? 'opacity-30' : ''}`}>
-               <span className="text-synth-ink-light text-[8px] font-sans font-bold uppercase mb-1">Usuarios</span>
-               <span className="text-synth-ink-dark font-heading text-3xl tracking-wider leading-none">
+            <div className={`w-[80%] aspect-[80/51] bg-background-sunken shadow-inset-control border-[1.5px] border-border-subtle rounded-[10px] flex flex-col items-center justify-center relative mt-auto ${!isCol ? 'opacity-30' : ''}`}>
+               <span className="text-text-muted text-[8px] font-body font-bold uppercase mb-1">Usuarios</span>
+               <span className="text-text-primary font-heading text-3xl tracking-wider leading-none">
                  {(matchCount || 0).toString().padStart(3, '0')}
                </span>
             </div>

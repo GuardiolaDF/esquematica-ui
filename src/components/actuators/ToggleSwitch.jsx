@@ -72,7 +72,7 @@ const ToggleSwitch = ({
 
   return (
     <div 
-      className={`${sizeClass} aspect-square rounded-full bg-control-track shadow-inset-control border border-border-subtle shadow-neo-in ${glowClass} relative cursor-pointer transition-shadow duration-300 ${className} ${isHovered ? 'ring-1 ring-synth-accent/30 z-50' : ''}`}
+      className={`${sizeClass} aspect-square rounded-full bg-control-track shadow-inset-control border border-border-subtle shadow-inset-control ${glowClass} relative cursor-pointer transition-shadow duration-300 ${className} ${isHovered ? 'ring-1 ring-indicator-active/30 z-50' : ''}`}
       onClick={toggle}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -82,12 +82,12 @@ const ToggleSwitch = ({
       )}
       
       {/* SI / NO Labels */}
-      {onLabel && <span className="absolute text-[5px] uppercase font-body font-medium text-synth-ink-base pointer-events-none" style={{ top: '-15%', right: '-40%' }}>{onLabel}</span>}
-      {offLabel && <span className="absolute text-[5px] uppercase font-body font-medium text-synth-ink-base pointer-events-none" style={{ bottom: '-15%', right: '-40%' }}>{offLabel}</span>}
+      {onLabel && <span className="absolute text-[5px] uppercase font-body font-medium text-text-secondary pointer-events-none" style={{ top: '-15%', right: '-40%' }}>{onLabel}</span>}
+      {offLabel && <span className="absolute text-[5px] uppercase font-body font-medium text-text-secondary pointer-events-none" style={{ bottom: '-15%', right: '-40%' }}>{offLabel}</span>}
       
       {/* Palanca (Lever) */}
       <div 
-        className={`absolute top-1/2 left-1/2 w-[110%] h-[35%] bg-control-track shadow-inset-control border-[0.5px] border-synth-border-dark shadow-neo-knob rounded-full -translate-y-1/2 origin-left shadow-sm transition-transform duration-[150ms] ease-in-out ${
+        className={`absolute top-1/2 left-1/2 w-[110%] h-[35%] bg-control-track shadow-inset-control border-[0.5px] border-border-strong shadow-elevation-02 rounded-full -translate-y-1/2 origin-left shadow-sm transition-transform duration-[150ms] ease-in-out ${
           isOn ? '-rotate-45' : 'rotate-45'
         }`}
       ></div>

@@ -93,7 +93,7 @@ const Counter = ({ label, labelClass, compId }) => {
         {label && labelClass && (
           <span className={labelClass}>{label}</span>
         )}
-        <span className="text-text-primary font-sans text-[20px] tracking-widest select-none pointer-events-none mt-1">
+        <span className="text-text-primary font-body text-[20px] tracking-widest select-none pointer-events-none mt-1">
           {displayString}
         </span>
       </div>

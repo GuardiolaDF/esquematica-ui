@@ -128,7 +128,7 @@ const RotarySwitch = ({
 
   return (
     <div 
-      className={`relative flex items-center justify-center ${sizeClass} ${className} ${isHovered ? 'ring-1 ring-synth-accent/50 rounded-full z-50' : ''} cursor-pointer touch-none transition-all duration-300`} 
+      className={`relative flex items-center justify-center ${sizeClass} ${className} ${isHovered ? 'ring-1 ring-indicator-active/50 rounded-full z-50' : ''} cursor-pointer touch-none transition-all duration-300`} 
       onMouseDown={onMouseDown} 
       onTouchStart={onTouchStart}
       onMouseEnter={handleMouseEnter}
@@ -144,9 +144,9 @@ const RotarySwitch = ({
         className={`w-full aspect-square rounded-full bg-control-bg border border-border-subtle ${glowClass} flex items-center justify-center relative pointer-events-none transition-all duration-[150ms] ease-out`}
         style={{ transform: `rotate(${angles[displayStep]}deg)` }}
       >
-        <div className="w-[81%] aspect-square rounded-full bg-control-bg border-[0.5px] border-synth-border-dark relative flex items-start justify-center">
+        <div className="w-[81%] aspect-square rounded-full bg-control-bg border-[0.5px] border-border-strong relative flex items-start justify-center">
            {/* Indicator dot */}
-           <div className="w-[12%] aspect-square bg-synth-accent rounded-full absolute top-[6%]"></div>
+           <div className="w-[12%] aspect-square bg-indicator-active rounded-full absolute top-[6%]"></div>
         </div>
       </div>
 
@@ -170,8 +170,8 @@ const RotarySwitch = ({
             <div 
               className={`absolute w-1 h-1 rounded-full shadow-sm transition-all duration-200 -translate-x-1/2 -translate-y-1/2 ${
                 isActive 
-                  ? 'bg-synth-accent border border-synth-accent/30' 
-                  : 'bg-synth-border-base border border-transparent'
+                  ? 'bg-indicator-active border border-indicator-active/30' 
+                  : 'bg-neutral-400 border border-transparent'
               }`}
               style={{ left: dotLeft, top: dotTop }}
             ></div>
@@ -181,7 +181,7 @@ const RotarySwitch = ({
               className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center"
               style={{ left: textLeft, top: textTop }}
             >
-              <span className="text-[6px] text-text-secondary font-mono font-medium whitespace-nowrap">
+              <span className="text-[6px] text-text-secondary font-body font-medium whitespace-nowrap">
                 {optionLabels[i] || "TXT"}
               </span>
             </div>

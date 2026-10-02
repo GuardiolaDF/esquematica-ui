@@ -356,7 +356,7 @@ export default function DataVisualizer() {
             <div className="w-6 h-6 relative flex-shrink-0">
               <Jack id="vis-in-1" type="input" activeColor={connections.out1 ? "blue-500" : null} />
             </div>
-            <span className={`text-[10px] font-mono font-bold uppercase tracking-wider truncate max-w-[140px] ${connections.out1 ? 'text-[#3b82f6]' : 'text-[#444]'}`}>
+            <span className={`text-[10px] font-body font-bold uppercase tracking-wider truncate max-w-[140px] ${connections.out1 ? 'text-[#3b82f6]' : 'text-[#444]'}`}>
               1 · {connections.out1 && source1Meta ? source1Meta.label : 'VACÍO'}
             </span>
           </div>
@@ -365,7 +365,7 @@ export default function DataVisualizer() {
             <div className="w-6 h-6 relative flex-shrink-0">
               <Jack id="vis-in-2" type="input" activeColor={connections.out2 ? "orange-500" : null} />
             </div>
-            <span className={`text-[10px] font-mono font-bold uppercase tracking-wider truncate max-w-[140px] ${connections.out2 ? 'text-[#f97316]' : 'text-[#444]'}`}>
+            <span className={`text-[10px] font-body font-bold uppercase tracking-wider truncate max-w-[140px] ${connections.out2 ? 'text-[#f97316]' : 'text-[#444]'}`}>
               2 · {connections.out2 && source2Meta ? source2Meta.label : 'VACÍO'}
             </span>
           </div>
@@ -375,7 +375,7 @@ export default function DataVisualizer() {
   };
 
   return (
-    <div className="w-full h-full relative overflow-hidden flex items-end justify-center bg-synth-panel rounded-lg">
+    <div className="w-full h-full relative overflow-hidden flex items-end justify-center bg-background-base rounded-lg">
       
       {/* 1. MODO INDICADOR Y MENÚ DE VISUALIZACIÓN */}
       <div className="absolute top-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-20">

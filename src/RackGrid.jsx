@@ -1,6 +1,8 @@
-﻿import React from 'react';
+import React from 'react';
 import { moduleRegistry } from './moduleRegistry';
 
+// Grilla del frame de Figma (1280×720): margen 10, separación 8, columna de módulos de 418 y consola de 152.
+// La columna derecha absorbe el espacio extra cuando el lienzo se estira (ver Stage).
 const RackGrid = () => {
   const ControlModule = moduleRegistry['ControlModule'];
   const Module2 = moduleRegistry['Module2'];
@@ -9,10 +11,10 @@ const RackGrid = () => {
   const ConsoleModule = moduleRegistry['ConsoleModule'];
 
   return (
-    <div className="w-screen h-screen bg-transparent overflow-hidden flex flex-row gap-2">
-      
-      {/* Columna Izquierda: Fija en ancho, se estira en alto exactamente a 1/3 cada mÃ³dulo */}
-      <div className="w-1/3 h-full flex flex-col gap-2 flex-shrink-0">
+    <div className="w-full h-full p-[10px] flex flex-row gap-space-8">
+
+      {/* Columna izquierda: ancho fijo, los tres módulos se reparten el alto */}
+      <div className="w-[418px] h-full flex flex-col gap-space-8 flex-shrink-0">
         <div className="w-full flex-1 min-h-0">
           <ControlModule />
         </div>
@@ -24,24 +26,17 @@ const RackGrid = () => {
         </div>
       </div>
 
-      {/* Columna Derecha: Ocupa el resto del ancho de la pantalla */}
-      <div className="flex-grow h-full flex flex-col gap-2 min-w-0">
-        
-        {/* Visualizador de Datos: Ocupa todo el espacio alto disponible */}
+      {/* Columna derecha: visualizador flexible + consola de alto fijo */}
+      <div className="flex-grow h-full flex flex-col gap-space-8 min-w-0">
         <div className="flex-grow w-full min-h-0 relative z-0">
           <DataVisualizer />
         </div>
-        
-        {/* Consola: Altura fija, Ancho fluido */}
-        <div className="w-full h-[166px] flex-shrink-0 z-10 shadow-[0_0_50px_rgba(0,0,0,0.8)]">
+        <div className="w-full h-[152px] flex-shrink-0 z-10">
           <ConsoleModule />
         </div>
-
       </div>
     </div>
   );
 };
 
 export default RackGrid;
-
-

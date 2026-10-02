@@ -265,7 +265,7 @@ const SpectrumAnalyzer = ({ outId, outMeta, colorHex = "#3b82f6", labelPrefix = 
   if (totalValues === 0) {
     return (
       <div className="w-full flex-1 flex flex-col relative bg-[#050505] rounded-xl border border-[#111] overflow-hidden shadow-[inset_0_0_50px_rgba(0,0,0,0.8)] items-center justify-center">
-        <span className="text-[#333] font-mono text-[10px] tracking-[0.3em] uppercase">WAITING FOR SIGNAL...</span>
+        <span className="text-[#333] font-body text-[10px] tracking-[0.3em] uppercase">WAITING FOR SIGNAL...</span>
       </div>
     );
   }
@@ -275,26 +275,26 @@ const SpectrumAnalyzer = ({ outId, outMeta, colorHex = "#3b82f6", labelPrefix = 
       
       {/* Etiqueta Técnica Superior Izquierda */}
       <div className="absolute left-6 top-5 z-20 flex flex-col gap-1 pointer-events-none">
-        <div className="text-[#444] text-[9px] font-mono tracking-widest uppercase">ESPECTRO</div>
-        <div className="text-[11px] font-mono font-bold uppercase tracking-widest flex items-center gap-2" style={{ color: colorHex }}>
+        <div className="text-[#444] text-[9px] font-body tracking-widest uppercase">ESPECTRO</div>
+        <div className="text-[11px] font-body font-bold uppercase tracking-widest flex items-center gap-2" style={{ color: colorHex }}>
           <div className="w-2 h-2 rounded-full shadow-[0_0_5px]" style={{ backgroundColor: colorHex, boxShadow: `0 0 5px ${colorHex}` }}></div>
           {labelPrefix} · {outMeta?.label || 'UNKNOWN'}
         </div>
       </div>
 
       {/* Información Técnica Superior Derecha */}
-      <div className="absolute right-6 top-5 z-20 text-[#64748b] text-[10px] font-mono font-bold uppercase tracking-widest text-right pointer-events-none">
+      <div className="absolute right-6 top-5 z-20 text-[#64748b] text-[10px] font-body font-bold uppercase tracking-widest text-right pointer-events-none">
         N = {totalValues} <br/>
         <span className="text-white">PEAK = {maxBinCount}</span>
       </div>
 
       {/* Leyenda Secundaria Inferior (Eje Y = Densidad) */}
-      <div className="absolute left-6 bottom-10 z-20 text-[#475569] text-[9px] font-mono tracking-widest uppercase origin-bottom-left -rotate-90 pointer-events-none">
+      <div className="absolute left-6 bottom-10 z-20 text-[#475569] text-[9px] font-body tracking-widest uppercase origin-bottom-left -rotate-90 pointer-events-none">
         DENSIDAD / CONCENTRACIÓN
       </div>
 
       {/* Explicación Concisa Inferior Derecha */}
-      <div className="absolute right-6 bottom-4 z-20 text-[#444] text-[9px] font-mono tracking-wider pointer-events-none text-right">
+      <div className="absolute right-6 bottom-4 z-20 text-[#444] text-[9px] font-body tracking-wider pointer-events-none text-right">
         Distribución de las respuestas<br/>dentro del rango de la variable.
       </div>
 
