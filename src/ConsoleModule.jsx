@@ -88,7 +88,9 @@ export default function ConsoleModule({ isCol, saveToDb }) {
 
   return (
     <ModuleShell isCol={isCol} moduleNumber={0}>
-      <div className="absolute left-[21px] top-[22px] w-[783px] flex items-start justify-center gap-[40px]">
+      {/* Los filtros se reparten el ancho disponible; modos y Usuarios quedan fijos a la derecha (Figma: gap mínimo 40) */}
+      <div className="absolute left-[21px] right-[21px] top-[22px] flex items-start gap-[40px]">
+      <div className="flex-1 min-w-0 flex items-start justify-between">
 
         {/* Promedio (Component 18, 102×108) */}
         <div className="w-[102px] shrink-0 flex flex-col">
@@ -163,6 +165,8 @@ export default function ConsoleModule({ isCol, saveToDb }) {
             <VerticalPads compId="demo-living" options={[{label:'Familia', value:'Familia'}, {label:'Solos', value:'Solo'}, {label:'Con pares', value:'Pares'}]} value={filters.convivenciaActiva ? filters.convivencia : null} onChange={(v) => setFilters(p => ({...p, convivenciaActiva: v !== null, convivencia: v !== null ? v : p.convivencia}))} disabled={!filters.convivenciaActiva} />
           </div>
         </div>
+
+      </div>
 
         {/* Modos + Usuarios */}
         <div className="w-[121px] shrink-0 flex flex-col items-end justify-center gap-[34px]">
