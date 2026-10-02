@@ -127,10 +127,10 @@ export default function DataVisualizer({ compact = false, hint = null }) {
             opacity = 1;
           } else {
             const isBooleanLike = (processedVal === 0 || processedVal === 100);
-            if (isBooleanLike && processedVal === 0) opacity = 0.05;
+            if (isBooleanLike && processedVal === 0) opacity = 0.3;
           }
           
-          d.push({ id: `${compId}-single`, compId, r, angle: currentAngle, opacity, color });
+          d.push({ id: `${compId}-single`, compId, r, angle: currentAngle, opacity, color, size: 3.5, strokeColor: P.neutral[0] });
           
         } else if (mode === 'colectivo' || mode === 'sandbox') {
           
@@ -245,7 +245,7 @@ export default function DataVisualizer({ compact = false, hint = null }) {
       }
     });
     return d;
-  }, [mode, values, distributions, directInvertedTracks]);
+  }, [mode, values, distributions, averages, filteredSetups, isMounted, showSavedOverlay, directInvertedTracks, startAngle, endAngle, boundaries]);
 
   const avgNeedleAngle = useMemo(() => {
     let sourceData = mode === 'colectivo' ? averages : values;
@@ -489,7 +489,6 @@ export default function DataVisualizer({ compact = false, hint = null }) {
 
         {/* CSS DINAMICO PARA HOVER SIN RE-RENDERIZAR NODOS */}
         
-        <SwarmCanvas dots={dots} cx={cx} cy={cy} mode={mode} hoveredId={hoveredId} width={geo.w} height={geo.h} />
 
         {/* Labels on the left edge */}
         {modules.map((mod, i) => {
@@ -519,6 +518,9 @@ export default function DataVisualizer({ compact = false, hint = null }) {
           <line x1={cx} y1={compact ? cy - boundaries[0] : cy} x2={cx} y2={cy - boundaries[3]} stroke={P.neutral[600]} strokeWidth="4" strokeLinecap="round" opacity={mode === 'colectivo' ? 0.55 : 1} />
         </g>
         
+        {/* Puntos de datos: sobre la aguja, así los de modo individual no quedan tapados por ella */}
+        <SwarmCanvas dots={dots} cx={cx} cy={cy} mode={mode} hoveredId={hoveredId} width={geo.w} height={geo.h} />
+
         {/* Center Pivot Point Cover (Offscreen) */}
         {!compact && <circle cx={cx} cy={cy} r="16" fill={P.neutral[800]} stroke={P.neutral[900]} strokeWidth="4" />}
       </svg>
