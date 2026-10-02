@@ -9,6 +9,7 @@ import SwarmCanvas from './components/visualizations/SwarmCanvas';
 import { dbMap, reverseDbMap, dbMetadata } from './dbMap';
 import { directInvertedTracks, counterTracks, booleanTracks, getVisualizableData, calculateGlobalStress } from './dataTransforms';
 import VariablePanel from './components/VariablePanel';
+import Logo from './components/Logo';
 import OutputPanel from './components/cables/OutputPanel';
 import { primitives as P } from './design/tokens';
 import { CHANNEL_1, CHANNEL_2 } from './design/channels';
@@ -35,16 +36,12 @@ function describeArc(x, y, radius, startAngle, endAngle) {
   ].join(" ");
 }
 
-const startAngle = -112.5;
-const endAngle = 112.5;
-const boundaries = [350, 460, 570, 680];
-const modules = [
-  { name: 'Módulo 3', startR: boundaries[0], endR: boundaries[1], tracks: 20 },
-  { name: 'Módulo 2', startR: boundaries[1], endR: boundaries[2], tracks: 18 },
-  { name: 'Módulo 1', startR: boundaries[2], endR: boundaries[3], tracks: 26 },
-];
+const GEOMETRY = {
+  desktop: { w: 800, h: 450, cx: 400, cy: 715, start: -34, end: 34, bounds: [350, 460, 570, 680], viewBox: '0 0 800 450', align: 'xMidYMax meet' },
+  compact: { w: 360, h: 430, cx: 180, cy: 630, start: -17, end: 17, bounds: [220, 347, 473, 600], viewBox: '0 20 360 400', align: 'xMidYMid meet' },
+};
 
-export default function DataVisualizer() {
+export default function DataVisualizer({ compact = false }) {
   const visLabels = {
     general: 'COLECTIVO',
     spectrum: 'DISTRIBUCIÓN',
@@ -75,16 +72,10 @@ export default function DataVisualizer() {
     'sandbox': 'MODO Y SI...?'
   };
   
-  const width = 800;
-  const height = 600;
-  
-  const cx = width / 2;
-  const cy = 715; 
-  
-  const startAngle = -34;
-  const endAngle = 34;
-  
-  const boundaries = [350, 460, 570, 680];
+  const geo = compact ? GEOMETRY.compact : GEOMETRY.desktop;
+  const { cx, cy, bounds: boundaries } = geo;
+  const startAngle = geo.start;
+  const endAngle = geo.end;
   
   const modules = [
     { name: 'Módulo 3', startR: boundaries[0], endR: boundaries[1], tracks: 20 }, // mod3-1 to mod3-19
@@ -191,7 +182,7 @@ export default function DataVisualizer() {
             const gaussX = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
             const gaussY = Math.sqrt(-2.0 * Math.log(u)) * Math.sin(2.0 * Math.PI * v);
             
-            const angleJitter = gaussX * 1.4; // Ligeramente más esparcidos en el eje
+            const angleJitter = gaussX * 1.4 * ((endAngle - startAngle) / 68); // proporcional al abanico
             const radialJitter = gaussY * (trackStep * 0.28); 
             
             const targetAngle = baseAngle + angleJitter;
@@ -353,54 +344,73 @@ export default function DataVisualizer() {
   ];
 
   return (
-    <div className="w-full h-full relative overflow-hidden flex items-end justify-center bg-background-base rounded-xl shadow-elevation-02">
+    <div className={`w-full h-full relative overflow-hidden flex justify-center ${compact ? 'items-center' : 'items-end bg-background-base rounded-xl shadow-elevation-02'}`}>
 
-      {/* 1. MODO INDICADOR Y MENÚ DE VISUALIZACIÓN (centrado en el espacio libre a la derecha del panel de variable) */}
-      <div className="absolute top-4 left-[316px] right-4 z-20 flex flex-col items-center gap-space-8">
-        <div className="font-heading font-bold text-[14px] leading-[18px] tracking-label uppercase text-text-secondary">
-          {modeLabels[mode]}
+      {!compact && (
+        <>
+        {/* 1. MODO INDICADOR Y MENÚ DE VISUALIZACIÓN (centrado en el espacio libre a la derecha del panel de variable) */}
+        <div className="absolute top-4 left-[316px] right-[104px] z-20 flex flex-col items-center gap-space-8">
+          <div className="font-heading font-bold text-[14px] leading-[18px] tracking-label uppercase text-text-secondary">
+            {modeLabels[mode]}
+          </div>
+
+          {mode === 'colectivo' && (
+            <div role="tablist" className="flex items-center gap-space-4 rounded-pill bg-background-sunken p-[3px] shadow-inset-control">
+              {visTabs.map(tab => {
+                const active = visualizationMode === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    role="tab"
+                    aria-selected={active}
+                    onClick={() => setVisualizationMode(tab.id)}
+                    className={`h-[24px] px-space-12 rounded-pill type-label-s cursor-pointer transition-[background-color,color,box-shadow] duration-standard focus-visible:outline-none focus-visible:shadow-focus-soft ${
+                      active ? 'bg-coral-400 text-text-primary shadow-elevation-01' : 'text-text-muted hover:text-text-primary'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
 
-        {mode === 'colectivo' && (
-          <div role="tablist" className="flex items-center gap-space-4 rounded-pill bg-background-sunken p-[3px] shadow-inset-control">
-            {visTabs.map(tab => {
-              const active = visualizationMode === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  role="tab"
-                  aria-selected={active}
-                  onClick={() => setVisualizationMode(tab.id)}
-                  className={`h-[24px] px-space-12 rounded-pill type-label-s cursor-pointer transition-[background-color,color,box-shadow] duration-standard focus-visible:outline-none focus-visible:shadow-focus-soft ${
-                    active ? 'bg-coral-400 text-text-primary shadow-elevation-01' : 'text-text-muted hover:text-text-primary'
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
-        )}
-      </div>
 
-      {visualizationMode !== 'general' && mode === 'colectivo' ? (
+          {/* LOGO (arriba a la derecha) */}
+          <div className="absolute top-4 right-4 z-20">
+            <Logo height={36} />
+          </div>
+        </>
+      )}
+
+      {!compact && visualizationMode !== 'general' && mode === 'colectivo' ? (
         renderAlternativeVisualization()
       ) : (
         <>
           {/* 2. EXTREMOS DEL VÚMETRO */}
-          <div className="absolute top-[35%] left-[4%] font-heading font-bold text-[13px] uppercase tracking-label text-text-secondary z-10 pointer-events-none">
-            + Relax
-          </div>
-          <div className="absolute top-[35%] right-[4%] font-heading font-bold text-[13px] uppercase tracking-label text-text-secondary z-10 pointer-events-none">
-            + Estrés
-          </div>
+          {compact ? (
+            <div className="absolute inset-x-1 bottom-0 z-10 flex justify-between font-heading font-bold text-[12px] uppercase tracking-label text-text-secondary pointer-events-none">
+              <span>+ Relax</span>
+              <span>+ Estrés</span>
+            </div>
+          ) : (
+            <>
+              <div className="absolute top-[35%] left-[4%] font-heading font-bold text-[13px] uppercase tracking-label text-text-secondary z-10 pointer-events-none">
+                + Relax
+              </div>
+              <div className="absolute top-[35%] right-[4%] font-heading font-bold text-[13px] uppercase tracking-label text-text-secondary z-10 pointer-events-none">
+                + Estrés
+              </div>
 
-          {/* 3. PANEL DE VARIABLE */}
-          <div className="absolute left-[7px] top-[16px] z-10 pointer-events-none">
-            <VariablePanel compId={hoveredId} />
-          </div>
+              {/* 3. PANEL DE VARIABLE */}
+              <div className="absolute left-[7px] top-[16px] z-10 pointer-events-none">
+                <VariablePanel compId={hoveredId} />
+              </div>
+            </>
+          )}
 
-          <svg width="100%" height="100%" viewBox="0 0 800 450" preserveAspectRatio="xMidYMax meet" className="overflow-visible">
+          <svg {...(compact ? { className: 'w-full max-h-full overflow-visible' } : { width: '100%', height: '100%', className: 'overflow-visible' })} viewBox={geo.viewBox} preserveAspectRatio={geo.align}>
         <defs>
           <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur stdDeviation="4" result="blur" />
@@ -478,7 +488,7 @@ export default function DataVisualizer() {
 
         {/* CSS DINAMICO PARA HOVER SIN RE-RENDERIZAR NODOS */}
         
-        <SwarmCanvas dots={dots} cx={cx} cy={cy} mode={mode} hoveredId={hoveredId} width={800} height={450} />
+        <SwarmCanvas dots={dots} cx={cx} cy={cy} mode={mode} hoveredId={hoveredId} width={geo.w} height={geo.h} />
 
         {/* Labels on the left edge */}
         {modules.map((mod, i) => {
@@ -505,35 +515,39 @@ export default function DataVisualizer() {
 
         {/* Static Needle (or Average in Colectivo) */}
         <g style={{ transform: `rotate(${avgNeedleAngle}deg)`, transformOrigin: `${cx}px ${cy}px` }} className="transition-all duration-1000 ease-out">
-          <line x1={cx} y1={cy} x2={cx} y2={cy - boundaries[3]} stroke={P.neutral[600]} strokeWidth="4" strokeLinecap="round" opacity={mode === 'colectivo' ? 0.55 : 1} />
+          <line x1={cx} y1={compact ? cy - boundaries[0] : cy} x2={cx} y2={cy - boundaries[3]} stroke={P.neutral[600]} strokeWidth="4" strokeLinecap="round" opacity={mode === 'colectivo' ? 0.55 : 1} />
         </g>
         
         {/* Center Pivot Point Cover (Offscreen) */}
-        <circle cx={cx} cy={cy} r="16" fill={P.neutral[800]} stroke={P.neutral[900]} strokeWidth="4" />
+        {!compact && <circle cx={cx} cy={cy} r="16" fill={P.neutral[800]} stroke={P.neutral[900]} strokeWidth="4" />}
       </svg>
         </>
       )}
 
-      {/* 4. ENTRADAS DE CABLE (abajo a la izquierda) */}
-      <div className="absolute left-[11px] bottom-[12px] z-30 flex items-end gap-space-12">
-        <OutputPanel
-          title="Entradas"
-          jacks={[
-            { id: 'vis-in-1', type: 'input', activeColor: connections.out1 ? 'blue-500' : null },
-            { id: 'vis-in-2', type: 'input', activeColor: connections.out2 ? 'orange-500' : null },
-          ]}
-        />
-        <div className="flex flex-col gap-space-4 pb-[2px] pointer-events-none">
-          {inputRows.map(({ channel, meta }, i) => (
-            <div key={channel.key} className="flex items-center gap-space-6">
-              <span className="w-[6px] h-[6px] rounded-pill shrink-0" style={{ backgroundColor: meta ? channel.hex : 'var(--neutral-300)' }} />
-              <span className={`type-micro max-w-[170px] truncate ${meta ? 'text-text-secondary' : 'text-text-disabled'}`}>
-                {i + 1} · {meta ? meta.label : 'Vacío'}
-              </span>
-            </div>
-          ))}
+      {!compact && (
+        <>
+        {/* 4. ENTRADAS DE CABLE (abajo a la izquierda) */}
+        <div className="absolute left-[11px] bottom-[12px] z-30 flex items-end gap-space-12">
+          <OutputPanel
+            title="Entradas"
+            jacks={[
+              { id: 'vis-in-1', type: 'input', activeColor: connections.out1 ? 'blue-500' : null },
+              { id: 'vis-in-2', type: 'input', activeColor: connections.out2 ? 'orange-500' : null },
+            ]}
+          />
+          <div className="flex flex-col gap-space-4 pb-[2px] pointer-events-none">
+            {inputRows.map(({ channel, meta }, i) => (
+              <div key={channel.key} className="flex items-center gap-space-6">
+                <span className="w-[6px] h-[6px] rounded-pill shrink-0" style={{ backgroundColor: meta ? channel.hex : 'var(--neutral-300)' }} />
+                <span className={`type-micro max-w-[170px] truncate ${meta ? 'text-text-secondary' : 'text-text-disabled'}`}>
+                  {i + 1} · {meta ? meta.label : 'Vacío'}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+        </>
+      )}
     </div>
   );
 }

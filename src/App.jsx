@@ -5,13 +5,18 @@ import { HoverProvider } from './contexts/HoverContext';
 import { useAppContext } from './contexts/AppContext';
 import { CableProvider } from './contexts/CableContext';
 import CableOverlay from './components/cables/CableOverlay';
+import MobileApp from './MobileApp';
+import { useIsPhone } from './useDeviceClass';
 
 function App() {
   const { showGrid, setShowGrid } = useAppContext();
+  // Teléfono → versión de bolsillo; tablet y escritorio → versión completa (ver useDeviceClass)
+  const isPhone = useIsPhone();
 
   return (
     <HoverProvider>
       <CableProvider>
+      {isPhone ? <MobileApp /> : (
       <div className="w-screen h-[100dvh] bg-background-sunken text-text-primary overflow-hidden font-body relative">
         <Stage>
           <RackGrid />
@@ -37,6 +42,7 @@ function App() {
         </button>
         */}
       </div>
+      )}
           </CableProvider>
     </HoverProvider>
   );

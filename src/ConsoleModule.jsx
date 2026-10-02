@@ -69,7 +69,7 @@ const ModeButton = ({ label, active, onClick }) => (
   </div>
 );
 
-export default function ConsoleModule({ isCol, saveToDb }) {
+export default function ConsoleModule({ isCol, saveToDb, compact = false }) {
   const {
     filters, setFilters, distributions,
     mode, setMode,
@@ -89,12 +89,13 @@ export default function ConsoleModule({ isCol, saveToDb }) {
 
   return (
     <ModuleShell isCol={isCol} moduleNumber={0}>
-      {/* Los filtros se reparten el ancho disponible; modos y Usuarios quedan fijos a la derecha (Figma: gap mínimo 40) */}
-      <div className="absolute left-[21px] right-[21px] top-[22px] flex items-start gap-[40px]">
+      {/* Los filtros se reparten el ancho disponible; modos y Usuarios quedan fijos a la derecha (Figma: gap mínimo 40). */}
+      {/* En la versión de bolsillo (compact) solo quedan Promedio, Edad y Trabajo. */}
+      <div className={`absolute top-[22px] flex items-start gap-[40px] ${compact ? 'left-[16px] right-[16px]' : 'left-[21px] right-[21px]'}`}>
       <div className="flex-1 min-w-0 flex items-start justify-between">
 
         {/* Promedio (Component 18, 102×108) */}
-        <div className="w-[102px] shrink-0 flex flex-col">
+        <div className={`${compact ? 'w-[96px]' : 'w-[102px]'} shrink-0 flex flex-col`}>
           <LedButton variant="group" compId="demo-promedio-led" label="Promedio" value={filters.promedioActivo} onChange={(v) => setFilters(p => ({...p, promedioActivo: v}))} />
           <div className={`relative w-[102px] h-[94px] ${off(filters.promedioActivo)}`}>
             <RotarySwitch
@@ -110,13 +111,15 @@ export default function ConsoleModule({ isCol, saveToDb }) {
         </div>
 
         {/* Edad */}
-        <div className="w-[56px] shrink-0 flex flex-col items-center gap-[16px]">
+        <div className={`${compact ? 'w-[44px]' : 'w-[56px]'} shrink-0 flex flex-col items-center gap-[16px]`}>
           <LedButton variant="group" compId="demo-edad-led" label="Edad" value={filters.edadActiva} onChange={(v) => setFilters(p => ({...p, edadActiva: v}))} />
           <div className="w-full">
             <VerticalPads compId="demo-age" gap={4} options={edadOptions} value={filters.edadGroup} onChange={(v) => setFilters(p => ({...p, edadActiva: v !== null, edadGroup: v !== null ? v : p.edadGroup}))} disabled={!filters.edadActiva} />
           </div>
         </div>
 
+        {!compact && (
+        <>
         {/* Género y País */}
         <div className="w-[43px] shrink-0 flex flex-col gap-[13px]">
           <div className="flex flex-col gap-[8px]">
@@ -133,24 +136,28 @@ export default function ConsoleModule({ isCol, saveToDb }) {
           </div>
         </div>
 
+        </>
+        )}
         {/* Trabajo: Sí/No + Horas + Modalidad */}
-        <div className="w-[186px] shrink-0 flex flex-col gap-[16px]">
+        <div className={`${compact ? 'w-[157px]' : 'w-[186px]'} shrink-0 flex flex-col gap-[16px]`}>
           <LedButton variant="group" compId="demo-trabaja-led" label="Trabajo" value={filters.trabajaActivo} onChange={(v) => { setFilters(p => { let next = {...p, trabajaActivo: v}; if (!v) { next.horasTrabajoActivo = false; next.modalidadActiva = false; } return next; }); }} />
-          <div className="flex items-start justify-center gap-[36px] w-[131px]">
+          <div className={`flex items-start ${compact ? 'justify-start gap-[12px] w-[157px]' : 'justify-center gap-[36px] w-[131px]'}`}>
             <div className={off(filters.trabajaActivo)}>
               <ToggleSwitch compId="demo-work" sizeClass="w-[30px]" onLabel="Sí" offLabel="No" value={filters.trabaja === 'SÍ'} onChange={(v) => { setFilters(p => ({...p, trabaja: v ? 'SÍ' : 'NO'})); }} />
             </div>
-            <div className="w-[8px] shrink-0 flex flex-col gap-[5px]">
+            <div className={`${compact ? 'w-[28px]' : 'w-[8px]'} shrink-0 flex flex-col gap-[5px]`}>
               <span className="type-micro font-light leading-[14px] text-text-muted h-[10px] whitespace-nowrap">Horas</span>
               <VerticalPads compId="demo-hours" options={[{label:'-4', value:'<4'}, {label:'4-6', value:'4-6'}, {label:'6-8', value:'6-8'}, {label:'+8', value:'>8'}]} value={filters.horasTrabajoActivo ? filters.horasTrabajo : null} onChange={(v) => setFilters(p => ({...p, horasTrabajoActivo: v !== null, horasTrabajo: v !== null ? v : p.horasTrabajo}))} disabled={!filters.trabajaActivo || filters.trabaja !== 'SÍ'} />
             </div>
-            <div className="w-[8px] shrink-0 flex flex-col gap-[5px]">
+            <div className={`${compact ? 'w-[60px]' : 'w-[8px]'} shrink-0 flex flex-col gap-[5px]`}>
               <span className="type-micro font-light leading-[14px] text-text-muted h-[10px] whitespace-nowrap">Modalidad</span>
               <VerticalPads compId="demo-modality" options={[{label:'Presencial', value:'Presencial'}, {label:'Híbrido', value:'Híbrido'}, {label:'Remoto', value:'Remoto'}]} value={filters.modalidadActiva ? filters.modalidad : null} onChange={(v) => setFilters(p => ({...p, modalidadActiva: v !== null, modalidad: v !== null ? v : p.modalidad}))} disabled={!filters.trabajaActivo || filters.trabaja !== 'SÍ'} />
             </div>
           </div>
         </div>
 
+        {!compact && (
+        <>
         {/* Viaje */}
         <div className="w-[20px] h-[82px] shrink-0 flex flex-col justify-between">
           <LedButton variant="group" compId="demo-viaje-led" label="Viaje" value={filters.viajeActivo} onChange={(v) => setFilters(p => ({...p, viajeActivo: v}))} />
@@ -167,8 +174,12 @@ export default function ConsoleModule({ isCol, saveToDb }) {
           </div>
         </div>
 
+        </>
+        )}
       </div>
 
+        {!compact && (
+        <>
         {/* Modos + Usuarios */}
         <div className="w-[121px] shrink-0 flex flex-col items-end justify-center gap-[34px]">
           <div className="relative w-[121px] h-[38px]">
@@ -187,6 +198,8 @@ export default function ConsoleModule({ isCol, saveToDb }) {
           </div>
         </div>
 
+        </>
+        )}
       </div>
     </ModuleShell>
   );
