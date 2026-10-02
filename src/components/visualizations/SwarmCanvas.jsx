@@ -1,6 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import { primitives as P } from '../../design/tokens';
 
+// Opacidad que conservan los puntos de los demás carriles cuando se resalta uno (100 % → 75 %)
+const DIM = 0.75;
+
 const SwarmCanvas = React.memo(({ dots, cx, cy, mode, hoveredId, width = 800, height = 450 }) => {
   const canvasRef = useRef(null);
 
@@ -59,7 +62,7 @@ const SwarmCanvas = React.memo(({ dots, cx, cy, mode, hoveredId, width = 800, he
         ctx.rotate(-dot.angle * Math.PI / 180);
         ctx.beginPath();
         ctx.arc(0, 0, dot.r, (dot.trailFrom - 90) * Math.PI / 180, (dot.angle - 90) * Math.PI / 180);
-        ctx.globalAlpha = (isDimmed ? 0.15 : 0.55) * (dot.opacity ?? 1);
+        ctx.globalAlpha = 0.55 * (isDimmed ? DIM : 1) * (dot.opacity ?? 1);
         ctx.strokeStyle = dot.color || P.coral[500];
         ctx.lineWidth = 3;
         ctx.lineCap = 'round';
@@ -76,7 +79,7 @@ const SwarmCanvas = React.memo(({ dots, cx, cy, mode, hoveredId, width = 800, he
       if (isHovered) {
         baseOpacity = 1; // Full opacity when hovered
       } else if (isDimmed) {
-        baseOpacity = 0.05; // Dimmed when something else is hovered
+        baseOpacity *= DIM; // El resto baja apenas: el carril resaltado se distingue sin apagar el enjambre
       }
       
       ctx.globalAlpha = baseOpacity;
