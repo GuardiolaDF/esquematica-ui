@@ -1,8 +1,21 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { useHover } from '../../contexts/HoverContext';
 import { useAppContext } from '../../contexts/AppContext';
 
-const Fader = ({ 
+// Figma: Components › Component 3 / fader-2 (2166:599) — canal de 16 px de ancho con sombras interiores y una barra elevada
+// de 10 px (indicator-wedge) con el punto coral en su extremo. La barra crece desde el inicio del canal según el valor
+// y el punto marca el nivel. En horizontal la misma pieza se acuesta (crece hacia la derecha).
+const SLOT = 16;   // ancho del canal
+const BAR = 10;    // ancho de la barra
+const PAD = 3;     // separación barra–canal
+const MIN_BAR = 10; // largo mínimo de la barra (solo el punto)
+
+const SLOT_SHADOW = 'inset -1px -1px 1px rgba(255,255,255,0.75), inset 1px 1px 1px rgba(0,0,0,0.25)';
+const BAR_SHADOW = '2px 2px 3.4px rgba(0,0,0,0.25), 0.5px 0.5px 1.4px rgba(0,0,0,0.75), inset -0.5px -0.5px 1.4px rgba(0,0,0,0.5), inset 1px 1px 2px rgba(255,255,255,0.75)';
+const DOT_SHADOW = 'inset 1px 1px 1.9px rgba(0,0,0,0.5), inset -0.5px -0.5px 0.5px rgba(255,255,255,0.5), inset 0.2px 0.2px 0.5px #000';
+const ROUTE_RGB = { 'blue-500': '59,130,246', 'orange-500': '249,115,22' };
+
+const Fader = ({
   orientation = 'vertical',
   trackClass = '',
   thumbClass = '',
@@ -14,7 +27,8 @@ const Fader = ({
   value,
   onChange
 }) => {
-  const { mode, values, setValue: setGlobalValue, averages , visualizationMode, routingOutputs, toggleRoutingSource } = useAppContext();
+  const { mode, values, setValue: setGlobalValue, averages, visualizationMode, routingOutputs, toggleRoutingSource, missingFields } = useAppContext();
+  const isVertical = orientation === 'vertical';
 
   const isRoutingMode = mode === 'colectivo' && visualizationMode !== 'general';
   let routeColor = null;
@@ -24,9 +38,8 @@ const Fader = ({
   }
 
   const [localValue, setLocalValue] = useState(initialValue);
-  const trackRef = useRef(null);
+  const slotRef = useRef(null);
 
-  // Sync with global store based on mode
   let displayValue = localValue;
   if (value !== undefined) {
     displayValue = value;
@@ -37,160 +50,105 @@ const Fader = ({
   }
 
   const isReadOnly = mode === 'colectivo';
-
   const [isDragging, setIsDragging] = useState(false);
-  
-  const handleMove = useCallback((clientX, clientY) => {
-    if (mode === 'colectivo') return; // Disabled in colectivo mode
-    if (!trackRef.current) return;
-    const rect = trackRef.current.getBoundingClientRect();
-    let newVal = 0;
 
-    if (orientation === 'vertical') {
-      const trackHeight = rect.height;
-      const y = clientY - rect.top;
-      // Invert Y so bottom is 0, top is 100
-      newVal = 100 - (y / trackHeight) * 100;
-    } else {
-      const trackWidth = rect.width;
-      const x = clientX - rect.left;
-      newVal = (x / trackWidth) * 100;
-    }
+  const handleMove = (clientX, clientY) => {
+    if (isReadOnly || !slotRef.current) return;
+    const rect = slotRef.current.getBoundingClientRect();
+    const newVal = isVertical
+      ? 100 - ((clientY - rect.top) / rect.height) * 100
+      : ((clientX - rect.left) / rect.width) * 100;
+    const clamped = Math.max(0, Math.min(100, newVal));
+    setLocalValue(clamped);
+    if (onChange) onChange(clamped);
+    else if (compId) setGlobalValue(compId, clamped);
+  };
 
-    newVal = Math.max(0, Math.min(100, newVal));
-    setLocalValue(newVal);
-    if (onChange) {
-      onChange(newVal);
-    } else if (compId) {
-      setGlobalValue(compId, newVal);
-    }
-  }, [orientation, mode, compId, setGlobalValue, onChange]);
-
-  const onMouseDown = (e) => {
+  const onPointerDown = (e) => {
     if (isRoutingMode && compId) { e.preventDefault(); toggleRoutingSource(compId); return; }
-    e.preventDefault(); // Previene selección de texto
+    if (isReadOnly) return;
+    e.preventDefault();
+    e.currentTarget.setPointerCapture(e.pointerId);
     setIsDragging(true);
     handleMove(e.clientX, e.clientY);
-    
-    const onMouseMove = (moveEvent) => handleMove(moveEvent.clientX, moveEvent.clientY);
-    const onMouseUp = () => {
-      setIsDragging(false);
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-    };
-    
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
   };
-
-  const onTouchStart = (e) => {
-    setIsDragging(true);
-    handleMove(e.touches[0].clientX, e.touches[0].clientY);
-
-    const onTouchMove = (moveEvent) => {
-      handleMove(moveEvent.touches[0].clientX, moveEvent.touches[0].clientY);
-    };
-    const onTouchEnd = () => {
-      setIsDragging(false);
-      document.removeEventListener('touchmove', onTouchMove);
-      document.removeEventListener('touchend', onTouchEnd);
-    };
-
-    document.addEventListener('touchmove', onTouchMove, { passive: false });
-    document.addEventListener('touchend', onTouchEnd);
-  };
+  const onPointerMove = (e) => { if (isDragging) handleMove(e.clientX, e.clientY); };
+  const endDrag = () => setIsDragging(false);
 
   const { hoveredId, setHoveredId } = useHover();
   const [localHover, setLocalHover] = useState(false);
-  
   const isHovered = (compId && hoveredId === compId) || localHover || isDragging;
-  const isMissing = useAppContext().missingFields?.includes(compId);
-  
-  let thumbGlowClass = 'shadow-md border border-transparent';
-  let trackGlowClass = '';
-  
-  if (routeColor) {
-    thumbGlowClass = `ring-4 ring-${routeColor} shadow-[0_0_30px_rgba(${routeColor === 'orange-500' ? '249,115,22' : '59,130,246'},1)] bg-${routeColor}/80`;
-    trackGlowClass = `ring-2 ring-${routeColor} shadow-[0_0_20px_rgba(${routeColor === 'orange-500' ? '249,115,22' : '59,130,246'},0.6)]`;
-  } else if (isReadOnly) {
-    thumbGlowClass = isHovered ? 'shadow-[0_0_15px_rgba(255,255,255,0.6)] border border-white bg-gray-100' : 'shadow-[0_0_8px_rgba(255,255,255,0.2)] border border-transparent';
-  } else {
-    thumbGlowClass = isHovered 
-      ? 'shadow-[0_0_15px_rgba(251,191,36,0.8)] border border-yellow-400 bg-yellow-100' 
-      : (isMissing ? 'shadow-[0_0_15px_rgba(239,68,68,0.8)] border border-red-500 bg-red-100' : 'shadow-md border border-transparent');
-    trackGlowClass = isHovered 
-      ? 'ring-2 ring-yellow-400 shadow-[0_0_15px_rgba(251,191,36,0.3)]' 
-      : (isMissing ? 'ring-2 ring-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)]' : '');
-  }
+  const isMissing = !isReadOnly && missingFields?.includes(compId);
 
-  const thumbStyle = orientation === 'vertical' 
-    ? { bottom: `${displayValue}%`, transform: 'translateY(50%)' }
-    : { left: `${displayValue}%`, transform: 'translateX(-50%)' };
+  // Anillo de estado sobre el canal (tokens: Focus/Soft, action/destructive; ruteo con el color del cable)
+  let ring = null;
+  if (routeColor) ring = `0 0 0 2px rgb(${ROUTE_RGB[routeColor]}), 0 0 16px rgba(${ROUTE_RGB[routeColor]},0.8)`;
+  else if (isHovered) ring = '0 0 0 2px #39787D61';
+  else if (isMissing) ring = '0 0 0 1.5px #BF6F5B';
 
-  const handleMouseEnter = () => { setLocalHover(true); if (compId) setHoveredId(compId); };
-  const handleMouseLeave = () => { setLocalHover(false); if (compId && !isDragging) setHoveredId(null); };
+  const handlePointerEnter = () => { setLocalHover(true); if (compId) setHoveredId(compId); };
+  const handlePointerLeave = () => { setLocalHover(false); if (compId && !isDragging) setHoveredId(null); };
+
+  // Largo de la barra: de MIN_BAR (valor 0) al largo total del canal menos el padding (valor 100)
+  const barLength = `calc(${MIN_BAR}px + (100% - ${2 * PAD + MIN_BAR}px) * ${displayValue / 100})`;
 
   return (
-    <div 
-      ref={trackRef}
-      className={`${trackClass} ${trackGlowClass} cursor-pointer touch-none transition-all duration-300`}
-      onMouseDown={onMouseDown}
-      onTouchStart={onTouchStart}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+    <div
+      className={`relative ${trackClass} cursor-pointer touch-none select-none`}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={endDrag}
+      onPointerCancel={endDrag}
+      onPointerEnter={handlePointerEnter}
+      onPointerLeave={handlePointerLeave}
     >
-      {label && labelClass && (
-        orientation === 'vertical' ? (
-          <div className="absolute right-[100%] top-1/2 -translate-y-1/2 mr-[6px] w-0 h-0 flex items-center justify-center pointer-events-none z-20">
-            <span className="-rotate-90 text-[7px] uppercase tracking-[0.2em] text-[#777] font-body font-bold whitespace-nowrap">
-              {label}
-            </span>
+      {label && (
+        isVertical ? (
+          <div className="absolute right-full top-1/2 -translate-y-1/2 mr-space-4 w-0 h-0 flex items-center justify-center pointer-events-none z-20">
+            <span className="-rotate-90 type-micro text-text-secondary whitespace-nowrap">{label}</span>
           </div>
         ) : (
-          <span className={labelClass}>{label}</span>
+          labelClass ? <span className={labelClass}>{label}</span> : null
         )
       )}
-      
-      {/* Markers (Optional) */}
-      {markers && (
-        <div className="absolute w-full h-full pointer-events-none">
+
+      {markers.length > 0 && (
+        <div className="absolute inset-0 pointer-events-none">
           {markers.map((m, i) => {
-            if (orientation === 'vertical') {
-              const pos = (i / (markers.length - 1)) * 100;
-              return (
-                <span 
-                  key={i} 
-                  className="absolute left-[150%] text-[6px] text-text-secondary font-body font-medium"
-                  style={{ bottom: `${pos}%`, transform: 'translateY(50%)' }}
-                >
-                  {m}
-                </span>
-              );
-            } else {
-              const pos = 4 + (i / (markers.length - 1)) * 92;
-              return (
-                <span 
-                  key={i} 
-                  className="absolute top-1/2 -translate-y-1/2 text-[6.5px] text-text-secondary font-body font-medium whitespace-nowrap"
-                  style={{ left: `${pos}%`, transform: 'translate(-50%, -50%)' }}
-                >
-                  {m}
-                </span>
-              );
-            }
+            const pos = (i / (markers.length - 1)) * 100;
+            return isVertical ? (
+              <span key={i} className="absolute left-[calc(50%+12px)] type-micro text-text-muted" style={{ bottom: `${pos}%`, transform: 'translateY(50%)' }}>{m}</span>
+            ) : (
+              <span key={i} className="absolute top-1/2 type-micro text-text-muted whitespace-nowrap" style={{ left: `calc(${PAD + MIN_BAR / 2}px + (100% - ${2 * PAD + MIN_BAR}px) * ${pos / 100})`, transform: 'translate(-50%, -50%)' }}>{m}</span>
+            );
           })}
         </div>
       )}
 
-      {/* TRACK FIJO SEGÚN FIGMA */}
-      <div className={`absolute ${orientation === 'vertical' ? 'w-[35%] h-full left-1/2 -translate-x-1/2' : 'h-[35%] w-full top-1/2 -translate-y-1/2'} bg-surface-subtle border border-border-subtle rounded-full pointer-events-none`}></div>
-
-      {/* THUMB FIJO SEGÚN FIGMA */}
-      <div 
-        className={`absolute ${orientation === 'vertical' ? 'w-[200%] h-[20%] left-1/2 -translate-x-1/2' : 'h-[200%] w-[10%] top-1/2 -translate-y-1/2'} bg-surface-subtle border-[0.5px] border-border-strong flex items-center justify-center pointer-events-none transition-all duration-300 z-10 ${thumbGlowClass}`}
-        style={thumbStyle}
+      {/* Canal */}
+      <div
+        ref={slotRef}
+        className={`absolute rounded-pill bg-surface-subtle transition-shadow duration-standard ${isVertical ? 'h-full left-1/2 -translate-x-1/2' : 'w-full top-1/2 -translate-y-1/2'}`}
+        style={{
+          [isVertical ? 'width' : 'height']: SLOT,
+          boxShadow: [SLOT_SHADOW, ring].filter(Boolean).join(', '),
+        }}
       >
-         <div className={`bg-indicator-active ${orientation === 'vertical' ? 'w-full h-[1px]' : 'h-full w-[1px]'}`}></div>
+        {/* Barra elevada con el punto en el extremo (grupo al 50 % como en Figma) */}
+        <div
+          className={`absolute rounded-pill bg-surface-subtle opacity-50 ${thumbClass}`}
+          style={isVertical
+            ? { left: PAD, bottom: PAD, width: BAR, height: barLength, boxShadow: BAR_SHADOW }
+            : { top: PAD, left: PAD, height: BAR, width: barLength, boxShadow: BAR_SHADOW }}
+        >
+          <div
+            className="absolute rounded-pill bg-indicator-active"
+            style={{
+              width: 7, height: 7, boxShadow: DOT_SHADOW,
+              ...(isVertical ? { top: 1.5, left: 1.5 } : { right: 1.5, top: 1.5 }),
+            }}
+          />
+        </div>
       </div>
     </div>
   );

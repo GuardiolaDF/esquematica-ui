@@ -68,7 +68,7 @@ const Module3 = () => {
               <Fader 
                 orientation="vertical"
                 initialValue={50}
-                trackClass="w-[30%] h-full    relative flex justify-center"
+                trackClass="w-[30%] h-full"
                 thumbClass="w-[150%] aspect-square   absolute  z-10"
                 label="ANSIEDAD"
                 labelClass={LBL_V}
@@ -108,7 +108,7 @@ const Module3 = () => {
               <Fader 
                 orientation="horizontal"
                 initialValue={50}
-                trackClass="w-full h-[30%]    relative flex items-center"
+                trackClass="w-full h-[30%]"
                 thumbClass="h-[150%] aspect-square   absolute  z-20"
                 label="MOMENTO FRUSTRACIÃ“N"
                 labelClass={LBL_UP}

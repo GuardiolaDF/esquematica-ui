@@ -57,7 +57,7 @@ const Module2 = () => {
                 <Fader 
                   orientation="vertical"
                   initialValue={50}
-                  trackClass="w-[30%] h-full    relative flex justify-center"
+                  trackClass="w-[30%] h-full"
                   thumbClass="w-[150%] aspect-square   absolute  z-10"
                   label="SILENCIO"
                   labelClass={LBL_V}

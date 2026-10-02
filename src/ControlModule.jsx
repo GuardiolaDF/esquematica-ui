@@ -99,7 +99,7 @@ const ControlModule = () => {
                   orientation="vertical"
                   initialValue={50}
                   compId={activePlatform}
-                  trackClass={`w-[30%] h-full bg-[#E5E5E5] rounded-full shadow-inner relative flex justify-center transition-all duration-300 ${isPadHovered ? 'ring-2 ring-yellow-400 shadow-[0_0_15px_rgba(251,191,36,0.5)]' : ''}`}
+                  trackClass={`w-[30%] h-full rounded-pill transition-shadow duration-standard ${isPadHovered ? 'shadow-focus-soft' : ''}`}
                   thumbClass={`w-full aspect-square bg-[#888] rounded-full absolute shadow-md transition-shadow ${isPadHovered ? 'shadow-[0_0_10px_rgba(251,191,36,0.8)]' : ''}`}
                   label="HRS"
                   labelClass={LBL_UP}
@@ -117,7 +117,7 @@ const ControlModule = () => {
                   <Fader 
                     orientation="vertical"
                     initialValue={50}
-                    trackClass="w-[30%] h-full bg-[#E5E5E5] rounded-full shadow-inner relative flex justify-center"
+                    trackClass="w-[30%] h-full"
                     thumbClass="w-full aspect-square bg-[#888] rounded-full absolute shadow-md"
                     label={text}
                     labelClass={LBL_UP}
@@ -136,7 +136,7 @@ const ControlModule = () => {
               <Fader 
                 orientation="horizontal"
                 initialValue={50}
-                trackClass="w-full h-[30%] bg-[#404040] rounded-full shadow-inner relative flex items-center"
+                trackClass="w-full h-[30%]"
                 thumbClass="h-[150%] aspect-square bg-[#FFF] rounded-full absolute shadow-md z-20"
                 label="HRS X DÍA EN RRSS"
                 labelClass="absolute bottom-[100%] mb-[4px] left-0 text-[7px] uppercase tracking-[0.2em] text-[#777] font-body font-bold whitespace-nowrap pointer-events-none"
