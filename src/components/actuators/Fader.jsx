@@ -1,199 +1,70 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { useHover } from '../../contexts/HoverContext';
-import { useAppContext } from '../../contexts/AppContext';
+import React, { useState, useRef, useCallback } from 'react';
 
 const Fader = ({ 
-  orientation = 'vertical',
-  trackClass = '',
-  thumbClass = '',
-  label = '',
-  labelClass = '',
-  initialValue = 50, // 0 to 100
-  compId,
-  markers = [],
-  value,
-  onChange
+  orientation = 'vertical', 
+  trackClass = "", 
+  thumbClass = "", 
+  initialValue = 50,
+  compId
 }) => {
-  const { mode, values, setValue: setGlobalValue, averages , visualizationMode, routingOutputs, toggleRoutingSource } = useAppContext();
+  const [value, setValue] = useState(initialValue);
+  const containerRef = useRef(null);
 
-  const isRoutingMode = mode === 'colectivo' && visualizationMode !== 'general';
-  let routeColor = null;
-  if (isRoutingMode && compId) {
-    if (routingOutputs.out1 === compId) routeColor = 'blue-500';
-    else if (routingOutputs.out2 === compId) routeColor = 'orange-500';
-  }
-
-  const [localValue, setLocalValue] = useState(initialValue);
-  const trackRef = useRef(null);
-
-  // Sync with global store based on mode
-  let displayValue = localValue;
-  if (value !== undefined) {
-    displayValue = value;
-  } else if (mode === 'colectivo' && compId) {
-    displayValue = averages[compId] ?? initialValue;
-  } else if (compId) {
-    displayValue = values[compId] ?? initialValue;
-  }
-
-  const isReadOnly = mode === 'colectivo';
-
-  const [isDragging, setIsDragging] = useState(false);
-  
-  const handleMove = useCallback((clientX, clientY) => {
-    if (mode === 'colectivo') return; // Disabled in colectivo mode
-    if (!trackRef.current) return;
-    const rect = trackRef.current.getBoundingClientRect();
-    let newVal = 0;
-
+  const updateValue = (e) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    let percent = 0;
+    
     if (orientation === 'vertical') {
-      const trackHeight = rect.height;
-      const y = clientY - rect.top;
-      // Invert Y so bottom is 0, top is 100
-      newVal = 100 - (y / trackHeight) * 100;
+      const y = e.touches ? e.touches[0].clientY : e.clientY;
+      percent = 1 - (y - rect.top) / rect.height;
     } else {
-      const trackWidth = rect.width;
-      const x = clientX - rect.left;
-      newVal = (x / trackWidth) * 100;
+      const x = e.touches ? e.touches[0].clientX : e.clientX;
+      percent = (x - rect.left) / rect.width;
     }
-
-    newVal = Math.max(0, Math.min(100, newVal));
-    setLocalValue(newVal);
-    if (onChange) {
-      onChange(newVal);
-    } else if (compId) {
-      setGlobalValue(compId, newVal);
-    }
-  }, [orientation, mode, compId, setGlobalValue, onChange]);
-
-  const onMouseDown = (e) => {
-    if (isRoutingMode && compId) { e.preventDefault(); toggleRoutingSource(compId); return; }
-    e.preventDefault(); // Previene selección de texto
-    setIsDragging(true);
-    handleMove(e.clientX, e.clientY);
     
-    const onMouseMove = (moveEvent) => handleMove(moveEvent.clientX, moveEvent.clientY);
-    const onMouseUp = () => {
-      setIsDragging(false);
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-    };
-    
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
+    percent = Math.max(0, Math.min(1, percent));
+    setValue(percent * 100);
   };
 
-  const onTouchStart = (e) => {
-    setIsDragging(true);
-    handleMove(e.touches[0].clientX, e.touches[0].clientY);
-
-    const onTouchMove = (moveEvent) => {
-      handleMove(moveEvent.touches[0].clientX, moveEvent.touches[0].clientY);
+  const handlePointerDown = (e) => {
+    e.preventDefault();
+    updateValue(e);
+    
+    const handlePointerMove = (e) => updateValue(e);
+    const handlePointerUp = () => {
+      window.removeEventListener('mousemove', handlePointerMove);
+      window.removeEventListener('mouseup', handlePointerUp);
+      window.removeEventListener('touchmove', handlePointerMove);
+      window.removeEventListener('touchend', handlePointerUp);
     };
-    const onTouchEnd = () => {
-      setIsDragging(false);
-      document.removeEventListener('touchmove', onTouchMove);
-      document.removeEventListener('touchend', onTouchEnd);
-    };
 
-    document.addEventListener('touchmove', onTouchMove, { passive: false });
-    document.addEventListener('touchend', onTouchEnd);
+    window.addEventListener('mousemove', handlePointerMove);
+    window.addEventListener('mouseup', handlePointerUp);
+    window.addEventListener('touchmove', handlePointerMove, { passive: false });
+    window.addEventListener('touchend', handlePointerUp);
   };
 
-  const { hoveredId, setHoveredId } = useHover();
-  const [localHover, setLocalHover] = useState(false);
-  
-  const isHovered = (compId && hoveredId === compId) || localHover || isDragging;
-  const isMissing = useAppContext().missingFields?.includes(compId);
-  
-  let thumbGlowClass = '';
-  let trackGlowClass = '';
-  
-  if (routeColor) {
-    thumbGlowClass = `ring-4 ring-${routeColor} shadow-[0_0_30px_rgba(${routeColor === 'orange-500' ? '249,115,22' : '59,130,246'},1)] bg-${routeColor}/80`;
-    trackGlowClass = `ring-2 ring-${routeColor} shadow-[0_0_20px_rgba(${routeColor === 'orange-500' ? '249,115,22' : '59,130,246'},0.6)]`;
-  } else if (isReadOnly) {
-    thumbGlowClass = isHovered ? 'shadow-[0_0_15px_rgba(255,255,255,0.6)] border border-white bg-gray-100' : 'shadow-[0_0_8px_rgba(255,255,255,0.2)] border border-transparent';
-  } else {
-    thumbGlowClass = isHovered 
-      ? 'shadow-[0_0_15px_rgba(251,191,36,0.8)] border border-yellow-400 bg-yellow-100' 
-      : (isMissing ? 'shadow-[0_0_15px_rgba(239,68,68,0.8)] border border-red-500 bg-red-100' : '');
-    trackGlowClass = isHovered 
-      ? 'ring-2 ring-yellow-400 shadow-[0_0_15px_rgba(251,191,36,0.3)]' 
-      : (isMissing ? 'ring-2 ring-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)]' : '');
-  }
-
-  const thumbStyle = orientation === 'vertical' 
-    ? { bottom: `${displayValue}%`, transform: 'translateY(50%)' }
-    : { left: `${displayValue}%`, transform: 'translateX(-50%)' };
-
-  const handleMouseEnter = () => { setLocalHover(true); if (compId) setHoveredId(compId); };
-  const handleMouseLeave = () => { setLocalHover(false); if (compId && !isDragging) setHoveredId(null); };
+  const thumbPos = orientation === 'vertical' ? { bottom: `${value}%` } : { left: `${value}%` };
 
   return (
     <div 
-      ref={trackRef}
-      className={`${trackClass} ${trackGlowClass} cursor-pointer touch-none transition-all duration-300`}
-      onMouseDown={onMouseDown}
-      onTouchStart={onTouchStart}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      ref={containerRef}
+      className={`relative cursor-pointer touch-none ${orientation === 'vertical' ? 'w-full h-full' : 'w-full h-full'}`}
+      onMouseDown={handlePointerDown}
+      onTouchStart={handlePointerDown}
     >
-      {label && labelClass && (
-        orientation === 'vertical' ? (
-          <div className="absolute right-[100%] top-1/2 -translate-y-1/2 mr-[6px] w-0 h-0 flex items-center justify-center pointer-events-none z-20">
-            <span className="-rotate-90 text-[7px] uppercase tracking-[0.2em] text-[#777] font-sans font-bold whitespace-nowrap">
-              {label}
-            </span>
-          </div>
-        ) : (
-          <span className={labelClass}>{label}</span>
-        )
-      )}
-      
-      {/* Markers (Optional) */}
-      {markers && (
-        <div className="absolute w-full h-full pointer-events-none">
-          {markers.map((m, i) => {
-            if (orientation === 'vertical') {
-              const pos = (i / (markers.length - 1)) * 100;
-              return (
-                <span 
-                  key={i} 
-                  className="absolute left-[150%] text-[6px] text-synth-ink-base font-body font-medium"
-                  style={{ bottom: `${pos}%`, transform: 'translateY(50%)' }}
-                >
-                  {m}
-                </span>
-              );
-            } else {
-              const pos = 4 + (i / (markers.length - 1)) * 92;
-              return (
-                <span 
-                  key={i} 
-                  className="absolute top-1/2 -translate-y-1/2 text-[6.5px] text-synth-ink-base font-body font-medium whitespace-nowrap"
-                  style={{ left: `${pos}%`, transform: 'translate(-50%, -50%)' }}
-                >
-                  {m}
-                </span>
-              );
-            }
-          })}
-        </div>
-      )}
+      {/* TRACK */}
+      <div className={`absolute bg-control-track shadow-inset-control border border-border-subtle rounded-pill ${orientation === 'vertical' ? 'w-[40%] h-full left-1/2 -translate-x-1/2' : 'h-[40%] w-full top-1/2 -translate-y-1/2'} ${trackClass}`}></div>
 
-      {/* TRACK FIJO SEGÚN FIGMA */}
-      <div className={`absolute ${orientation === 'vertical' ? 'w-[35%] h-full left-1/2 -translate-x-1/2' : 'h-[35%] w-full top-1/2 -translate-y-1/2'} bg-control-track shadow-inset-control border border-border-subtle rounded-full shadow-neo-in pointer-events-none`}></div>
-
-      {/* THUMB FIJO SEGÚN FIGMA */}
+      {/* THUMB */}
       <div 
-        className={`absolute ${orientation === 'vertical' ? 'w-[200%] h-[20%] left-1/2 -translate-x-1/2' : 'h-[200%] w-[10%] top-1/2 -translate-y-1/2'} bg-control-track shadow-inset-control border-[0.5px] border-synth-border-dark shadow-neo-out rounded-sm flex items-center justify-center pointer-events-none transition-all duration-300 z-10 ${thumbGlowClass}`}
-        style={thumbStyle}
+        className={`absolute bg-control-bg shadow-elevation-02 border border-border-subtle rounded-pill flex items-center justify-center ${orientation === 'vertical' ? 'w-[140%] h-[30px] left-1/2 -translate-x-1/2 translate-y-1/2' : 'h-[140%] w-[30px] top-1/2 -translate-y-1/2 -translate-x-1/2'} ${thumbClass}`}
+        style={thumbPos}
       >
-         <div className={`bg-indicator-active ${orientation === 'vertical' ? 'w-full h-[1px]' : 'h-full w-[1px]'}`}></div>
+        <div className="w-[8px] h-[8px] bg-indicator-active rounded-full"></div>
       </div>
     </div>
   );
 };
-
 export default Fader;
