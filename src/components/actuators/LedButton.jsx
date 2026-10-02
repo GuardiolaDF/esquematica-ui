@@ -4,6 +4,7 @@ import { useAppContext } from '../../contexts/AppContext';
 import { STATUS_REST, STATUS_ON } from './StatusSquare';
 import ledOff from '../../assets/figma/group-led-off.svg';
 import ledOn from '../../assets/figma/group-led-on.svg';
+import { ROUTE_RGB } from '../../design/channels';
 
 // Botón de dos variantes según Figma:
 //  - pad (con ícono) — Components › Frame 25 (2166:588): 24 px, surface/subtle, borde border/subtle, radius/sm.
@@ -14,7 +15,6 @@ import ledOn from '../../assets/figma/group-led-on.svg';
 //    apagado = neutral/400, encendido = teal/400 con brillo. Va con el título del grupo (Satori Bold 8 px).
 const PAD_REST = '1px 1px 3px rgba(45,45,45,0.15), -1px -1px 2px #FFFFFF';
 const PAD_RAISED = '6px 8px 20px rgba(45,45,45,0.22), -4px -4px 10px rgba(255,255,255,0.9)'; // Elevation/03
-const ROUTE_RGB = { 'blue-500': '59,130,246', 'orange-500': '249,115,22' };
 
 const LedButton = ({
   baseClass = "w-[30%] aspect-square",

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { primitives as P } from '../../design/tokens';
 
 const SwarmCanvas = React.memo(({ dots, cx, cy, mode, hoveredId, width = 800, height = 450 }) => {
   const canvasRef = useRef(null);
@@ -23,7 +24,8 @@ const SwarmCanvas = React.memo(({ dots, cx, cy, mode, hoveredId, width = 800, he
     ctx.clearRect(0, 0, width, height);
 
     // Apply composite operation
-    ctx.globalCompositeOperation = 'screen';
+    // Fondo claro: mezcla normal; la densidad se lee por acumulación de transparencia
+    ctx.globalCompositeOperation = 'source-over';
 
     // Batch rendering
     dots.forEach(dot => {
@@ -44,7 +46,7 @@ const SwarmCanvas = React.memo(({ dots, cx, cy, mode, hoveredId, width = 800, he
         r = 3.5;
         // In CSS we had filter: url(#glow) which is tricky in pure canvas without slowing it down.
         // We can simulate it by adding a shadow for hovered items.
-        ctx.shadowColor = dot.color || "#FFC800";
+        ctx.shadowColor = P.coral[500];
         ctx.shadowBlur = 8;
       }
       
@@ -63,7 +65,7 @@ const SwarmCanvas = React.memo(({ dots, cx, cy, mode, hoveredId, width = 800, he
       ctx.globalAlpha = baseOpacity;
       
       // Fill
-      ctx.fillStyle = dot.color || "#FFC800";
+      ctx.fillStyle = isHovered ? P.coral[500] : (dot.color || P.teal[600]);
       ctx.fill();
       
       // Stroke

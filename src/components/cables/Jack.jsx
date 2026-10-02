@@ -1,13 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useCables } from '../../contexts/CableContext';
 import jackSvg from '../../assets/figma/output-jack.svg';
+import { channelById } from '../../design/channels';
 
 // Figma: Components › output-jack-1 (2166:603) — 20×20, neutral/500 con borde neutral/200 y Effects/Inset/Control.
 // El cuerpo es el SVG exportado de Figma; el estado conectado se superpone sobre el orificio (12 px).
-const CABLE_GLOW = {
-  'blue-500': 'rgba(59,130,246,0.9)',
-  'orange-500': 'rgba(249,115,22,0.9)',
-};
 
 const Jack = ({
   id,
@@ -65,8 +62,8 @@ const Jack = ({
       <img src={jackSvg} alt="" width={20} height={20} draggable={false} className="block pointer-events-none select-none" />
       {activeColor && !disabled && (
         <div
-          className={`absolute inset-[4px] rounded-pill bg-${activeColor} transition-shadow duration-standard`}
-          style={{ boxShadow: `0 0 10px ${CABLE_GLOW[activeColor]}` }}
+          className="absolute inset-[4px] rounded-pill transition-shadow duration-standard"
+          style={{ backgroundColor: channelById(activeColor).hex, boxShadow: `0 0 8px rgba(${channelById(activeColor).rgb},0.8)` }}
         />
       )}
       {label && (

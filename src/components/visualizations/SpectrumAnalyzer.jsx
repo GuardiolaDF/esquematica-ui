@@ -50,14 +50,14 @@ const useSpectrumCanvas = (bins, maxBinCount, colorHex, binsCount, binLabels) =>
 
       const W = rect.width;
       const H = rect.height;
-      const PADDING_BOTTOM = 30; // Espacio para las etiquetas X
+      const PADDING_BOTTOM = 44; // Espacio para las etiquetas X y la nota inferior
       const PLOT_H = H - PADDING_BOTTOM;
 
       const state = stateRef.current;
       let needsUpdate = false;
 
       // Dibuja retícula sutil
-      ctx.strokeStyle = '#222';
+      ctx.strokeStyle = '#DDD9CE'; // neutral/200
       ctx.lineWidth = 1;
       ctx.beginPath();
       for (let i = 0; i <= 4; i++) {
@@ -73,7 +73,7 @@ const useSpectrumCanvas = (bins, maxBinCount, colorHex, binsCount, binLabels) =>
       const segmentHeight = 4;
       const segmentGap = 2;
 
-      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalCompositeOperation = 'source-over';
       
       for (let i = 0; i < binsCount; i++) {
         const target = bins[i] || 0; // 0 a 1
@@ -118,7 +118,7 @@ const useSpectrumCanvas = (bins, maxBinCount, colorHex, binsCount, binLabels) =>
         const b = parseInt(hex.substring(4,6), 16);
 
         // Dibujar segmentos inactivos (Fondo tenue)
-        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.05)`;
+        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.1)`;
         for (let s = 0; s < totalSegments; s++) {
           const sy = PLOT_H - (s * (segmentHeight + segmentGap)) - segmentHeight;
           ctx.fillRect(x, sy, barWidth, segmentHeight);
@@ -126,8 +126,6 @@ const useSpectrumCanvas = (bins, maxBinCount, colorHex, binsCount, binLabels) =>
 
         // Dibujar segmentos activos
         ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.9)`;
-        ctx.shadowColor = colorHex;
-        ctx.shadowBlur = 10;
         
         for (let s = 0; s < activeSegments; s++) {
           const sy = PLOT_H - (s * (segmentHeight + segmentGap)) - segmentHeight;
@@ -135,11 +133,9 @@ const useSpectrumCanvas = (bins, maxBinCount, colorHex, binsCount, binLabels) =>
           // Color cambia ligeramente hacia el tope (más intenso/blanco)
           const intensity = s / totalSegments;
           if (intensity > 0.8) {
-             ctx.fillStyle = '#fff';
-             ctx.shadowColor = '#fff';
+             ctx.fillStyle = '#FF9479'; // coral/500: el tope se enciende
           } else {
              ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.9)`;
-             ctx.shadowColor = colorHex;
           }
 
           ctx.fillRect(x, sy, barWidth, segmentHeight);
@@ -149,16 +145,16 @@ const useSpectrumCanvas = (bins, maxBinCount, colorHex, binsCount, binLabels) =>
         // Dibujar Peak Cap
         if (peakSegment > 0 && peakSegment < totalSegments) {
           const py = PLOT_H - (peakSegment * (segmentHeight + segmentGap)) - segmentHeight;
-          ctx.fillStyle = '#ffffff';
+          ctx.fillStyle = '#5C5451'; // neutral/700
           ctx.fillRect(x, py, barWidth, segmentHeight);
         }
 
         // Dibujar Etiqueta X
-        ctx.fillStyle = '#64748b';
-        ctx.font = '10px monospace';
+        ctx.fillStyle = '#8A8177'; // neutral/500
+        ctx.font = '10px "JetBrains Mono", monospace';
         ctx.textAlign = 'center';
         const labelStr = binLabels[i] !== undefined ? binLabels[i] : '';
-        ctx.fillText(labelStr, x + (barWidth / 2), H - 10);
+        ctx.fillText(labelStr, x + (barWidth / 2), H - 26);
       }
       
       ctx.restore();
@@ -183,7 +179,7 @@ const useSpectrumCanvas = (bins, maxBinCount, colorHex, binsCount, binLabels) =>
 };
 
 
-const SpectrumAnalyzer = ({ outId, outMeta, colorHex = "#3b82f6", labelPrefix = "OUT 1" }) => {
+const SpectrumAnalyzer = ({ outId, outMeta, colorHex = "#39787D", labelPrefix = "OUT 1" }) => {
   const { allSetups, values, averages, mode } = useAppContext();
 
   // 1. Extraer los datos reales y normalizarlos
@@ -264,38 +260,38 @@ const SpectrumAnalyzer = ({ outId, outMeta, colorHex = "#3b82f6", labelPrefix = 
 
   if (totalValues === 0) {
     return (
-      <div className="w-full flex-1 flex flex-col relative bg-[#050505] rounded-xl border border-[#111] overflow-hidden shadow-[inset_0_0_50px_rgba(0,0,0,0.8)] items-center justify-center">
-        <span className="text-[#333] font-body text-[10px] tracking-[0.3em] uppercase">WAITING FOR SIGNAL...</span>
+      <div className="w-full flex-1 flex flex-col relative overflow-hidden items-center justify-center">
+        <span className="type-label-m uppercase tracking-widest text-text-disabled">Esperando señal…</span>
       </div>
     );
   }
 
   return (
-    <div className="w-full flex-1 flex flex-col relative bg-[#050505] rounded-xl border border-[#111] overflow-hidden shadow-[inset_0_0_50px_rgba(0,0,0,0.8)] p-6">
+    <div className="w-full flex-1 flex flex-col relative overflow-hidden p-6">
       
       {/* Etiqueta Técnica Superior Izquierda */}
       <div className="absolute left-6 top-5 z-20 flex flex-col gap-1 pointer-events-none">
-        <div className="text-[#444] text-[9px] font-body tracking-widest uppercase">ESPECTRO</div>
-        <div className="text-[11px] font-body font-bold uppercase tracking-widest flex items-center gap-2" style={{ color: colorHex }}>
-          <div className="w-2 h-2 rounded-full shadow-[0_0_5px]" style={{ backgroundColor: colorHex, boxShadow: `0 0 5px ${colorHex}` }}></div>
+        <div className="type-caption uppercase tracking-widest text-text-disabled">Espectro</div>
+        <div className="type-label-s uppercase tracking-widest flex items-center gap-2" style={{ color: colorHex }}>
+          <div className="w-2 h-2 rounded-pill" style={{ backgroundColor: colorHex }}></div>
           {labelPrefix} · {outMeta?.label || 'UNKNOWN'}
         </div>
       </div>
 
       {/* Información Técnica Superior Derecha */}
-      <div className="absolute right-6 top-5 z-20 text-[#64748b] text-[10px] font-body font-bold uppercase tracking-widest text-right pointer-events-none">
+      <div className="absolute right-6 top-5 z-20 type-label-s uppercase tracking-widest text-text-muted text-right pointer-events-none">
         N = {totalValues} <br/>
-        <span className="text-white">PEAK = {maxBinCount}</span>
+        <span className="text-text-primary">PEAK = {maxBinCount}</span>
       </div>
 
       {/* Leyenda Secundaria Inferior (Eje Y = Densidad) */}
-      <div className="absolute left-6 bottom-10 z-20 text-[#475569] text-[9px] font-body tracking-widest uppercase origin-bottom-left -rotate-90 pointer-events-none">
+      <div className="absolute left-6 bottom-14 z-20 type-caption tracking-widest uppercase text-text-muted origin-bottom-left -rotate-90 pointer-events-none">
         DENSIDAD / CONCENTRACIÓN
       </div>
 
       {/* Explicación Concisa Inferior Derecha */}
-      <div className="absolute right-6 bottom-4 z-20 text-[#444] text-[9px] font-body tracking-wider pointer-events-none text-right">
-        Distribución de las respuestas<br/>dentro del rango de la variable.
+      <div className="absolute right-6 bottom-2 z-20 type-caption text-text-disabled pointer-events-none text-right">
+        Distribución de las respuestas dentro del rango de la variable.
       </div>
 
       {/* Analizador de Espectro Canvas */}

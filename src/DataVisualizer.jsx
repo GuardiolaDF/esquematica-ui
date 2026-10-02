@@ -2,13 +2,19 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { useHover } from './contexts/HoverContext';
 import { useAppContext } from './contexts/AppContext';
 import { useCables } from './contexts/CableContext';
-import Jack from './components/cables/Jack';
 import RelationXY from './components/visualizations/RelationXY';
 import SpectrumAnalyzer from './components/visualizations/SpectrumAnalyzer';
 import Association from './components/visualizations/Association';
 import SwarmCanvas from './components/visualizations/SwarmCanvas';
 import { dbMap, reverseDbMap, dbMetadata } from './dbMap';
 import { directInvertedTracks, counterTracks, booleanTracks, getVisualizableData, calculateGlobalStress } from './dataTransforms';
+import VariablePanel from './components/VariablePanel';
+import OutputPanel from './components/cables/OutputPanel';
+import { primitives as P } from './design/tokens';
+import { CHANNEL_1, CHANNEL_2 } from './design/channels';
+
+// Colores de los datos (paleta RAMS): enjambre en teal, promedio y selección en coral, sin dato en neutro.
+const SWARM_COLORS = [P.teal[500], P.teal[600], P.teal[700]];
 
 // Math helpers for SVG arcs
 function polarToCartesian(cx, cy, r, angleInDegrees) {
@@ -124,9 +130,9 @@ export default function DataVisualizer() {
           let currentAngle = isMounted ? targetAngle : paddedStartAngle;
           
           let opacity = 1;
-          let color = "#FFC800";
+          let color = P.coral[500];
           if (rawVal === undefined) {
-            color = "#666666"; // Solid gray for untouched
+            color = P.neutral[400]; // sin tocar
             opacity = 1;
           } else {
             const isBooleanLike = (processedVal === 0 || processedVal === 100);
@@ -195,12 +201,12 @@ export default function DataVisualizer() {
             // Puntos más pequeños como pidió el usuario
             const size = 0.4 + rJitterScale * 0.7; 
             
-            const hue = 45 + (Math.sin(idx * 7.654) * 12); 
-            const color = `hsl(${hue}, 100%, 55%)`;
+            const shade = Math.min(SWARM_COLORS.length - 1, Math.floor(((Math.sin(idx * 7.654) + 1) / 2) * SWARM_COLORS.length));
+            const color = SWARM_COLORS[shade];
 
             const distFromCenter = Math.sqrt(gaussX*gaussX + gaussY*gaussY);
             // Opacidad ligeramente más sutil para compensar aglomeraciones
-            let opacity = Math.max(0.1, 0.5 - (distFromCenter * 0.15));
+            let opacity = Math.max(0.12, 0.55 - (distFromCenter * 0.15));
 
             if (processedVal === 0 || processedVal === 10) {
               opacity = 0.03; 
@@ -222,16 +228,14 @@ export default function DataVisualizer() {
           let aVal = visualAvg;
           if (mode === 'sandbox') aVal = Math.max(0, Math.min(100, aVal + visualShift));
           const aAngle = paddedStartAngle + (aVal / 100) * (paddedEndAngle - paddedStartAngle);
-          d.push({ id: `${compId}-avg`, compId, r, angle: isMounted ? aAngle : paddedStartAngle, opacity: 1, color: "#FFFFFF", isAvg: true });
+          d.push({ id: `${compId}-avg`, compId, r, angle: isMounted ? aAngle : paddedStartAngle, opacity: 1, color: P.coral[500], isAvg: true });
           
           if (showSavedOverlay) {
             const rawVal = values[compId];
             if (rawVal !== undefined) {
-              let processedVal = getRelativeValue(compId, rawVal);
-              const isInverted = directInvertedTracks.includes(compId);
-              if (isInverted) processedVal = 100 - processedVal;
-              processedVal = getZonedValue(compId, processedVal);
-              let targetAngle = paddedStartAngle + (processedVal / 100) * (paddedEndAngle - paddedStartAngle);
+              const savedData = getVisualizableData(compId, rawVal, dbMetadata[compId]?.dataType);
+              const savedPercent = (savedData.value - savedData.min) / ((savedData.max - savedData.min) || 1);
+              let targetAngle = paddedStartAngle + savedPercent * (paddedEndAngle - paddedStartAngle);
               d.push({ 
                 id: `${compId}-saved-overlay`, 
                 compId, 
@@ -239,8 +243,8 @@ export default function DataVisualizer() {
                 angle: isMounted ? targetAngle : paddedStartAngle, 
                 opacity: 1, 
                 size: 6,
-                color: "#FFFFFF", 
-                strokeColor: "#00E5FF", // Cyan brillante
+                color: P.neutral[0], 
+                strokeColor: P.coral[600],
                 isSavedOverlay: true,
                 isHovered: hoveredId === compId 
               });
@@ -292,18 +296,6 @@ export default function DataVisualizer() {
     if (source1Meta && !source1Meta.visualizations.includes(visualizationMode)) isCompatible = false;
     if (source2Meta && !source2Meta.visualizations.includes(visualizationMode)) isCompatible = false;
 
-    const renderInputPanel = (title, colorClass, borderClass, shadowClass, outId, isConnected, jackId, jackColor) => (
-      <div className={`flex flex-col items-center justify-center bg-[#1a1a1a] border-2 ${isConnected ? borderClass + ' ' + shadowClass : 'border-[#444]'} rounded-xl p-4 w-1/2 min-h-[100px] transition-all duration-300 relative z-10`}>
-        <span className={`${isConnected ? colorClass : 'text-[#666]'} text-[10px] font-bold uppercase tracking-widest mb-2`}>{title}</span>
-        <span className={`${isConnected ? 'text-white' : 'text-[#555]'} text-sm font-medium text-center`}>
-          {routingOutputs[outId] ? (isConnected ? dbMetadata[routingOutputs[outId]].label : "ESPERANDO CABLE...") : "SIN SEÑAL..."}
-        </span>
-        <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-10 h-10">
-          <Jack id={jackId} type="input" activeColor={isConnected ? jackColor : null} />
-        </div>
-      </div>
-    );
-
     const hasSource1 = connections.out1 && source1Meta;
     const hasSource2 = connections.out2 && source2Meta;
     
@@ -317,87 +309,76 @@ export default function DataVisualizer() {
     const canPlotSpectrum = hasSource1 && source1Meta.visualizations.includes('spectrum');
 
     return (
-      <div className="w-full h-full flex flex-col items-center justify-between p-8 mt-12 bg-[#111] relative">
-        
-        {/* Gráfico o estado de espera */}
-        <div className="w-full flex-1 flex flex-col items-center justify-center mb-12 relative">
-          <h2 className="absolute top-0 left-0 text-white text-xl font-bold uppercase tracking-widest">
-            {visualizationMode}
-          </h2>
-
-          {isRelation ? (
+      <div className="absolute inset-0 pt-[84px] px-[12px] pb-[68px]">
+        <div className="relative w-full h-full rounded-lg bg-background-sunken overflow-hidden shadow-inset-control">
+          <div className="absolute inset-0 flex flex-col">
+            {isRelation ? (
               <RelationXY out1Id={routingOutputs.out1} out2Id={routingOutputs.out2} out1Meta={source1Meta} out2Meta={source2Meta} hasSource1={hasSource1} hasSource2={hasSource2} isCompatible={isCompatible} />
-          ) : isAssociation ? (
+            ) : isAssociation ? (
               <Association dbMetadata={dbMetadata} dbMap={dbMap} routingOutputs={{ out1: connections.out1 ? routingOutputs.out1 : null, out2: connections.out2 ? routingOutputs.out2 : null }} filteredSetups={filteredSetups} />
             ) : isSpectrum ? (
-            canPlotSpectrum ? (
-              <SpectrumAnalyzer outId={routingOutputs.out1} outMeta={source1Meta} colorHex="#3b82f6" />
+              canPlotSpectrum ? (
+                <SpectrumAnalyzer outId={routingOutputs.out1} outMeta={source1Meta} colorHex={CHANNEL_1.hex} />
+              ) : (
+                <div className="m-auto flex flex-col items-center gap-space-8 rounded-lg border border-dashed border-border-default px-space-48 py-space-32 text-center">
+                  <span className="type-label-m uppercase tracking-widest text-text-muted">
+                    {!hasSource1 ? 'Esperando señal en la entrada 1' : 'Datos incompatibles con distribución'}
+                  </span>
+                  <span className="type-caption text-text-disabled">Conectá un cable desde una variable compatible a la entrada 1.</span>
+                </div>
+              )
             ) : (
-              <div className="flex flex-col items-center gap-4 border-2 border-dashed border-[#444] rounded-xl p-12 text-[#666]">
-                <span className="text-sm font-bold uppercase tracking-widest">
-                  {!hasSource1 ? "WAITING FOR INPUT X" : "DATOS INCOMPATIBLES PARA SPECTRUM"}
-                </span>
-                <span className="text-xs">Por favor, conecte una variable compatible en el Input X (Azul).</span>
+              <div className="m-auto flex flex-col items-center gap-space-8 text-text-disabled">
+                <span className="type-label-m uppercase tracking-widest">En preparación</span>
+                <span className="type-caption">La visualización «{visualizationMode}» todavía no está disponible.</span>
               </div>
-            )
-          ) : (
-            <div className="flex flex-col items-center gap-4 text-[#444]">
-              <span className="text-xl font-bold uppercase tracking-widest">WIP</span>
-              <span>{visualizationMode} visualization pending...</span>
-            </div>
-          )}
-        </div>
-        
-        {/* Mini Inputs / Jacks en la esquina inferior izquierda */}
-        <div className="absolute bottom-6 left-6 flex flex-col gap-3 z-30">
-          <span className="text-[9px] text-[#555] font-bold tracking-widest uppercase mb-1">Entradas</span>
-          
-          <div className="flex items-center gap-3">
-            <div className="w-6 h-6 relative flex-shrink-0">
-              <Jack id="vis-in-1" type="input" activeColor={connections.out1 ? "blue-500" : null} />
-            </div>
-            <span className={`text-[10px] font-body font-bold uppercase tracking-wider truncate max-w-[140px] ${connections.out1 ? 'text-[#3b82f6]' : 'text-[#444]'}`}>
-              1 · {connections.out1 && source1Meta ? source1Meta.label : 'VACÍO'}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <div className="w-6 h-6 relative flex-shrink-0">
-              <Jack id="vis-in-2" type="input" activeColor={connections.out2 ? "orange-500" : null} />
-            </div>
-            <span className={`text-[10px] font-body font-bold uppercase tracking-wider truncate max-w-[140px] ${connections.out2 ? 'text-[#f97316]' : 'text-[#444]'}`}>
-              2 · {connections.out2 && source2Meta ? source2Meta.label : 'VACÍO'}
-            </span>
+            )}
           </div>
         </div>
       </div>
     );
   };
 
+  const visTabs = [
+    { id: 'general', label: 'General' },
+    { id: 'spectrum', label: 'Espectro' },
+    { id: 'relation', label: 'Relación' },
+    { id: 'association', label: 'Asociación' },
+  ];
+  const inputMeta1 = (connections.out1 && routingOutputs.out1) ? dbMetadata[routingOutputs.out1] : null;
+  const inputMeta2 = (connections.out2 && routingOutputs.out2) ? dbMetadata[routingOutputs.out2] : null;
+  const inputRows = [
+    { channel: CHANNEL_1, meta: inputMeta1 },
+    { channel: CHANNEL_2, meta: inputMeta2 },
+  ];
+
   return (
-    <div className="w-full h-full relative overflow-hidden flex items-end justify-center bg-background-base rounded-lg">
-      
-      {/* 1. MODO INDICADOR Y MENÚ DE VISUALIZACIÓN */}
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-20">
-        <div className="text-white font-extrabold text-base uppercase tracking-widest drop-shadow-md">
+    <div className="w-full h-full relative overflow-hidden flex items-end justify-center bg-background-base rounded-xl shadow-elevation-02">
+
+      {/* 1. MODO INDICADOR Y MENÚ DE VISUALIZACIÓN (centrado en el espacio libre a la derecha del panel de variable) */}
+      <div className="absolute top-4 left-[316px] right-4 z-20 flex flex-col items-center gap-space-8">
+        <div className="font-heading font-bold text-[14px] leading-[18px] tracking-label uppercase text-text-secondary">
           {modeLabels[mode]}
         </div>
-        
+
         {mode === 'colectivo' && (
-          <div className="flex bg-[#0a0a0a]/80 backdrop-blur-sm border border-[#333] rounded-full p-1 gap-1">
-            {['general', 'spectrum', 'relation', 'association'].map(vMode => (
-              <button
-                key={vMode}
-                onClick={() => setVisualizationMode(vMode)}
-                className={`px-3 py-1 text-[9px] font-bold uppercase tracking-wider rounded-full transition-all ${
-                  visualizationMode === vMode 
-                    ? 'bg-amber-500 text-black shadow-[0_0_10px_rgba(245,158,11,0.5)]' 
-                    : 'text-[#888] hover:text-white hover:bg-[#222]'
-                }`}
-              >
-                {vMode}
-              </button>
-            ))}
+          <div role="tablist" className="flex items-center gap-space-4 rounded-pill bg-background-sunken p-[3px] shadow-inset-control">
+            {visTabs.map(tab => {
+              const active = visualizationMode === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => setVisualizationMode(tab.id)}
+                  className={`h-[24px] px-space-12 rounded-pill type-label-s cursor-pointer transition-[background-color,color,box-shadow] duration-standard focus-visible:outline-none focus-visible:shadow-focus-soft ${
+                    active ? 'bg-coral-400 text-text-primary shadow-elevation-01' : 'text-text-muted hover:text-text-primary'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
           </div>
         )}
       </div>
@@ -407,21 +388,16 @@ export default function DataVisualizer() {
       ) : (
         <>
           {/* 2. EXTREMOS DEL VÚMETRO */}
-          <div className="absolute top-[35%] left-[4%] text-white font-extrabold text-sm uppercase tracking-wide z-10 drop-shadow-md pointer-events-none">
-            + RELAX
+          <div className="absolute top-[35%] left-[4%] font-heading font-bold text-[13px] uppercase tracking-label text-text-secondary z-10 pointer-events-none">
+            + Relax
           </div>
-          <div className="absolute top-[35%] right-[4%] text-white font-extrabold text-sm uppercase tracking-wide z-10 drop-shadow-md pointer-events-none">
-            + ESTRÉS
+          <div className="absolute top-[35%] right-[4%] font-heading font-bold text-[13px] uppercase tracking-label text-text-secondary z-10 pointer-events-none">
+            + Estrés
           </div>
 
           {/* 3. PANEL DE VARIABLE */}
-          <div 
-            className="absolute top-4 left-4 bg-[#0a0a0a]/90 border border-[#333] shadow-lg rounded-xl p-4 min-w-[280px] max-w-[320px] z-10 flex flex-col gap-1 pointer-events-none"
-          >
-            <span className="text-[#888] text-[9px] font-bold uppercase tracking-widest">Variable</span>
-            <span className="text-[#eee] text-sm font-medium leading-snug min-h-[40px] flex items-start">
-              {hoveredId && dbMap[hoveredId] ? dbMap[hoveredId] : "---"}
-            </span>
+          <div className="absolute left-[7px] top-[16px] z-10 pointer-events-none">
+            <VariablePanel compId={hoveredId} />
           </div>
 
           <svg width="100%" height="100%" viewBox="0 0 800 450" preserveAspectRatio="xMidYMax meet" className="overflow-visible">
@@ -454,8 +430,8 @@ export default function DataVisualizer() {
                      <path 
                        d={describeArc(cx, cy, r, startAngle, endAngle)} 
                        fill="none" 
-                       stroke={isHovered ? "#FFF" : "#555"} 
-                       strokeWidth={isHovered ? "2.5" : "0.75"} 
+                       stroke={isHovered ? P.coral[500] : P.neutral[300]} 
+                       strokeWidth={isHovered ? "2.5" : "1"} 
                        filter={isHovered ? "url(#glow)" : ""}
                        pointerEvents="none"
                      />
@@ -478,7 +454,7 @@ export default function DataVisualizer() {
 
         {/* 4 Main Module Boundaries (Thick Black Lines) */}
         {boundaries.map((r, i) => (
-          <path key={`bound-${i}`} d={describeArc(cx, cy, r, startAngle, endAngle)} fill="none" stroke="#000" strokeWidth="3" pointerEvents="none" />
+          <path key={`bound-${i}`} d={describeArc(cx, cy, r, startAngle, endAngle)} fill="none" stroke={P.neutral[700]} strokeWidth="2.5" pointerEvents="none" />
         ))}
 
         {/* Side boundary lines */}
@@ -492,8 +468,8 @@ export default function DataVisualizer() {
           
           return (
             <>
-              <line x1={leftStart.x} y1={leftStart.y} x2={leftEnd.x} y2={leftEnd.y} stroke="#000" strokeWidth="3" pointerEvents="none" />
-              <line x1={rightStart.x} y1={rightStart.y} x2={rightEnd.x} y2={rightEnd.y} stroke="#000" strokeWidth="3" pointerEvents="none" />
+              <line x1={leftStart.x} y1={leftStart.y} x2={leftEnd.x} y2={leftEnd.y} stroke={P.neutral[700]} strokeWidth="2.5" pointerEvents="none" />
+              <line x1={rightStart.x} y1={rightStart.y} x2={rightEnd.x} y2={rightEnd.y} stroke={P.neutral[700]} strokeWidth="2.5" pointerEvents="none" />
             </>
           );
         })()}
@@ -515,9 +491,9 @@ export default function DataVisualizer() {
               x={pos.x} 
               y={pos.y} 
               dy="10" 
-              fill="#888" 
-              fontSize="10" 
-              fontFamily="monospace"
+              fill={P.neutral[500]}
+              fontSize="10"
+              fontFamily='"JetBrains Mono", monospace'
               fontWeight="bold"
               textAnchor="middle"
               transform={`rotate(${startAngle + 90}, ${pos.x}, ${pos.y})`}
@@ -529,14 +505,35 @@ export default function DataVisualizer() {
 
         {/* Static Needle (or Average in Colectivo) */}
         <g style={{ transform: `rotate(${avgNeedleAngle}deg)`, transformOrigin: `${cx}px ${cy}px` }} className="transition-all duration-1000 ease-out">
-          <line x1={cx} y1={cy} x2={cx} y2={cy - boundaries[3]} stroke="#D9D9D9" strokeWidth="5" strokeLinecap="round" opacity={mode === 'colectivo' ? 0.5 : 1} />
+          <line x1={cx} y1={cy} x2={cx} y2={cy - boundaries[3]} stroke={P.neutral[600]} strokeWidth="4" strokeLinecap="round" opacity={mode === 'colectivo' ? 0.55 : 1} />
         </g>
         
         {/* Center Pivot Point Cover (Offscreen) */}
-        <circle cx={cx} cy={cy} r="16" fill="#1a1a1a" stroke="#000" strokeWidth="4" />
+        <circle cx={cx} cy={cy} r="16" fill={P.neutral[800]} stroke={P.neutral[900]} strokeWidth="4" />
       </svg>
         </>
       )}
+
+      {/* 4. ENTRADAS DE CABLE (abajo a la izquierda) */}
+      <div className="absolute left-[11px] bottom-[12px] z-30 flex items-end gap-space-12">
+        <OutputPanel
+          title="Entradas"
+          jacks={[
+            { id: 'vis-in-1', type: 'input', activeColor: connections.out1 ? 'blue-500' : null },
+            { id: 'vis-in-2', type: 'input', activeColor: connections.out2 ? 'orange-500' : null },
+          ]}
+        />
+        <div className="flex flex-col gap-space-4 pb-[2px] pointer-events-none">
+          {inputRows.map(({ channel, meta }, i) => (
+            <div key={channel.key} className="flex items-center gap-space-6">
+              <span className="w-[6px] h-[6px] rounded-pill shrink-0" style={{ backgroundColor: meta ? channel.hex : 'var(--neutral-300)' }} />
+              <span className={`type-micro max-w-[170px] truncate ${meta ? 'text-text-secondary' : 'text-text-disabled'}`}>
+                {i + 1} · {meta ? meta.label : 'Vacío'}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

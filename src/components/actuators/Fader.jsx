@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useHover } from '../../contexts/HoverContext';
 import { useAppContext } from '../../contexts/AppContext';
 import sliderDot from '../../assets/figma/slider-dot.svg';
+import { ROUTE_RGB } from '../../design/channels';
 
 // Figma: Components › Component 3 / fader-2 (2166:599) — canal de 16 px de ancho con sombras interiores y una barra elevada
 // de 10 px (indicator-wedge) con el punto coral en su extremo. La barra crece desde el inicio del canal según el valor
@@ -21,7 +22,6 @@ const H_INSET_Y = 4;
 const H_EDGE = 15.5;
 const H_BAR_SHADOW = '0.5px 0.5px 0.7px rgba(0,0,0,0.75), 2px 2px 1.7px rgba(0,0,0,0.25), inset 1px 1px 1px rgba(255,255,255,0.75), inset -0.5px -0.5px 0.7px rgba(0,0,0,0.5)';
 const hPos = (v) => `calc(${H_EDGE}px + (100% - ${2 * H_EDGE}px) * ${v / 100})`;
-const ROUTE_RGB = { 'blue-500': '59,130,246', 'orange-500': '249,115,22' };
 
 const Fader = ({
   orientation = 'vertical',

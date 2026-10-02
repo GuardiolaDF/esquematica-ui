@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useHover } from '../../contexts/HoverContext';
 import { useAppContext } from '../../contexts/AppContext';
+import { ROUTE_RGB } from '../../design/channels';
 
 // Selector Sí/No. Figma: Components › Frame 27 (2185:1086) — perilla de 30 px con palanca + etiquetas Sí/No apiladas.
 // Grilla de 30 v que escala con el ancho del contenedor (container query units):
@@ -18,7 +19,6 @@ const CAP_SHADOW = [
   `inset ${v(1)} ${v(2)} ${v(4)} #2D2D2D38`,
 ].join(', ');
 
-const ROUTE_RGB = { 'blue-500': '59,130,246', 'orange-500': '249,115,22' };
 
 const ToggleSwitch = ({
   initialState = true,

@@ -6,9 +6,10 @@ import LedButton from './components/actuators/LedButton';
 import StatusSquare from './components/actuators/StatusSquare';
 import { useAppContext } from './contexts/AppContext';
 import { useHover } from './contexts/HoverContext';
+import { CHANNELS } from './design/channels';
 
 // Figma: data-table-panel (2316:1391) — consola de filtros, 832×149. Medidas en px del frame.
-const ROUTE_RING = { 'indicator-active': '0 0 0 2px #FF9479, 0 0 8px rgba(255,148,121,0.8)', 'blue-500': '0 0 0 2px #3B82F6, 0 0 8px rgba(59,130,246,0.8)' };
+const ROUTE_RING = Object.fromEntries(Object.entries(CHANNELS).map(([id, c]) => [id, `0 0 0 2px ${c.hex}, 0 0 8px rgba(${c.rgb},0.8)`]));
 
 // Lista de opciones de selección única (cuadrado de estado + etiqueta, Figma: Frame 58)
 const VerticalPads = ({ options, value, onChange, disabled, compId, gap = 5 }) => {
@@ -18,8 +19,8 @@ const VerticalPads = ({ options, value, onChange, disabled, compId, gap = 5 }) =
   const isRoutingMode = mode === 'colectivo' && visualizationMode !== 'general';
   let routeColor = null;
   if (isRoutingMode && compId) {
-    if (routingOutputs.out1 === compId) routeColor = 'indicator-active';
-    else if (routingOutputs.out2 === compId) routeColor = 'blue-500';
+    if (routingOutputs.out1 === compId) routeColor = 'blue-500';
+    else if (routingOutputs.out2 === compId) routeColor = 'orange-500';
   }
 
   return (

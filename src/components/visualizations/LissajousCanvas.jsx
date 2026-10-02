@@ -56,42 +56,33 @@ const LissajousCanvas = React.memo(({ points, width, height, paddingX = 50, padd
     if (maxDensity === 0) return;
 
     // 2. CANVAS RENDER
-    // Mezcla aditiva de colores y fósforo
-    ctx.globalCompositeOperation = 'lighter';
+    // Fondo claro: halo teal (variable X) con un centro coral (variable Y) que se intensifica donde hay más densidad.
+    ctx.globalCompositeOperation = 'source-over';
 
-    // Identidades
-    const blueColor = '59, 130, 246';   // OUT 1
-    const orangeColor = '249, 115, 22'; // OUT 2
+    const xColor = '57, 120, 125';   // OUT 1 · teal/500
+    const yColor = '255, 148, 121';  // OUT 2 · coral/500
 
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
         const val = densityGrid[r * cols + c];
         if (val > 0) {
-          const intensity = val / maxDensity; 
-          
+          const intensity = val / maxDensity;
+
           const x = c * CELL_SIZE + (CELL_SIZE / 2);
           const y = r * CELL_SIZE + (CELL_SIZE / 2);
 
-          const baseAlpha = 0.1 + (0.5 * intensity);
           const radius = CELL_SIZE + (CELL_SIZE * 1.5 * intensity);
 
-          // OUT 1 (Azul)
+          // Halo (OUT 1 · teal)
           ctx.beginPath();
           ctx.arc(x, y, radius, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${blueColor}, ${baseAlpha})`;
+          ctx.fillStyle = `rgba(${xColor}, ${0.14 + 0.36 * intensity})`;
           ctx.fill();
 
-          // OUT 2 (Naranja)
+          // Centro (OUT 2 · coral)
           ctx.beginPath();
-          ctx.arc(x, y, radius * 0.9, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${orangeColor}, ${baseAlpha})`;
-          ctx.fill();
-
-          // Núcleo blanco
-          const coreAlpha = 0.3 + (0.7 * intensity);
-          ctx.beginPath();
-          ctx.arc(x, y, CELL_SIZE * 0.4, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255, 255, 255, ${coreAlpha})`;
+          ctx.arc(x, y, radius * 0.55, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${yColor}, ${0.3 + 0.6 * intensity})`;
           ctx.fill();
         }
       }

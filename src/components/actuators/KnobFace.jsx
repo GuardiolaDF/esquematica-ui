@@ -1,5 +1,6 @@
 import React from 'react';
 import indicatorWedge from '../../assets/figma/knob-indicator-wedge.svg';
+import { ROUTE_RGB } from '../../design/channels';
 
 // Figma: Components › main-knob (2166:594 / 2185:1036). Cara visual compartida por Knob y RotarySwitch.
 // Diseñada en una grilla de 64 u que escala con el ancho del contenedor (container query units):
@@ -19,7 +20,6 @@ const CAP_SHADOW = [
 const BASE_SHADOW = `inset ${u(-1)} ${u(-1)} ${u(2)} #FFFFFFC7, inset ${u(1)} ${u(2)} ${u(4)} #2D2D2D38`;
 const CAP_HIGHLIGHT = `radial-gradient(${u(22)} ${u(18)} at ${u(12)} ${u(4)}, rgba(255,255,255,0.72), rgba(255,255,255,0))`;
 
-const ROUTE_RGB = { 'blue-500': '59,130,246', 'orange-500': '249,115,22' };
 
 // Anillo de estado alrededor de la base (tokens: Focus/Soft, action/destructive; ruteo con el color del cable)
 export const knobRing = ({ routeColor, isHovered, isMissing }) => {

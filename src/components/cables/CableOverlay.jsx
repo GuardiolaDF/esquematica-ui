@@ -1,6 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 import { useCables } from '../../contexts/CableContext';
 import { useAppContext } from '../../contexts/AppContext';
+import { channelById } from '../../design/channels';
 
 const CableOverlay = () => {
   const { dragging, updateDrag, endDrag, connections, jackRefs } = useCables();
@@ -37,7 +38,7 @@ const CableOverlay = () => {
     const midX = (x1 + x2) / 2;
     const midY = ((y1 + y2) / 2) + sag;
     
-    const strokeColor = colorStr === 'blue-500' ? '#3b82f6' : '#f97316';
+    const strokeColor = channelById(colorStr).hex;
     
     return (
       <path 
@@ -46,7 +47,7 @@ const CableOverlay = () => {
         stroke={strokeColor} 
         strokeWidth="6" 
         strokeLinecap="round"
-        className="drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]"
+        
       />
     );
   };
@@ -70,7 +71,7 @@ const CableOverlay = () => {
   return (
     <svg 
       className="fixed inset-0 w-full h-full pointer-events-none z-[100]" 
-      style={{ filter: 'drop-shadow(0 0 8px rgba(0,0,0,0.5))' }}
+      style={{ filter: 'drop-shadow(0 3px 4px rgba(45,45,45,0.3))' }}
     >
       {/* Established Connections */}
       {connections.out1 && out1Jack && in1Jack && renderCable(out1Jack.x, out1Jack.y, in1Jack.x, in1Jack.y, 'blue-500')}

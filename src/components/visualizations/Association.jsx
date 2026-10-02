@@ -1,4 +1,6 @@
 import React, { useMemo } from 'react';
+import { primitives as P } from '../../design/tokens';
+import { CHANNEL_1, CHANNEL_2 } from '../../design/channels';
 
 // --- MATH UTILS ---
 
@@ -217,20 +219,20 @@ export default function Association({ dbMetadata, dbMap, routingOutputs, filtere
 
   if (!hasOut1 && !hasOut2) {
     return (
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-white/40">
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-text-disabled">
         <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="mb-4">
           <circle cx="12" cy="12" r="10"/>
           <path d="M12 8v4l3 3"/>
         </svg>
-        <p className="text-sm font-medium tracking-widest">CONECTA UNA VARIABLE PARA VER ASOCIACIONES</p>
+        <p className="type-label-m uppercase tracking-widest">Conectá una variable para ver asociaciones</p>
       </div>
     );
   }
 
   if (graphData && graphData.nodes.length === (hasOut1 && hasOut2 ? 2 : 1)) {
     return (
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-white/40">
-        <p className="text-sm font-medium tracking-widest">NO SE ENCONTRARON ASOCIACIONES SIGNIFICATIVAS</p>
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-text-disabled">
+        <p className="type-label-m uppercase tracking-widest">No se encontraron asociaciones significativas</p>
       </div>
     );
   }
@@ -244,7 +246,7 @@ export default function Association({ dbMetadata, dbMap, routingOutputs, filtere
         if (!sourceNode || !targetNode) return null;
 
         const isNegative = link.coef < 0;
-        const color = link.sourceType === 'out1' ? '#3b82f6' : '#f97316'; // blue-500, orange-500
+        const color = link.sourceType === 'out1' ? CHANNEL_1.hex : CHANNEL_2.hex;
         const strokeW = 1 + link.absCoef * 5; // thicker if stronger
 
         return (
@@ -264,14 +266,14 @@ export default function Association({ dbMetadata, dbMap, routingOutputs, filtere
 
       {/* Nodes */}
       {graphData?.nodes.map(node => {
-        let fill = "#333";
-        let stroke = "#555";
+        let fill = P.neutral[300];
+        let stroke = P.neutral[400];
         let size = 6;
         let textY = 16;
         
         if (node.isSource) {
-          fill = node.type === 'out1' ? '#3b82f6' : '#f97316';
-          stroke = "#FFF";
+          fill = node.type === 'out1' ? CHANNEL_1.hex : CHANNEL_2.hex;
+          stroke = P.neutral[0];
           size = 12;
           textY = 24;
         } else {
@@ -292,11 +294,12 @@ export default function Association({ dbMetadata, dbMap, routingOutputs, filtere
             <text 
               x={0} y={textY} 
               textAnchor="middle" 
-              fill={node.isSource ? "#FFF" : "#AAA"} 
+              fill={node.isSource ? P.neutral[900] : P.neutral[700]} 
               fontSize={node.isSource ? "12px" : "10px"}
               fontWeight={node.isSource ? "bold" : "normal"}
               pointerEvents="none"
-              style={{ textShadow: "0px 2px 4px rgba(0,0,0,0.8)" }}
+              fontFamily='"JetBrains Mono", monospace'
+              style={{ paintOrder: 'stroke', stroke: P.neutral[100], strokeWidth: 3, strokeLinejoin: 'round' }}
             >
               {node.label}
             </text>

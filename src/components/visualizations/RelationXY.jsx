@@ -3,6 +3,7 @@ import { useAppContext } from '../../contexts/AppContext';
 import { dbMap } from '../../dbMap';
 import { getVisualizableData } from '../../dataTransforms';
 import LissajousCanvas from './LissajousCanvas';
+import { CHANNEL_1, CHANNEL_2 } from '../../design/channels';
 
 const PADDING_X = 50;
 const PADDING_Y = 40;
@@ -150,8 +151,8 @@ const RelationXY = ({ out1Id, out2Id, out1Meta, out2Meta, hasSource1, hasSource2
         {/* Fondo tenue opcional, sin cruces extrañas */}
         <defs>
           <linearGradient id="grid-fade" x1="0" y1="1" x2="1" y2="0">
-            <stop offset="0%" stopColor="#1e293b" stopOpacity="0.2" />
-            <stop offset="100%" stopColor="#1e293b" stopOpacity="0" />
+            <stop offset="0%" stopColor="#C2BCAF" stopOpacity="0.25" />
+            <stop offset="100%" stopColor="#C2BCAF" stopOpacity="0" />
           </linearGradient>
         </defs>
         <rect 
@@ -170,16 +171,16 @@ const RelationXY = ({ out1Id, out2Id, out1Meta, out2Meta, hasSource1, hasSource2
               <line 
                 x1={xPos} y1={PADDING_Y} 
                 x2={xPos} y2={originY} 
-                stroke="#111827" strokeWidth="1" strokeDasharray="4 4" 
+                stroke="#DDD9CE" strokeWidth="1" strokeDasharray="4 4" 
               />
               <line 
                 x1={xPos} y1={originY} 
                 x2={xPos} y2={originY + 5} 
-                stroke="#334155" strokeWidth="2" 
+                stroke="#A89F90" strokeWidth="2" 
               />
               <text 
                 x={xPos} y={originY + 16} 
-                fill="#64748b" fontSize="9" fontFamily="monospace" textAnchor="middle"
+                fill="#8A8177" fontSize="9" fontFamily='"JetBrains Mono", monospace' textAnchor="middle"
               >
                 {t.label}
               </text>
@@ -195,16 +196,16 @@ const RelationXY = ({ out1Id, out2Id, out1Meta, out2Meta, hasSource1, hasSource2
               <line 
                 x1={originX} y1={yPos} 
                 x2={originX + plotWidth} y2={yPos} 
-                stroke="#111827" strokeWidth="1" strokeDasharray="4 4" 
+                stroke="#DDD9CE" strokeWidth="1" strokeDasharray="4 4" 
               />
               <line 
                 x1={originX - 5} y1={yPos} 
                 x2={originX} y2={yPos} 
-                stroke="#334155" strokeWidth="2" 
+                stroke="#A89F90" strokeWidth="2" 
               />
               <text 
                 x={originX - 10} y={yPos + 3} 
-                fill="#64748b" fontSize="9" fontFamily="monospace" textAnchor="end"
+                fill="#8A8177" fontSize="9" fontFamily='"JetBrains Mono", monospace' textAnchor="end"
               >
                 {t.label}
               </text>
@@ -213,8 +214,8 @@ const RelationXY = ({ out1Id, out2Id, out1Meta, out2Meta, hasSource1, hasSource2
         })}
 
         {/* Ejes principales (L inferior izquierda) */}
-        <line x1={originX} y1={PADDING_Y} x2={originX} y2={originY} stroke="#475569" strokeWidth="2" />
-        <line x1={originX} y1={originY} x2={originX + plotWidth} y2={originY} stroke="#475569" strokeWidth="2" />
+        <line x1={originX} y1={PADDING_Y} x2={originX} y2={originY} stroke="#8A8177" strokeWidth="2" />
+        <line x1={originX} y1={originY} x2={originX + plotWidth} y2={originY} stroke="#8A8177" strokeWidth="2" />
       </svg>
     );
   };
@@ -222,23 +223,23 @@ const RelationXY = ({ out1Id, out2Id, out1Meta, out2Meta, hasSource1, hasSource2
   const isWaiting = !hasSource1 || !hasSource2 || !isCompatible || normalizedPairs.length === 0;
 
   return (
-    <div className="w-full flex-1 flex flex-col relative bg-[#050505] rounded-xl border border-[#111] overflow-hidden shadow-[inset_0_0_50px_rgba(0,0,0,0.8)]">
+    <div className="w-full flex-1 flex flex-col relative overflow-hidden">
       
       {/* Explicación concisa secundaria (Top Right) */}
-      <div className="absolute right-4 top-4 text-[#444] text-[9px] font-body tracking-wider z-20 pointer-events-none text-right">
+      <div className="absolute right-4 top-4 type-caption text-text-disabled z-20 pointer-events-none text-right">
         Compara dos variables para observar<br/>cómo se relacionan entre sí.
       </div>
 
       {/* Etiqueta EJE Y (NARANJA) */}
-      <div className="absolute left-10 top-3 text-[#f97316] text-[11px] font-body font-bold uppercase tracking-widest z-20 flex items-center gap-2">
-        <div className="w-2 h-2 rounded-full bg-[#f97316] shadow-[0_0_5px_#f97316]"></div>
-        {hasSource2 ? `OUT 2 · ${out2Meta?.label || 'UNKNOWN'}` : 'OUT 2 · WAITING'}
+      <div className="absolute left-10 top-3 type-label-s uppercase tracking-widest z-20 flex items-center gap-2" style={{ color: CHANNEL_2.ink }}>
+        <div className="w-2 h-2 rounded-pill" style={{ backgroundColor: CHANNEL_2.hex }}></div>
+        {hasSource2 ? `OUT 2 · ${out2Meta?.label || '—'}` : 'OUT 2 · esperando'}
       </div>
       
       {/* Etiqueta EJE X (AZUL) */}
-      <div className="absolute right-6 bottom-3 text-[#3b82f6] text-[11px] font-body font-bold uppercase tracking-widest z-20 flex items-center justify-end gap-2 text-right">
-        {hasSource1 ? `OUT 1 · ${out1Meta?.label || 'UNKNOWN'}` : 'OUT 1 · WAITING'}
-        <div className="w-2 h-2 rounded-full bg-[#3b82f6] shadow-[0_0_5px_#3b82f6]"></div>
+      <div className="absolute right-6 bottom-3 type-label-s uppercase tracking-widest z-20 flex items-center justify-end gap-2 text-right" style={{ color: CHANNEL_1.ink }}>
+        {hasSource1 ? `OUT 1 · ${out1Meta?.label || '—'}` : 'OUT 1 · esperando'}
+        <div className="w-2 h-2 rounded-pill" style={{ backgroundColor: CHANNEL_1.hex }}></div>
       </div>
 
       {/* Contenedor Gráfico */}
@@ -246,14 +247,14 @@ const RelationXY = ({ out1Id, out2Id, out1Meta, out2Meta, hasSource1, hasSource2
         {!isWaiting && renderCartesianGrid()}
 
         {isWaiting ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-[#333] font-body text-[10px] tracking-[0.3em] pointer-events-none">
+          <div className="absolute inset-0 flex flex-col items-center justify-center type-label-m uppercase tracking-widest text-text-disabled pointer-events-none">
             {!isCompatible && hasSource1 && hasSource2 
-              ? 'NO SYNC - INCOMPATIBLE FORMATS' 
+              ? 'Formatos incompatibles' 
               : hasSource1 && !hasSource2 
-                ? 'WAITING FOR OUT 2 [Y] SIGNAL...'
+                ? 'Esperando señal en la entrada 2 (eje Y)…'
                 : !hasSource1 && hasSource2
-                  ? 'WAITING FOR OUT 1 [X] SIGNAL...'
-                  : 'AWAITING OUT 1 & OUT 2 SIGNALS'}
+                  ? 'Esperando señal en la entrada 1 (eje X)…'
+                  : 'Esperando señal en las entradas 1 y 2…'}
           </div>
         ) : (
           dimensions.width > 0 && dimensions.height > 0 && (
