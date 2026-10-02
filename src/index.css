@@ -12,6 +12,6 @@
 
 body {
   margin: 0;
-  background-color: #eeebe1;
+  background-color: var(--background-base);
 }
 
