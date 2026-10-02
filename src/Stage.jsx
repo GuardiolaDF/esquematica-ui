@@ -43,19 +43,29 @@ const Stage = ({ children }) => {
     return () => cancelAnimationFrame(id);
   }, [stage]);
 
+  // En vertical (tablet) el lienzo queda chico: se sugiere girar el dispositivo en la banda superior.
+  const isPortrait = stage.top > 0 && window.innerHeight > window.innerWidth;
+
   return (
-    <div
-      className="absolute origin-top-left"
-      style={{
-        width: stage.width,
-        height: stage.height,
-        left: stage.left,
-        top: stage.top,
-        transform: `scale(${stage.scale})`,
-      }}
-    >
-      {children}
-    </div>
+    <>
+      {isPortrait && (
+        <div className="absolute inset-x-0 top-0 flex items-center justify-center px-space-24" style={{ height: stage.top }}>
+          <span className="type-label-m text-text-secondary text-center">Girá el dispositivo para ver Esquemática a pantalla completa</span>
+        </div>
+      )}
+      <div
+        className="absolute origin-top-left"
+        style={{
+          width: stage.width,
+          height: stage.height,
+          left: stage.left,
+          top: stage.top,
+          transform: `scale(${stage.scale})`,
+        }}
+      >
+        {children}
+      </div>
+    </>
   );
 };
 

@@ -25,7 +25,8 @@ export default {
       fontFamily: {
         body: [ty.family.body],
         heading: [ty.family.heading],
-        sans: ['"Plus Jakarta Sans"', 'sans-serif']
+        // sans apunta a la familia de cuerpo: no hay otra sans en el sistema
+        sans: [ty.family.body]
       },
       fontSize: {
         // Tamaños sueltos (font-size + line-height asociado)

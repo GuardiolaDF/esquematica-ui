@@ -12,7 +12,7 @@ function App() {
   return (
     <HoverProvider>
       <CableProvider>
-      <div className="w-screen h-screen bg-bg-sunken text-text-primary overflow-hidden font-body relative">
+      <div className="w-screen h-[100dvh] bg-background-sunken text-text-primary overflow-hidden font-body relative">
         <Stage>
           <RackGrid />
         </Stage>
