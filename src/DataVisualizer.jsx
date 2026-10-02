@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { useHover } from './contexts/HoverContext';
 import { useAppContext } from './contexts/AppContext';
 import { useCables } from './contexts/CableContext';
@@ -50,6 +50,7 @@ export default function DataVisualizer({ compact = false, hint = null }) {
   };
 
   const [isMounted, setIsMounted] = useState(false);
+  const vumeterRef = useRef(null);
   useEffect(() => {
     const t = setTimeout(() => setIsMounted(true), 150); // delay to trigger CSS transition
     return () => clearTimeout(t);
@@ -435,7 +436,7 @@ export default function DataVisualizer({ compact = false, hint = null }) {
             </>
           )}
 
-          <svg {...(compact ? { className: 'w-full max-h-full overflow-visible' } : { width: '100%', height: '100%', className: 'overflow-visible' })} viewBox={geo.viewBox} preserveAspectRatio={geo.align}>
+          <svg ref={vumeterRef} {...(compact ? { className: 'w-full max-h-full overflow-visible' } : { width: '100%', height: '100%', className: 'overflow-visible' })} viewBox={geo.viewBox} preserveAspectRatio={geo.align}>
         <defs>
           <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur stdDeviation="4" result="blur" />
@@ -556,12 +557,12 @@ export default function DataVisualizer({ compact = false, hint = null }) {
           );
         })()}
         
-        {/* Puntos de datos: sobre la aguja, así los de modo individual no quedan tapados por ella */}
-        <SwarmCanvas dots={dots} cx={cx} cy={cy} mode={mode} hoveredId={hoveredId} width={geo.w} height={geo.h} />
-
         {/* Center Pivot Point Cover (Offscreen) */}
         {!compact && <circle cx={cx} cy={cy} r="16" fill={P.neutral[800]} stroke={P.neutral[900]} strokeWidth="4" />}
       </svg>
+
+          {/* Puntos de datos: capa encima del SVG (sobre la aguja, así los de modo individual no quedan tapados) */}
+          <SwarmCanvas dots={dots} cx={cx} cy={cy} mode={mode} hoveredId={hoveredId} svgRef={vumeterRef} viewBox={geo.viewBox} align={geo.align} />
         </>
       )}
 
