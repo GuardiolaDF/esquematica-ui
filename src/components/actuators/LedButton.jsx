@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 import { useHover } from '../../contexts/HoverContext';
 import { useAppContext } from '../../contexts/AppContext';
+import { STATUS_REST, STATUS_ON } from './StatusSquare';
+import ledOff from '../../assets/figma/group-led-off.svg';
+import ledOn from '../../assets/figma/group-led-on.svg';
 
 // Botón de dos variantes según Figma:
 //  - pad (con ícono) — Components › Frame 25 (2166:588): 24 px, surface/subtle, borde border/subtle, radius/sm.
 //    Hover = coral/200 y seleccionado = coral/400, ambos con Effects/Elevation/03; el ícono se tiñe de coral.
 //  - cuadrado de estado (sin ícono) — status-indicators (2166:601): 8 px, radius/xs, relieve suave.
 //    Encendido = indicator/active hundido (Inset/Pressed) con un brillo leve.
+//  - LED de grupo (variant="group") — Components › group-indicator: LED de 12 px que enciende/apaga un grupo de filtros;
+//    apagado = neutral/400, encendido = teal/400 con brillo. Va con el título del grupo (Satori Bold 8 px).
 const PAD_REST = '1px 1px 3px rgba(45,45,45,0.15), -1px -1px 2px #FFFFFF';
 const PAD_RAISED = '6px 8px 20px rgba(45,45,45,0.22), -4px -4px 10px rgba(255,255,255,0.9)'; // Elevation/03
-const STATUS_REST = '1px 1px 2px rgba(45,45,45,0.5), -1px -1px 2px #FFFFFF';
-const STATUS_ON = 'inset 2px 2px 5px rgba(45,45,45,0.28), inset -1px -1px 2px rgba(255,255,255,0.55), 0 0 4px rgba(255,148,121,0.7)';
 const ROUTE_RGB = { 'blue-500': '59,130,246', 'orange-500': '249,115,22' };
 
 const LedButton = ({
@@ -19,6 +22,7 @@ const LedButton = ({
   labelClass,
   initialState = false,
   icon: Icon,
+  variant = 'status', // 'status' | 'group'
   compId,
   value,
   onChange
@@ -72,6 +76,30 @@ const LedButton = ({
   if (routeColor) ring = `0 0 0 2px rgb(${ROUTE_RGB[routeColor]}), 0 0 12px rgba(${ROUTE_RGB[routeColor]},0.6)`;
   else if (isMissing && !isOn) ring = '0 0 0 1.5px #BF6F5B';
   else if (showHover && !isPad) ring = '0 0 0 2px #39787D61';
+
+  // LED de grupo + título: el LED (SVG de Figma) queda a la izquierda y el título a 20 px
+  if (variant === 'group') {
+    return (
+      <div
+        className={`relative w-[60px] h-[14px] shrink-0 cursor-pointer select-none ${isHovered ? 'z-50' : ''}`}
+        onClick={toggle}
+        onPointerEnter={handlePointerEnter}
+        onPointerLeave={handlePointerLeave}
+      >
+        <span className="absolute -inset-[6px]" />
+        <span className="absolute left-0 top-[2px] w-[16px] h-[12px]">
+          {isOn
+            ? <img src={ledOn} alt="" draggable={false} className="absolute max-w-none pointer-events-none" style={{ left: -8, top: -6, width: 32, height: 28 }} />
+            : <img src={ledOff} alt="" draggable={false} className="absolute max-w-none pointer-events-none" style={{ left: -8, top: 0, width: 32, height: 12 }} />}
+          <span
+            className="absolute left-[2px] top-0 w-[12px] h-[12px] rounded-pill pointer-events-none transition-shadow duration-standard"
+            style={{ boxShadow: ring || (showHover ? '0 0 0 2px #39787D61' : 'none') }}
+          />
+        </span>
+        <span className="absolute left-[20px] top-0 font-heading font-bold text-[8px] leading-[14px] text-text-secondary whitespace-nowrap pointer-events-none">{label}</span>
+      </div>
+    );
+  }
 
   let surface, shadow, iconColor;
   if (isPad) {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { moduleRegistry } from './moduleRegistry';
 
-// Grilla del frame de Figma (1280×720): margen 10, separación 8, columna de módulos de 418 y consola de 152.
+// Grilla del frame de Figma (1280×720): margen 10, separación 8, columna de módulos de 418 y consola de 149.
 // La columna derecha absorbe el espacio extra cuando el lienzo se estira (ver Stage).
 const RackGrid = () => {
   const ControlModule = moduleRegistry['ControlModule'];
@@ -31,7 +31,7 @@ const RackGrid = () => {
         <div className="flex-grow w-full min-h-0 relative z-0">
           <DataVisualizer />
         </div>
-        <div className="w-full h-[152px] flex-shrink-0 z-10">
+        <div className="w-full h-[149px] flex-shrink-0 z-10">
           <ConsoleModule />
         </div>
       </div>
