@@ -1,5 +1,7 @@
 import React from 'react';
 import ModuleShell from './ModuleShell';
+import ModuleHeader from './components/ModuleHeader';
+import SectionTag from './components/SectionTag';
 import OutputPanel, { moduleOutputJacks } from './components/cables/OutputPanel';
 import Fader from './components/actuators/Fader';
 import Knob from './components/actuators/Knob';
@@ -9,155 +11,144 @@ import { TbBrandDisney } from 'react-icons/tb';
 import { FaAmazon } from 'react-icons/fa';
 import { useAppContext } from './contexts/AppContext';
 import { useHover } from './contexts/HoverContext';
+import iconAirplane from './assets/figma/icon-airplane.svg';
+import iconWaveform from './assets/figma/icon-waveform.svg';
+import iconList from './assets/figma/icon-list.svg';
+import iconSparkles from './assets/figma/icon-sparkles.svg';
+import mediosBracket from './assets/figma/medios-bracket.svg';
 
+// Figma: filters-panel "módulo 1 · CONSUMOS CULTURALES" (2316:1315). Medidas en px del frame.
 const padIcons = [
   SiYoutube, SiSpotify, SiHbo, SiNetflix,
   SiStremio, SiTiktok, TbBrandDisney, SiTwitch,
   SiMubi, SiInstagram, FaAmazon, SiKick
 ];
 
-const LBL_UP = "absolute bottom-[100%] mb-[4px] left-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.2em] text-[#777] font-body font-bold whitespace-nowrap pointer-events-none";
-const LBL_DN = "absolute top-[100%] mt-[4px] left-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.2em] text-[#777] font-body font-bold whitespace-nowrap pointer-events-none";
-const LBL_V = "absolute right-[100%] mr-[4px] top-1/2 -translate-y-1/2 -rotate-90 origin-center text-[7px] uppercase tracking-[0.2em] text-[#777] font-body font-bold whitespace-nowrap pointer-events-none";
-const LBL_PAD = "absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.2em] text-[#777] font-body font-bold whitespace-nowrap pointer-events-none z-20";
+const MEDIOS = ['Cine', 'Libros', 'Podcasts', 'Música', 'Series', 'Videojuegos', 'Otros'];
+
+const REFERENCIAS = [
+  { compId: 'mod1-23', icon: iconWaveform, size: 'w-[15px] h-[15px]', title: 'Frecuencia' },
+  { compId: 'mod1-24', icon: iconList, size: 'w-[13.5px] h-[13.5px]', title: 'Importancia' },
+  { compId: 'mod1-25', icon: iconSparkles, size: 'w-[17px] h-[18px]', title: 'IA' },
+];
 
 const ControlModule = () => {
-  const { activePlatform, setActivePlatform, values, setValue, showGrid, mode, routingOutputs } = useAppContext();
+  const { activePlatform, setActivePlatform, mode, routingOutputs } = useAppContext();
   const { hoveredId } = useHover();
-  
-  // Determinamos si algún pad está siendo "hovered" para iluminar el fader vertical
+
+  // Si algún pad de plataforma está en hover se ilumina el fader de horas
   const isPadHovered = hoveredId && hoveredId.startsWith('mod1-') && parseInt(hoveredId.split('-')[1]) >= 10 && parseInt(hoveredId.split('-')[1]) <= 21;
 
   return (
     <ModuleShell disabled={mode === 'colectivo'}>
-      <div className="w-full h-full flex flex-col p-[12px] gap-[16px] text-text-secondary">
-        
-        {/* HEADER: Component 15 */}
-        <div className="flex items-center gap-2">
-          <div className="flex bg-background-sunken border border-neutral-400 items-center px-1">
-            <div className="w-[13px] h-[12px] bg-neutral-400 mr-1"></div>
-            <span className="text-neutral-1000 text-[12px] font-body font-medium leading-none py-[2px]">1 módulo</span>
-          </div>
-          <span className="text-text-muted font-heading text-[12px] tracking-widest uppercase">
-            CONSUMOS CULTURALES ||||||
-          </span>
-        </div>
+      <div className="w-full h-full pl-[15px] pr-[14px] flex flex-col justify-center gap-space-16">
+        <ModuleHeader number="1" title="CONSUMOS CULTURALES" />
 
-        {/* MAIN SPLIT: Frame 61 */}
-        <div className="flex flex-row flex-1 gap-[22px] min-h-0">
-          
-          {/* LEFT COLUMN: Frame 44 */}
-          <div className="flex flex-col flex-[4] gap-[2px] min-w-0">
-            {/* ROW 1: FORMATO y MODO AVION */}
-            <div className="flex flex-row flex-1 min-h-0 justify-between">
-              <div className="w-[102px] h-full flex flex-col items-center justify-center relative bg-background-sunken">
-                 {/* El Knob usa clases absolutas por ahora, lo dejaremos que crezca */}
-                 <div className="w-16 h-16 mt-2 relative">
-                   <Knob 
-                     label="FORMATO" 
-                     labelClass={LBL_UP} 
-                     sizeClass="w-full h-full" 
-                     startAngle={-90} endAngle={90}
-                     markers={[{ angle: -90, label: "Largo" }, { angle: 0, label: "Medio" }, { angle: 90, label: "Corto" }]}
-                     compId="mod1-1" 
-                   />
-                 </div>
-              </div>
-              <div className="w-[14px] h-full flex items-center justify-center relative bg-background-sunken">
-                <LedButton 
-                  baseClass="w-3 h-3 rounded-[20%]" 
-                  label="AVIÓN" 
-                  labelClass={LBL_UP} 
-                  compId="mod1-2" 
+        <div className="flex items-end justify-between h-[184px]">
+
+          {/* Columna izquierda (149) */}
+          <div className="w-[149px] flex flex-col gap-[2px]">
+            <div className="flex items-end">
+              {/* FORMATO (Component 18, 102×94) */}
+              <div className="relative w-[102px] h-[94px]">
+                <SectionTag label="FORMATO" className="absolute left-0 right-0 top-[1px]" />
+                <Knob
+                  sizeClass="w-[64px]"
+                  className="!absolute left-[19px] top-[30px]"
+                  startAngle={-45} endAngle={45}
+                  markers={[{ angle: -45, label: 'Largo' }, { angle: 0, label: 'Medio' }, { angle: 45, label: 'Corto' }]}
+                  compId="mod1-1"
                 />
+              </div>
+              {/* Modo avión (Component 21) */}
+              <div className="w-[14px] h-[26px] flex flex-col items-center gap-[4px]" title="Modo avión">
+                <img src={iconAirplane} alt="Modo avión" className="w-[11.6px] h-[12.8px] mt-[1px]" draggable={false} />
+                <LedButton baseClass="w-[8px] h-[8px]" compId="mod1-2" />
               </div>
             </div>
 
-            {/* ROW 2: PLATAFORMAS (Component 17) */}
-            <div className="flex flex-row flex-1 min-h-0 bg-surface-subtle border-[0.5px] border-neutral-400 p-[4px] gap-[14px]">
-              <div className="flex-1 grid grid-cols-4 grid-rows-3 gap-[2px]">
-                {Array.from({ length: 12 }).map((_, i) => {
-                  const compId = `mod1-${10 + i}`;
-                  return (
-                    <div key={`pad-${i}`} className="flex items-center justify-center bg-background-sunken border border-border-subtle p-1">
-                      <LedButton 
-                        baseClass="w-full h-full rounded-[15%]" 
-                        icon={padIcons[i]} 
-                        ledColor="yellow" 
+            {/* Plataformas (Component 17, 149×99) */}
+            <div className="relative w-[149px] h-[99px]">
+              <div className="absolute left-[8px] top-[2px] w-[59px] h-[10px] bg-neutral-600 rounded-t-xs" />
+              <span className="absolute left-[10px] top-0 type-micro font-light tracking-label leading-[16px] text-text-inverse">Plataformas</span>
+              <div className="absolute inset-x-0 bottom-0 top-[11.76px] flex items-center justify-center gap-[14px] bg-surface-subtle border-[0.5px] border-border-strong rounded-md">
+                <div className="grid grid-cols-4 grid-rows-3 gap-space-4 w-[107px] h-[80px]">
+                  {padIcons.map((Icon, i) => {
+                    const compId = `mod1-${10 + i}`;
+                    return (
+                      <LedButton
+                        key={compId}
+                        baseClass="w-full h-full"
+                        icon={Icon}
                         compId={compId}
                         value={activePlatform === compId}
                         onChange={() => setActivePlatform(compId)}
                       />
-                    </div>
-                  );
-                })}
-              </div>
-              
-              {/* VERTICAL FADER */}
-              <div className="w-[16px] h-full flex flex-col items-center justify-center relative">
-                <Fader 
+                    );
+                  })}
+                </div>
+                <Fader
                   orientation="vertical"
                   initialValue={50}
                   compId={activePlatform}
-                  trackClass={`w-[30%] h-full rounded-pill transition-shadow duration-standard ${isPadHovered ? 'shadow-focus-soft' : ''}`}
-                  thumbClass={`w-full aspect-square bg-[#888] rounded-full absolute shadow-md transition-shadow ${isPadHovered ? 'shadow-[0_0_10px_rgba(251,191,36,0.8)]' : ''}`}
-                  label="HRS"
-                  labelClass={LBL_UP}
+                  trackClass={`w-[16px] h-[71px] rounded-pill transition-shadow duration-standard ${isPadHovered ? 'shadow-focus-soft' : ''}`}
+                  label="Hs. X día"
+                  labelClass="text-text-muted"
                 />
               </div>
             </div>
           </div>
 
-          {/* RIGHT COLUMN: Frame 45 */}
-          <div className="flex flex-col flex-[6] gap-[7px] min-w-0">
-            {/* MEDIOS (7 Faders) */}
-            <div className="flex flex-row flex-1 min-h-0 bg-background-sunken justify-around items-end pb-3 pt-6">
-              {['CINE', 'LIBROS', 'PODCAST', 'MÚSICA', 'SERIES', 'JUEGOS', 'OTROS'].map((text, i) => (
-                <div key={`fader-${i}`} className="h-[90%] flex items-center justify-center relative w-6">
-                  <Fader 
-                    orientation="vertical"
-                    initialValue={50}
-                    trackClass="w-[30%] h-full"
-                    thumbClass="w-full aspect-square bg-[#888] rounded-full absolute shadow-md"
-                    label={text}
-                    labelClass={LBL_UP}
-                    compId={`mod1-${3 + i}`}
-                  />
-                  {/* Tiny button below the fader */}
-                  <div className="absolute -bottom-2 w-full flex justify-center">
-                    <LedButton baseClass="w-2 h-2 rounded-[20%]" compId={`mod1-${3 + i}`} />
+          {/* Columna derecha (229) */}
+          <div className="w-[229px] h-[195px] flex flex-col items-center gap-[7px]">
+            {/* MEDIOS (Component 16, 238×90) */}
+            <div className="relative w-[238px] h-[90px] shrink-0">
+              <img src={mediosBracket} alt="" className="absolute left-[23px] top-0 w-[205px] h-[18.5px]" draggable={false} />
+              <span className="absolute left-[34px] -top-[1px] font-heading text-[8px] leading-[14px] text-neutral-0">MEDIOS</span>
+              <span className="absolute left-[78px] top-0 type-micro font-thin text-text-disabled whitespace-nowrap">Los soportes más consumidos</span>
+              <div className="absolute left-0 right-0 bottom-0 flex justify-center">
+                {MEDIOS.map((text, i) => (
+                  <div key={text} className="w-[34px] h-[71px] flex justify-end pr-[6px]">
+                    <Fader
+                      orientation="vertical"
+                      initialValue={50}
+                      trackClass="w-[16px] h-[71px]"
+                      label={text}
+                      compId={`mod1-${3 + i}`}
+                    />
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-            
-            {/* HORIZONTAL SLIDER */}
-            <div className="h-[34px] bg-background-sunken flex items-center justify-center px-8 relative">
-              <Fader 
+
+            {/* Hs RRSS x día (Component 14, 191×34) */}
+            <div className="w-[191px] h-[34px] flex items-end shrink-0">
+              <Fader
                 orientation="horizontal"
                 initialValue={50}
-                trackClass="w-full h-[30%]"
-                thumbClass="h-[150%] aspect-square bg-[#FFF] rounded-full absolute shadow-md z-20"
-                label="HRS X DÍA EN RRSS"
-                labelClass="absolute bottom-[100%] mb-[4px] left-0 text-[7px] uppercase tracking-[0.2em] text-[#777] font-body font-bold whitespace-nowrap pointer-events-none"
-                markers={['1', '2', '3', '4', '6', '+']}
+                trackClass="w-full h-[22px]"
+                label="Hs RRSS x día"
+                markers={['1', '2', '3', '4', '5', '6']}
                 compId="mod1-22"
               />
             </div>
 
-            {/* KNOBS & JACKS */}
-            <div className="h-[54px] flex flex-row gap-[24px]">
-              <div className="flex-[6] flex flex-row items-center justify-around bg-background-sunken px-4 relative pt-3">
-                <span className="absolute top-1 left-2 text-[7px] font-body text-text-secondary">Referencias</span>
-                {['FREC', 'IMP', 'IA'].map((text, i) => (
-                  <div key={`knob-${i}`} className="w-8 h-8 relative">
-                    <Knob label={text} labelClass={LBL_UP} sizeClass="w-full h-full" initialValue={50} compId={`mod1-${23 + i}`} />
-                  </div>
-                ))}
+            {/* Referencias + Salidas */}
+            <div className="w-full flex items-end justify-end gap-space-24">
+              <div className="relative w-[131px] h-[54px] flex items-end">
+                <span className="absolute left-0 bottom-0 top-[2px] w-[18px] flex items-center justify-center">
+                  <span className="[writing-mode:vertical-rl] rotate-180 font-body text-[7px] leading-[18px] text-text-muted">Referencias</span>
+                </span>
+                <div className="ml-[18px] flex-1 flex items-end justify-center gap-[7px]">
+                  {REFERENCIAS.map(r => (
+                    <div key={r.compId} className="w-[33px] flex flex-col items-center gap-[5px]" title={r.title}>
+                      <img src={r.icon} alt={r.title} className={r.size} draggable={false} />
+                      <Knob sizeClass="w-[33px]" initialValue={50} compId={r.compId} />
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="flex-[4] flex items-center justify-center">
-                <OutputPanel jacks={moduleOutputJacks('mod1', routingOutputs)} />
-              </div>
+              <OutputPanel jacks={moduleOutputJacks('mod1', routingOutputs)} />
             </div>
           </div>
         </div>

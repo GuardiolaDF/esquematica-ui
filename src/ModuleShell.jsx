@@ -1,12 +1,12 @@
 import React from 'react';
 
+// Figma: contenedor de módulo (filters-panel) — background/base, radius/xl, Effects/Elevation/02.
 const ModuleShell = ({ children, disabled = false }) => {
   return (
-    <div className={`w-full h-full bg-bg-base border-[1.5px] border-border-subtle rounded-2xl overflow-hidden relative shadow-elevation-03 transition-opacity duration-500`}>
+    <div className="w-full h-full bg-background-base rounded-xl overflow-hidden relative shadow-elevation-02 transition-opacity duration-slow">
       {children}
     </div>
   );
 };
 
 export default ModuleShell;
-

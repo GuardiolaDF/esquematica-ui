@@ -4,6 +4,7 @@ import { useAppContext } from '../../contexts/AppContext';
 import KnobFace, { KnobTick, knobRing, u } from './KnobFace';
 
 // Perilla continua (0–100). Visual: KnobFace (Figma main-knob); se gira arrastrando en vertical.
+const MARKER_RADIUS = 46; // u desde el centro (grilla de 64)
 const Knob = ({
   sizeClass = "w-[80%]",
   label,
@@ -86,21 +87,26 @@ const Knob = ({
 
       <KnobFace rotation={rotation} ring={knobRing({ routeColor, isHovered, isMissing })} />
 
-      {markers.map((marker, i) => (
-        <React.Fragment key={`marker-${i}`}>
-          <KnobTick angle={marker.angle} />
-          {marker.label && (
-            <div className="absolute inset-0 pointer-events-none" style={{ transform: `rotate(${marker.angle}deg)` }}>
+      {/* Marcas con etiqueta Typography/Micro en text/muted, ubicadas en polar como en Figma (Component 18) */}
+      {markers.map((marker, i) => {
+        const rad = (marker.angle * Math.PI) / 180;
+        return (
+          <React.Fragment key={`marker-${i}`}>
+            <KnobTick angle={marker.angle} />
+            {marker.label && (
               <span
-                className="absolute left-1/2 type-caption text-text-muted whitespace-nowrap"
-                style={{ bottom: `calc(100% + ${u(6)})`, transform: `translateX(-50%) rotate(${-marker.angle}deg)` }}
+                className="absolute -translate-x-1/2 -translate-y-1/2 type-micro text-text-muted whitespace-nowrap pointer-events-none"
+                style={{
+                  left: `calc(50% + ${u(Math.sin(rad) * MARKER_RADIUS)})`,
+                  top: `calc(50% - ${u(Math.cos(rad) * MARKER_RADIUS)})`,
+                }}
               >
                 {marker.label}
               </span>
-            </div>
-          )}
-        </React.Fragment>
-      ))}
+            )}
+          </React.Fragment>
+        );
+      })}
     </div>
   );
 };
