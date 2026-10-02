@@ -27,6 +27,8 @@ const SwarmCanvas = React.memo(({ dots, cx, cy, mode, hoveredId, width = 800, he
     // Fondo claro: mezcla normal; la densidad se lee por acumulación de transparencia
     ctx.globalCompositeOperation = 'source-over';
 
+    const hoverTrack = hoveredId && hoveredId.startsWith('mod') ? hoveredId : null;
+
     // Batch rendering
     dots.forEach(dot => {
       ctx.save();
@@ -37,19 +39,34 @@ const SwarmCanvas = React.memo(({ dots, cx, cy, mode, hoveredId, width = 800, he
       ctx.rotate(dot.angle * Math.PI / 180);
       
       // Determine if we should highlight this dot based on hover
-      const isHovered = hoveredId === dot.compId;
-      const isDimmed = hoveredId && !isHovered;
+      // Solo un carril del vúmetro resalta y atenúa el resto (los filtros de la consola no son carriles)
+      const isHovered = hoverTrack === dot.compId;
+      const isDimmed = hoverTrack && !isHovered;
       
       let r = dot.size || (mode === 'colectivo' ? 2 : 3);
       if (isHovered) {
         // slightly larger radius on hover (simulating CSS scale(1.1) and r: 3.5px)
-        r = 3.5;
+        r = Math.max(r, 3.5) + (dot.trailFrom !== undefined ? 1 : 0);
         // In CSS we had filter: url(#glow) which is tricky in pure canvas without slowing it down.
         // We can simulate it by adding a shadow for hovered items.
         ctx.shadowColor = P.coral[500];
         ctx.shadowBlur = 8;
       }
       
+      // Barra del carril (modo individual): arco desde el inicio del abanico hasta el punto
+      if (dot.trailFrom !== undefined) {
+        ctx.save();
+        ctx.rotate(-dot.angle * Math.PI / 180);
+        ctx.beginPath();
+        ctx.arc(0, 0, dot.r, (dot.trailFrom - 90) * Math.PI / 180, (dot.angle - 90) * Math.PI / 180);
+        ctx.globalAlpha = (isDimmed ? 0.15 : 0.55) * (dot.opacity ?? 1);
+        ctx.strokeStyle = dot.color || P.coral[500];
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+        ctx.restore();
+      }
+
       ctx.beginPath();
       // Draw circle at (0, -dot.r) because we already translated to (cx, cy)
       ctx.arc(0, -dot.r, r, 0, Math.PI * 2);

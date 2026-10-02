@@ -7,7 +7,7 @@ import SpectrumAnalyzer from './components/visualizations/SpectrumAnalyzer';
 import Association from './components/visualizations/Association';
 import SwarmCanvas from './components/visualizations/SwarmCanvas';
 import { dbMap, reverseDbMap, dbMetadata } from './dbMap';
-import { directInvertedTracks, counterTracks, booleanTracks, getVisualizableData, calculateGlobalStress } from './dataTransforms';
+import { directInvertedTracks, counterTracks, booleanTracks, getVisualizableData, stressIndex, stressPercent, trackReading } from './dataTransforms';
 import VariablePanel from './components/VariablePanel';
 import Logo from './components/Logo';
 import OutputPanel from './components/cables/OutputPanel';
@@ -83,14 +83,51 @@ export default function DataVisualizer({ compact = false, hint = null }) {
     { name: 'Módulo 1', startR: boundaries[2], endR: boundaries[3], tracks: 26 }, // mod1-1 to mod1-25
   ];
 
-  
-  
-  
-  
-  
-  
-  
-  
+  // Preparación del enjambre colectivo:
+  //  · rank: posición de cada persona en el índice de estrés de la muestra (0 = la más tranquila, 1 = la más cargada)
+  //  · bins: para cada carril con respuestas acotadas, el ancho del "casillero" de cada respuesta posible.
+  // Quienes dieron la misma respuesta se reparten dentro de su casillero según su índice: en vez de un bloque,
+  // un degradé que va de relax a estrés. La respuesta sigue siendo legible (nadie sale de su casillero).
+  const swarmPrep = useMemo(() => {
+    const n = filteredSetups.length;
+    const scored = filteredSetups.map((s, idx) => ({ idx, s: stressIndex(s) ?? 50, tie: (Math.sin(idx * 12.9898) + 1) / 2 }));
+    scored.sort((a, b) => (a.s - b.s) || (a.tie - b.tie));
+    const rank = new Array(n);
+    scored.forEach((x, k) => { rank[x.idx] = n > 1 ? k / (n - 1) : 0.5; });
+
+    const bins = {};
+    Object.keys(dbMap).forEach((compId) => {
+      if (!compId.startsWith('mod')) return;
+      const seen = new Set();
+      let min = 0; let max = 100;
+      filteredSetups.forEach((s) => {
+        const raw = s.values?.[dbMap[compId]];
+        if (raw === undefined) return;
+        const v = getVisualizableData(compId, raw, dbMetadata[compId]?.dataType);
+        if (v.value === undefined || Number.isNaN(v.value)) return;
+        seen.add(Math.round(v.value * 1000) / 1000);
+        min = v.min; max = v.max;
+      });
+      const levels = [...seen].sort((a, b) => a - b);
+      const span = (max - min) || 1;
+      const widths = new Map();
+      if (levels.length > 14) {
+        // Respuesta casi continua: solo un leve corrimiento
+        levels.forEach((lv) => widths.set(lv, [Math.max(min, lv - span * 0.015), Math.min(max, lv + span * 0.015)]));
+      } else {
+        levels.forEach((lv, k) => {
+          const lo = k > 0 ? (lv + levels[k - 1]) / 2 : Math.max(min, lv - (levels.length > 1 ? (levels[1] - lv) / 2 : span * 0.12));
+          const hi = k < levels.length - 1 ? (lv + levels[k + 1]) / 2 : Math.min(max, lv + (levels.length > 1 ? (lv - levels[k - 1]) / 2 : span * 0.12));
+          // 90 % del casillero, centrado en la respuesta, para que se lea el corte entre respuestas
+          const c = (lo + hi) / 2; const h = ((hi - lo) / 2) * 0.9;
+          widths.set(lv, [c - h, c + h]);
+        });
+      }
+      bins[compId] = widths;
+    });
+    return { rank, bins };
+  }, [filteredSetups]);
+
   const dots = useMemo(() => {
     const d = [];
     
@@ -98,6 +135,8 @@ export default function DataVisualizer({ compact = false, hint = null }) {
     // (Ej. dejamos 1.5 grados de margen en los extremos)
     const paddedStartAngle = startAngle + 1.5;
     const paddedEndAngle = endAngle - 1.5;
+    // Escala de puntos según el tamaño de la muestra (1 con ~120 personas o más, hasta 2.4 con muy pocas)
+    const sampleScale = Math.min(2.4, Math.max(1, Math.sqrt(120 / Math.max(1, filteredSetups.length))));
 
     modules.forEach((mod, i) => {
       const trackStep = (mod.endR - mod.startR) / mod.tracks;
@@ -109,29 +148,21 @@ export default function DataVisualizer({ compact = false, hint = null }) {
         const isInverted = directInvertedTracks.includes(compId);
 
         if (mode === 'individual') {
+          // Solo los carriles que respondiste: una barra desde + relax hasta tu respuesta, con el punto al final
           const rawVal = values[compId];
-          
-          let visData = getVisualizableData(compId, rawVal !== undefined ? rawVal : (counterTracks.includes(compId) ? 0 : 50), dbMetadata[compId]?.dataType);
-          let processedVal = visData.value;
-          
-          let percent = (processedVal - visData.min) / (visData.max - visData.min);
-          let targetAngle = paddedStartAngle + percent * (paddedEndAngle - paddedStartAngle);
-          if (rawVal === undefined && !counterTracks.includes(compId)) targetAngle = paddedStartAngle + 0.5 * (paddedEndAngle - paddedStartAngle);
+          if (rawVal === undefined) continue;
+          const visData = getVisualizableData(compId, rawVal, dbMetadata[compId]?.dataType);
+          const percent = (visData.value - visData.min) / ((visData.max - visData.min) || 1);
+          const targetAngle = paddedStartAngle + percent * (paddedEndAngle - paddedStartAngle);
+          const isOff = booleanTracks.includes(compId) && visData.value < 50;
+          d.push({
+            id: `${compId}-single`, compId, r,
+            angle: isMounted ? targetAngle : paddedStartAngle,
+            trailFrom: paddedStartAngle,
+            opacity: isOff ? 0.45 : 1,
+            color: P.coral[500], size: 4, strokeColor: P.neutral[0],
+          });
 
-          let currentAngle = isMounted ? targetAngle : paddedStartAngle;
-          
-          let opacity = 1;
-          let color = P.coral[500];
-          if (rawVal === undefined) {
-            color = P.neutral[400]; // sin tocar
-            opacity = 1;
-          } else {
-            const isBooleanLike = (processedVal === 0 || processedVal === 100);
-            if (isBooleanLike && processedVal === 0) opacity = 0.3;
-          }
-          
-          d.push({ id: `${compId}-single`, compId, r, angle: currentAngle, opacity, color, size: 3.5, strokeColor: P.neutral[0] });
-          
         } else if (mode === 'colectivo' || mode === 'sandbox') {
           
           
@@ -156,19 +187,13 @@ export default function DataVisualizer({ compact = false, hint = null }) {
             let visData = getVisualizableData(compId, rawVal, dbMetadata[compId]?.dataType);
             let processedVal = visData.value;
             
-            // Re-scale smear offset according to domain
             let domainSpan = visData.max - visData.min;
-            
-            // Ruido de Descuantización para romper bloques discretos ("Categorical Smear")
-            // Apply a relative jitter of 8% of the domain span
-            if (booleanTracks.includes(compId) || counterTracks.includes(compId) || visData.max === 5) {
-              const stressIndex = calculateGlobalStress(setup);
-              const smearSpread = 0.38 * domainSpan;
-              const smearOffset = (stressIndex - 0.5) * smearSpread;
-              
-              processedVal += smearOffset;
-            }
-            
+            const answeredVal = processedVal;
+
+            // Degradé por índice de estrés dentro del casillero de la respuesta
+            const bin = swarmPrep.bins[compId]?.get(Math.round(processedVal * 1000) / 1000);
+            if (bin) processedVal = bin[0] + (swarmPrep.rank[idx] ?? 0.5) * (bin[1] - bin[0]);
+
             if (mode === 'sandbox') {
               processedVal = Math.max(visData.min, Math.min(visData.max, processedVal + visualShift));
             }
@@ -182,24 +207,24 @@ export default function DataVisualizer({ compact = false, hint = null }) {
             const gaussX = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
             const gaussY = Math.sqrt(-2.0 * Math.log(u)) * Math.sin(2.0 * Math.PI * v);
             
-            const angleJitter = gaussX * 1.4 * ((endAngle - startAngle) / 68); // proporcional al abanico
+            const angleJitter = gaussX * 0.35 * ((endAngle - startAngle) / 68); // apenas: el orden lo da el índice
             const radialJitter = gaussY * (trackStep * 0.28); 
             
             const targetAngle = baseAngle + angleJitter;
             const currentAngle = isMounted ? targetAngle : paddedStartAngle;
             
             const rJitterScale = Math.abs(Math.sin(idx * 11.234));
-            // Puntos más pequeños como pidió el usuario
-            const size = 0.4 + rJitterScale * 0.7; 
+            // Puntos chicos con la muestra completa; crecen cuando el panel de control la recorta
+            const size = (0.4 + rJitterScale * 0.7) * sampleScale;
             
             const shade = Math.min(SWARM_COLORS.length - 1, Math.floor(((Math.sin(idx * 7.654) + 1) / 2) * SWARM_COLORS.length));
             const color = SWARM_COLORS[shade];
 
             const distFromCenter = Math.sqrt(gaussX*gaussX + gaussY*gaussY);
             // Opacidad ligeramente más sutil para compensar aglomeraciones
-            let opacity = Math.max(0.12, 0.55 - (distFromCenter * 0.15));
+            let opacity = Math.min(0.9, Math.max(0.12, 0.55 - (distFromCenter * 0.15)) * sampleScale);
 
-            if (processedVal === 0 || processedVal === 10) {
+            if (answeredVal === 0 || answeredVal === 10) {
               opacity = 0.03; 
             }
 
@@ -245,36 +270,35 @@ export default function DataVisualizer({ compact = false, hint = null }) {
       }
     });
     return d;
-  }, [mode, values, distributions, averages, filteredSetups, isMounted, showSavedOverlay, directInvertedTracks, startAngle, endAngle, boundaries]);
+  }, [mode, values, distributions, averages, filteredSetups, swarmPrep, isMounted, showSavedOverlay, startAngle, endAngle, boundaries]);
+
+  // Lectura general del vúmetro (0 = + relax, 100 = + estrés): el promedio de todos sus carriles.
+  //  · colectivo: promedio de cada carril sobre la muestra filtrada por el panel de control, y luego de los carriles
+  //  · individual / especulativo: promedio de las respuestas cargadas en los controles
+  // Es la misma escala que dibuja el abanico, así que la aguja apunta a donde caen, en promedio, los puntos.
+  const meterReading = useMemo(() => {
+    const trackIds = Object.keys(dbMap).filter((id) => id.startsWith('mod'));
+    let total = 0; let count = 0;
+    if (mode === 'colectivo') {
+      trackIds.forEach((compId) => {
+        const r = trackReading(compId, dbMap[compId], filteredSetups, dbMetadata[compId]?.dataType);
+        if (r) { total += r.value; count += 1; }
+      });
+    } else {
+      trackIds.forEach((compId) => {
+        const p = stressPercent(compId, values[compId], dbMetadata[compId]?.dataType);
+        if (p !== undefined) { total += p; count += 1; }
+      });
+    }
+    return count ? total / count : null;
+  }, [mode, filteredSetups, values]);
 
   const avgNeedleAngle = useMemo(() => {
-    let sourceData = mode === 'colectivo' ? averages : values;
-    
-    let total = 0;
-    let count = 0;
-
-    Object.keys(sourceData).forEach(compId => {
-      if (compId.startsWith('mod')) {
-        let rawVal = sourceData[compId];
-        if (typeof rawVal === 'number') {
-          let visData = getVisualizableData(compId, rawVal, dbMetadata[compId]?.dataType);
-          // Convert back to 0-100 percentage for the total calculation
-          let percent = (visData.value - visData.min) / (visData.max - visData.min);
-          total += percent * 100;
-          count++;
-        }
-      }
-    });
-
-    if (count > 0) {
-      const paddedStartAngle = startAngle + 1.5;
-      const paddedEndAngle = endAngle - 1.5;
-      const globalAvg = total / count;
-      return paddedStartAngle + (globalAvg / 100) * (paddedEndAngle - paddedStartAngle);
-    }
-
-    return 0;
-  }, [mode, averages, values, directInvertedTracks, distributions]);
+    if (meterReading === null) return 0;
+    const paddedStartAngle = startAngle + 1.5;
+    const paddedEndAngle = endAngle - 1.5;
+    return paddedStartAngle + (meterReading / 100) * (paddedEndAngle - paddedStartAngle);
+  }, [meterReading, startAngle, endAngle]);
 
   const renderAlternativeVisualization = () => {
     // PREPARACIÓN DE ARQUITECTURA:
@@ -517,6 +541,20 @@ export default function DataVisualizer({ compact = false, hint = null }) {
         <g style={{ transform: `rotate(${avgNeedleAngle}deg)`, transformOrigin: `${cx}px ${cy}px` }} className="transition-all duration-1000 ease-out">
           <line x1={cx} y1={compact ? cy - boundaries[0] : cy} x2={cx} y2={cy - boundaries[3]} stroke={P.neutral[600]} strokeWidth="4" strokeLinecap="round" opacity={mode === 'colectivo' ? 0.55 : 1} />
         </g>
+
+        {/* Lectura de la aguja: índice general 0–100 de la muestra (o de tus respuestas) */}
+        {meterReading !== null && (() => {
+          const tip = polarToCartesian(cx, cy, boundaries[0] - (compact ? 14 : 30), avgNeedleAngle);
+          const w = compact ? 34 : 44; const h = compact ? 18 : 22;
+          return (
+            <g style={{ transform: `translate(${tip.x}px, ${tip.y}px)` }} className="transition-transform duration-1000 ease-out pointer-events-none">
+              <rect x={-w / 2} y={-h / 2} width={w} height={h} rx={h / 2} fill={P.neutral[900]} />
+              <text y={compact ? 4 : 5} textAnchor="middle" fill={P.neutral[50]} fontFamily='"JetBrains Mono", monospace' fontSize={compact ? 11 : 13} fontWeight="500">
+                {Math.round(meterReading)}
+              </text>
+            </g>
+          );
+        })()}
         
         {/* Puntos de datos: sobre la aguja, así los de modo individual no quedan tapados por ella */}
         <SwarmCanvas dots={dots} cx={cx} cy={cy} mode={mode} hoveredId={hoveredId} width={geo.w} height={geo.h} />
