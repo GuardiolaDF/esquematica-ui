@@ -328,12 +328,7 @@ export default function DataVisualizer() {
           {isRelation ? (
               <RelationXY out1Id={routingOutputs.out1} out2Id={routingOutputs.out2} out1Meta={source1Meta} out2Meta={source2Meta} hasSource1={hasSource1} hasSource2={hasSource2} isCompatible={isCompatible} />
           ) : isAssociation ? (
-              <Association 
-                dbMetadata={dbMetadata} 
-                dbMap={dbMap} 
-                routingOutputs={routingOutputs} 
-                filteredSetups={filteredSetups}
-              />
+              <Association dbMetadata={dbMetadata} dbMap={dbMap} routingOutputs={{ out1: connections.out1 ? routingOutputs.out1 : null, out2: connections.out2 ? routingOutputs.out2 : null }} filteredSetups={filteredSetups} />
             ) : isSpectrum ? (
             canPlotSpectrum ? (
               <SpectrumAnalyzer outId={routingOutputs.out1} outMeta={source1Meta} colorHex="#3b82f6" />
@@ -368,7 +363,7 @@ export default function DataVisualizer() {
 
           <div className="flex items-center gap-3">
             <div className="w-6 h-6 relative flex-shrink-0">
-              <Jack id="vis-in-2" type="input" activeColor={connections.out2 ? "orange-500" : null} disabled={visualizationMode === "association"} />
+              <Jack id="vis-in-2" type="input" activeColor={connections.out2 ? "orange-500" : null} />
             </div>
             <span className={`text-[10px] font-mono font-bold uppercase tracking-wider truncate max-w-[140px] ${connections.out2 ? 'text-[#f97316]' : 'text-[#444]'}`}>
               2 · {connections.out2 && source2Meta ? source2Meta.label : 'VACÍO'}
