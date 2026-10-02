@@ -20,7 +20,8 @@ const RotarySwitch = ({
   compId,
   onChange,
   value,
-  stepIndex
+  stepIndex,
+  sideLabelRadius = SIDE_LABEL_RADIUS
 }) => {
   const startStep = initialStep !== undefined ? initialStep : Math.floor(angles.length / 2);
   const { mode, values, setValue: setGlobalValue, averages, visualizationMode, routingOutputs, toggleRoutingSource, missingFields } = useAppContext();
@@ -117,7 +118,7 @@ const RotarySwitch = ({
         const cos = Math.cos(rad);
         // Figma (Component 29): los extremos laterales se anclan por el borde exterior, no por el centro del texto
         const isSide = Math.abs(sin) > 0.99;
-        const radius = isSide ? SIDE_LABEL_RADIUS : Math.abs(cos) > 0.99 ? TOP_LABEL_RADIUS : LABEL_RADIUS;
+        const radius = isSide ? sideLabelRadius : Math.abs(cos) > 0.99 ? TOP_LABEL_RADIUS : LABEL_RADIUS;
         const anchorX = isSide ? (sin < 0 ? '-100%' : '0%') : '-50%';
         return (
           <React.Fragment key={i}>

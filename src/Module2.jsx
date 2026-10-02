@@ -2,10 +2,11 @@ import React from 'react';
 import ModuleShell from './ModuleShell';
 import ModuleHeader from './components/ModuleHeader';
 import SectionTag from './components/SectionTag';
+import NamedKnob from './components/NamedKnob';
+import LabeledToggle from './components/LabeledToggle';
 import OutputPanel, { moduleOutputJacks } from './components/cables/OutputPanel';
 import Fader from './components/actuators/Fader';
 import Counter from './components/actuators/Counter';
-import ToggleSwitch from './components/actuators/ToggleSwitch';
 import Knob from './components/actuators/Knob';
 import LedButton from './components/actuators/LedButton';
 import RotarySwitch from './components/actuators/RotarySwitch';
@@ -26,9 +27,9 @@ const COUNTERS = [
 ];
 
 const TOGGLES = [
-  { label: 'Versiones', id: 'mod2-12', align: 'text-left' },
-  { label: 'Notif', id: 'mod2-13', align: 'text-center' },
-  { label: 'Comida', id: 'mod2-14', align: 'text-center' },
+  { label: 'Versiones', id: 'mod2-12', align: 'left' },
+  { label: 'Notif', id: 'mod2-13', align: 'center' },
+  { label: 'Comida', id: 'mod2-14', align: 'center' },
 ];
 
 const REFERENCIAS = [
@@ -44,14 +45,6 @@ const StatusCell = ({ icon, iconBox, gap, title, compId, className = '' }) => (
       <img src={icon} alt={title} className="max-w-none shrink-0 pointer-events-none select-none" draggable={false} />
     </div>
     <LedButton baseClass="w-[8px] h-[8px]" compId={compId} />
-  </div>
-);
-
-// Perilla con su nombre arriba (Component 11): el texto arranca 19 px a la izquierda de la perilla
-const NamedKnob = ({ label, compId }) => (
-  <div className="relative w-[33px] h-[47px] shrink-0">
-    <span className="absolute -left-[19px] top-0 type-micro leading-[18px] text-text-secondary whitespace-nowrap">{label}</span>
-    <Knob sizeClass="w-[33px]" className="!absolute left-0 top-[14px]" initialValue={50} compId={compId} />
   </div>
 );
 
@@ -111,12 +104,7 @@ const Module2 = () => {
             </div>
 
             <div className="flex items-center justify-center gap-[13px]">
-              {TOGGLES.map(t => (
-                <div key={t.id} className="w-[40px] flex flex-col">
-                  <span className={`type-micro font-light text-text-muted whitespace-nowrap ${t.align}`}>{t.label}</span>
-                  <ToggleSwitch sizeClass="w-[30px]" compId={t.id} />
-                </div>
-              ))}
+              {TOGGLES.map(t => <LabeledToggle key={t.id} label={t.label} compId={t.id} align={t.align} />)}
             </div>
 
             <div className="flex items-end gap-[28px] w-[192px]">
