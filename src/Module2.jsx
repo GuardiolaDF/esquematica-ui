@@ -1,6 +1,6 @@
 import React from 'react';
 import ModuleShell from './ModuleShell';
-import Jack from './components/cables/Jack';
+import OutputPanel, { moduleOutputJacks } from './components/cables/OutputPanel';
 import Fader from './components/actuators/Fader';
 import Counter from './components/actuators/Counter';
 import ToggleSwitch from './components/actuators/ToggleSwitch';
@@ -122,26 +122,8 @@ const Module2 = () => {
               </div>
               
               {/* JACKS */}
-              <div className="w-[45%] bg-bg-base flex flex-col justify-center items-center p-[2%] border border-border-subtle relative">
-                <div className="w-full bg-text-primary text-white text-[9px] font-sans font-bold text-center leading-none py-[4%] mb-[4%] tracking-widest uppercase text-synth-surface">SALIDAS</div>
-                <div className="flex flex-row justify-around w-full px-[4%] flex-1 items-center">
-                  {['JACK 1', 'JACK 2'].map((item, i) => {
-                    const isOut1Active = routingOutputs?.out1?.startsWith('mod2-');
-                    const isOut2Active = routingOutputs?.out2?.startsWith('mod2-');
-                    const isActive = (i === 0 && isOut1Active) || (i === 1 && isOut2Active);
-                    const activeColor = i === 0 ? 'blue-500' : 'orange-500';
-                    return (
-                      <div key={`jack-mod2-${i}`} className="w-[35%] aspect-square">
-                        <Jack 
-                          id={`out-mod2-${i}`} 
-                          type="output" 
-                          label={item}
-                          activeColor={isActive ? activeColor : null} 
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
+              <div className="w-[45%] flex items-center justify-center">
+                <OutputPanel jacks={moduleOutputJacks('mod2', routingOutputs)} />
               </div>
             </div>
           </div>

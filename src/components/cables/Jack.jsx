@@ -1,10 +1,18 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useCables } from '../../contexts/CableContext';
+import jackSvg from '../../assets/figma/output-jack.svg';
 
-const Jack = ({ 
-  id, 
+// Figma: Components › output-jack-1 (2166:603) — 20×20, neutral/500 con borde neutral/200 y Effects/Inset/Control.
+// El cuerpo es el SVG exportado de Figma; el estado conectado se superpone sobre el orificio (12 px).
+const CABLE_GLOW = {
+  'blue-500': 'rgba(59,130,246,0.9)',
+  'orange-500': 'rgba(249,115,22,0.9)',
+};
+
+const Jack = ({
+  id,
   type = 'output', // 'output' or 'input'
-  label, 
+  label,
   activeColor = null, // 'blue-500', 'orange-500', or null
   className = "",
   disabled = false
@@ -45,29 +53,27 @@ const Jack = ({
     }
   };
 
-  const isBlue = activeColor === 'blue-500';
-  const rgb = isBlue ? '59,130,246' : '249,115,22';
-  
-  let glowClass = 'bg-synth-ink-dark';
-  if (disabled) {
-    glowClass = 'bg-synth-border-base shadow-inner opacity-50';
-  } else if (activeColor) {
-    glowClass = `bg-${activeColor} shadow-[0_0_20px_rgba(${rgb},1)] ring-2 ring-${activeColor}`;
-  }
+  const canDrag = type === 'output' && activeColor && !disabled;
 
   return (
-    <div 
-      className={`flex items-end justify-end z-10 ${className} ${disabled ? 'pointer-events-none opacity-50 grayscale' : ''}`} 
+    <div
+      ref={jackRef}
+      className={`relative size-[20px] shrink-0 rounded-pill z-10 ${disabled ? 'pointer-events-none opacity-disabled grayscale' : ''} ${className}`}
       onMouseDown={handleMouseDown}
-      style={{ cursor: disabled ? 'not-allowed' : (type === 'output' && activeColor ? 'grab' : 'default') }}
+      style={{ cursor: disabled ? 'not-allowed' : (canDrag ? 'grab' : 'default') }}
     >
-      <div className="w-[60%] aspect-square bg-synth-surface rounded-full shadow-inner border-[0.5px] border-synth-border-base flex items-center justify-center relative">
-         {label && <span className="absolute bottom-[100%] mb-[4px] left-1/2 -translate-x-1/2 text-[7px] text-synth-ink-base font-mono font-medium whitespace-nowrap pointer-events-none">{label}</span>}
-         <div 
-           ref={jackRef} 
-           className={`w-[45%] aspect-square rounded-full transition-all duration-300 ${glowClass}`}
-         ></div>
-      </div>
+      <img src={jackSvg} alt="" width={20} height={20} draggable={false} className="block pointer-events-none select-none" />
+      {activeColor && !disabled && (
+        <div
+          className={`absolute inset-[4px] rounded-pill bg-${activeColor} transition-shadow duration-standard`}
+          style={{ boxShadow: `0 0 10px ${CABLE_GLOW[activeColor]}` }}
+        />
+      )}
+      {label && (
+        <span className="absolute bottom-full mb-space-4 left-1/2 -translate-x-1/2 type-caption text-text-secondary whitespace-nowrap pointer-events-none">
+          {label}
+        </span>
+      )}
     </div>
   );
 };
