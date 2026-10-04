@@ -82,7 +82,13 @@ const ModeTabs = ({ mode, setMode }) => (
               ? 'h-[33px] pb-[3px] bg-background-base text-text-primary'
               : 'h-[26px] pb-[3px] bg-neutral-200 text-text-muted hover:text-text-secondary hover:bg-neutral-100'
           }`}
-          style={{ boxShadow: active ? '-2px -3px 6px rgba(255,255,255,0.8), 2px -3px 8px rgba(45,45,45,0.10)' : 'inset 0 -4px 6px -4px rgba(45,45,45,0.18)' }}
+          style={{
+            // La activa se separa del vúmetro (mismo color de fondo) con un filo fino y una sombra que solo sube y se abre
+            // a los lados, para que siga fundida con el panel por abajo. Las otras quedan hundidas.
+            boxShadow: active
+              ? '0 -1px 0 var(--neutral-300), -1px 0 0 var(--neutral-300), 1px 0 0 var(--neutral-300), 0 -4px 8px -1px rgba(45,45,45,0.20), -4px -2px 6px -2px rgba(45,45,45,0.12), 4px -2px 6px -2px rgba(45,45,45,0.12)'
+              : 'inset 0 -4px 6px -4px rgba(45,45,45,0.18)',
+          }}
         >
           <span className={`w-[7px] h-[7px] rounded-xs border border-border-subtle transition-colors duration-standard ${active ? 'bg-coral-400' : 'bg-surface-subtle'}`} />
           {m.label}
