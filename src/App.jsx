@@ -14,7 +14,6 @@ import PocketOnboarding from './intro/PocketOnboarding';
 
 // Antes del instrumento: hero → onboarding → instrumento. Para entrar directo (desarrollo): ?intro=0
 const initialScreen = () => (new URLSearchParams(window.location.search).get('intro') === '0' ? 'app' : 'hero');
-const fade = { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 }, transition: { duration: 0.45 } };
 
 function App() {
   const { showGrid, setShowGrid } = useAppContext();
@@ -25,7 +24,14 @@ function App() {
   if (screen !== 'app') {
     return (
       <AnimatePresence mode="wait">
-        <motion.div key={screen} {...fade} className="fixed inset-0">
+        <motion.div
+          key={screen}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="fixed inset-0"
+        >
           {screen === 'hero'
             ? <Hero compact={isPhone} onStart={() => setScreen('onboarding')} />
             : isPhone

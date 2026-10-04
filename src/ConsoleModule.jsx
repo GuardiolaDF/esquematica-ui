@@ -131,7 +131,18 @@ const ModeTabs = ({ mode, setMode, hostRef }) => {
         />
       </svg>
 
-      <div role="tablist" aria-label="Modo" className="absolute z-20 flex items-end" style={{ left: x0, bottom: `calc(100% - 3px)`, gap: TAB_GAP }}>
+      {/* Solapas inactivas pasan atrás del panel: solo la solapa activa (z-30) está encima del panel (z-0) */}
+      <div
+        role="tablist"
+        aria-label="Modo"
+        className="absolute flex items-end"
+        style={{
+          left: x0,
+          bottom: `calc(100% - 3px)`,
+          gap: TAB_GAP,
+          zIndex: 5,
+        }}
+      >
         {MODE_TABS.map((m) => {
           const active = mode === m.id;
           return (
@@ -143,7 +154,7 @@ const ModeTabs = ({ mode, setMode, hostRef }) => {
               onClick={() => setMode(m.id)}
               className={`relative flex items-center justify-center gap-[7px] font-heading font-bold text-[11px] leading-none uppercase tracking-label select-none cursor-pointer transition-[height,background-color,color] duration-standard focus-visible:outline-none focus-visible:shadow-focus-soft ${
                 active
-                  ? 'text-text-primary bg-transparent rounded-t-lg'
+                  ? 'text-text-primary bg-transparent rounded-t-lg z-30'
                   : 'text-text-muted hover:text-text-secondary bg-neutral-200 hover:bg-neutral-100 rounded-t-lg'
               }`}
               style={{
