@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 import ModuleShell from './ModuleShell';
 import RotarySwitch from './components/actuators/RotarySwitch';
 import ToggleSwitch from './components/actuators/ToggleSwitch';
@@ -58,45 +59,109 @@ const VerticalPads = ({ options, value, onChange, disabled, compId, gap = 5 }) =
   );
 };
 
-// Solapas de modo: sobresalen del borde superior del panel de control, en el centro, como las fichas de un fichero.
-// La activa tiene el mismo fondo que el panel y se funde con él; las otras quedan detrás, más bajas y apagadas.
+// Solapas de modo, como las fichas de un fichero. La solapa activa y el panel son UNA sola silueta: el borde superior
+// del panel sube en curva, recorre la solapa y vuelve a bajar en curva para seguir por el borde (un único trazo).
+// Al cambiar de modo, la silueta se desliza hasta la nueva solapa (se interpola el trazo) y las demás quedan atrás,
+// más bajas y apagadas.
 const MODE_TABS = [
   { id: 'colectivo', label: 'Colectivo' },
   { id: 'individual', label: 'Individual' },
   { id: 'sandbox', label: 'Especulativo' },
 ];
+const TAB_W = 112;      // ancho de cada solapa
+const TAB_GAP = 3;
+const TAB_H = 30;       // cuánto sobresale la solapa activa del borde del panel
+const TAB_H_IDLE = 23;  // y las inactivas
+const FLARE = 11;       // radio de la curva que une el borde del panel con la solapa
+const TAB_R = 10;       // esquinas superiores de la solapa
+const PANEL_R = 16;     // esquinas del panel (radius/xl)
+const OUTLINE = 'var(--neutral-300)';
 
-const ModeTabs = ({ mode, setMode }) => (
-  <div role="tablist" aria-label="Modo" className="absolute left-1/2 -translate-x-1/2 bottom-[calc(100%-3px)] z-20 flex items-end gap-[3px]">
-    {MODE_TABS.map((m) => {
-      const active = mode === m.id;
-      return (
-        <button
-          key={m.id}
-          type="button"
-          role="tab"
-          aria-selected={active}
-          onClick={() => setMode(m.id)}
-          className={`relative w-[112px] flex items-center justify-center gap-[7px] rounded-t-lg font-heading font-bold text-[11px] leading-none uppercase tracking-label select-none cursor-pointer transition-[height,background-color,color] duration-standard focus-visible:outline-none focus-visible:shadow-focus-soft ${
-            active
-              ? 'h-[33px] pb-[3px] bg-background-base text-text-primary'
-              : 'h-[26px] pb-[3px] bg-neutral-200 text-text-muted hover:text-text-secondary hover:bg-neutral-100'
-          }`}
-          style={{
-            // La activa se separa del vúmetro (mismo color de fondo) con un filo fino y una sombra que solo sube y se abre
-            // a los lados, para que siga fundida con el panel por abajo. Las otras quedan hundidas.
-            boxShadow: active
-              ? '0 -1px 0 var(--neutral-300), -1px 0 0 var(--neutral-300), 1px 0 0 var(--neutral-300), 0 -4px 8px -1px rgba(45,45,45,0.20), -4px -2px 6px -2px rgba(45,45,45,0.12), 4px -2px 6px -2px rgba(45,45,45,0.12)'
-              : 'inset 0 -4px 6px -4px rgba(45,45,45,0.18)',
-          }}
-        >
-          <span className={`w-[7px] h-[7px] rounded-xs border border-border-subtle transition-colors duration-standard ${active ? 'bg-coral-400' : 'bg-surface-subtle'}`} />
-          {m.label}
-        </button>
-      );
-    })}
-  </div>
-);
+// y = 0 es el borde superior del panel; la solapa sube (y negativo).
+const silhouette = (x, W, H) => {
+  const r = PANEL_R; const f = FLARE; const t = TAB_R; const w = TAB_W; const h = TAB_H;
+  return [
+    `M ${r} 0`, `H ${x - f}`,
+    `Q ${x} 0 ${x} ${-f}`, `V ${-(h - t)}`, `Q ${x} ${-h} ${x + t} ${-h}`,
+    `H ${x + w - t}`, `Q ${x + w} ${-h} ${x + w} ${-(h - t)}`, `V ${-f}`, `Q ${x + w} 0 ${x + w + f} 0`,
+    `H ${W - r}`, `Q ${W} 0 ${W} ${r}`, `V ${H - r}`, `Q ${W} ${H} ${W - r} ${H}`,
+    `H ${r}`, `Q 0 ${H} 0 ${H - r}`, `V ${r}`, `Q 0 0 ${r} 0 Z`,
+  ].join(' ');
+};
+// Relleno de solapa + curvas (3 px hacia adentro del panel para tapar la costura)
+const tabFill = (x) => {
+  const f = FLARE; const t = TAB_R; const w = TAB_W; const h = TAB_H;
+  return [
+    `M ${x - f} 3`, `V 0`, `Q ${x} 0 ${x} ${-f}`, `V ${-(h - t)}`, `Q ${x} ${-h} ${x + t} ${-h}`,
+    `H ${x + w - t}`, `Q ${x + w} ${-h} ${x + w} ${-(h - t)}`, `V ${-f}`, `Q ${x + w} 0 ${x + w + f} 0`, `V 3 Z`,
+  ].join(' ');
+};
+
+const ModeTabs = ({ mode, setMode, hostRef }) => {
+  const [size, setSize] = useState({ W: 832, H: 149 });
+  useEffect(() => {
+    const el = hostRef.current;
+    if (!el) return undefined;
+    const measure = () => setSize({ W: el.clientWidth, H: el.clientHeight });
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [hostRef]);
+
+  const { W, H } = size;
+  const rowW = MODE_TABS.length * TAB_W + (MODE_TABS.length - 1) * TAB_GAP;
+  const x0 = (W - rowW) / 2;
+  const activeIndex = Math.max(0, MODE_TABS.findIndex(m => m.id === mode));
+  const tabX = (k) => x0 + k * (TAB_W + TAB_GAP);
+  const spring = { type: 'spring', stiffness: 360, damping: 34, mass: 0.9 };
+
+  return (
+    <>
+      {/* Silueta única panel + solapa activa (encima del panel, sin interceptar clics) */}
+      <svg className="absolute left-0 top-0 z-10 pointer-events-none overflow-visible" width={W} height={H} viewBox={`0 0 ${W} ${H}`} aria-hidden="true">
+        <motion.g animate={{ x: tabX(activeIndex) - tabX(0) }} transition={spring} initial={false}>
+          <path d={tabFill(tabX(0))} fill="var(--background-base)" style={{ filter: 'drop-shadow(0 -3px 3px rgba(45,45,45,0.10))' }} />
+        </motion.g>
+        <motion.path
+          fill="none" stroke={OUTLINE} strokeWidth="1" strokeLinejoin="round"
+          initial={false}
+          animate={{ d: silhouette(tabX(activeIndex), W, H - 1) }}
+          transition={spring}
+        />
+      </svg>
+
+      <div role="tablist" aria-label="Modo" className="absolute z-20 flex items-end" style={{ left: x0, bottom: `calc(100% - 3px)`, gap: TAB_GAP }}>
+        {MODE_TABS.map((m) => {
+          const active = mode === m.id;
+          return (
+            <button
+              key={m.id}
+              type="button"
+              role="tab"
+              aria-selected={active}
+              onClick={() => setMode(m.id)}
+              className={`relative flex items-center justify-center gap-[7px] font-heading font-bold text-[11px] leading-none uppercase tracking-label select-none cursor-pointer transition-[height,background-color,color] duration-standard focus-visible:outline-none focus-visible:shadow-focus-soft ${
+                active
+                  ? 'text-text-primary bg-transparent rounded-t-lg'
+                  : 'text-text-muted hover:text-text-secondary bg-neutral-200 hover:bg-neutral-100 rounded-t-lg'
+              }`}
+              style={{
+                width: TAB_W,
+                height: (active ? TAB_H : TAB_H_IDLE) + 3,
+                paddingBottom: active ? 3 : 6,
+                boxShadow: active ? 'none' : 'inset 0 -4px 6px -4px rgba(45,45,45,0.18)',
+              }}
+            >
+              <span className={`w-[7px] h-[7px] rounded-xs border border-border-subtle transition-colors duration-standard ${active ? 'bg-coral-400' : 'bg-surface-subtle'}`} />
+              {m.label}
+            </button>
+          );
+        })}
+      </div>
+    </>
+  );
+};
 
 export default function ConsoleModule({ isCol, compact = false }) {
   const {
@@ -104,6 +169,7 @@ export default function ConsoleModule({ isCol, compact = false }) {
     mode, setMode,
     saveToDb, isSaving, missingFields,
   } = useAppContext();
+  const hostRef = useRef(null);
   const [saveFailed, setSaveFailed] = useState(false);
   const missingCount = missingFields?.length || 0;
   const handleSave = async () => {
@@ -123,8 +189,8 @@ export default function ConsoleModule({ isCol, compact = false }) {
   const off = (active) => (active ? '' : 'opacity-muted pointer-events-none');
 
   return (
-    <div className="relative w-full h-full">
-    {!compact && <ModeTabs mode={mode} setMode={setMode} />}
+    <div ref={hostRef} className="relative w-full h-full">
+    {!compact && <ModeTabs mode={mode} setMode={setMode} hostRef={hostRef} />}
     <ModuleShell isCol={isCol} moduleNumber={0}>
       {/* Los filtros se reparten el ancho disponible; modos y Usuarios quedan fijos a la derecha (Figma: gap mínimo 40). */}
       {/* En la versión de bolsillo (compact) solo quedan Promedio, Edad y Trabajo. */}
