@@ -37,3 +37,5 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .is-missing { animation: none; filter: drop-shadow(0 0 4px rgba(191, 111, 91, 0.9)); }
 }
+
+@keyframes screen-in { from { opacity: 0; } to { opacity: 1; } }

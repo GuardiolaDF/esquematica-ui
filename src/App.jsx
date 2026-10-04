@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
 import RackGrid from './RackGrid';
 import Stage from './Stage';
 import { HoverProvider } from './contexts/HoverContext';
@@ -20,25 +19,28 @@ function App() {
   // Teléfono → versión de bolsillo; tablet y escritorio → versión completa (ver useDeviceClass)
   const isPhone = useIsPhone();
   const [screen, setScreen] = useState(initialScreen);
+  const [leaving, setLeaving] = useState(false);
 
+  // Fundido controlado por estado (sin ciclo de salida de framer, que repintaba un fotograma del hero al desmontarlo):
+  // la pantalla se apaga con una transición CSS, y recién con opacidad 0 se monta la siguiente, que entra con un fundido.
   if (screen !== 'app') {
+    const goTo = (next) => {
+      if (leaving) return;
+      setLeaving(true);
+      setTimeout(() => { setScreen(next); setLeaving(false); }, 350);
+    };
     return (
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={screen}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          className="fixed inset-0"
-        >
-          {screen === 'hero'
-            ? <Hero compact={isPhone} onStart={() => setScreen('onboarding')} />
-            : isPhone
-              ? <PocketOnboarding onDone={() => setScreen('app')} />
-              : <Onboarding onDone={() => setScreen('app')} />}
-        </motion.div>
-      </AnimatePresence>
+      <div
+        key={screen}
+        className="fixed inset-0 bg-background-sunken"
+        style={leaving ? { opacity: 0, transition: 'opacity 350ms ease' } : { animation: 'screen-in 450ms ease both' }}
+      >
+        {screen === 'hero'
+          ? <Hero compact={isPhone} onStart={() => goTo('onboarding')} />
+          : isPhone
+            ? <PocketOnboarding onDone={() => goTo('app')} />
+            : <Onboarding onDone={() => goTo('app')} />}
+      </div>
     );
   }
 
