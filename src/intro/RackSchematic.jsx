@@ -217,7 +217,7 @@ const rand = (seed) => { const s = Math.sin(seed * 9301 + 49297) * 233280; retur
 const DISPLAY_TEXT = {
   intro: 'ESTREZOMETRO', modules: 'ESTREZOMETRO', vis: 'MODO COLECTIVO', console: null, cables: 'RELACIÓN', yours: 'MODO INDIVIDUAL',
 };
-const CONSOLE_MODES = ['MODO COLECTIVO', 'MODO INDIVIDUAL', 'MODO Y SI...?'];
+const CONSOLE_MODES = ['MODO COLECTIVO', 'MODO INDIVIDUAL', 'MODO ESPECULATIVO'];
 
 const Visualizer = ({ step, modeIndex }) => {
   const showFan = step !== 'cables';
@@ -328,19 +328,34 @@ const Console = ({ step, modeIndex }) => {
       {[[935, 4], [984, 3], [1068, 3], [1162, 3]].map(([x, n], g) => (
         Array.from({ length: n }, (_, k) => <Led key={`${g}-${k}`} x={x} y={672 + k * 14} s={9} lit={live && (k + g + modeIndex) % 3 === 0 ? TEAL : null} />)
       ))}
-      {/* Botones de modo: Colectivo / Individual / ¿Y si...? */}
-      {[1245, 1289, 1333].map((x, k) => {
-        const on = (live && modeIndex === k) || (step === 'yours' && k === 1) || ((step === 'vis' || step === 'cables') && k === 0);
+      {/* Solapas de modo sobre el borde del panel: Colectivo / Individual / Especulativo */}
+      {['COLECTIVO', 'INDIVIDUAL', 'ESPECULATIVO'].map((label, k) => {
+        const on = live ? modeIndex === k : step === 'yours' ? k === 1 : k === 0;
+        const x = 767 + k * 114; const h = on ? 28 : 20;
         return (
-          <motion.rect key={x} x={x} y={640} width={28} height={28} rx={6} stroke="currentColor" strokeWidth={1.6}
-            initial={false} animate={{ fill: on ? CORAL : PANEL }} transition={{ duration: 0.25 }} />
+          <g key={label}>
+            <motion.path
+              initial={false}
+              animate={{ d: `M${x},612 L${x},${612 - h + 8} Q${x},${612 - h} ${x + 8},${612 - h} L${x + 102},${612 - h} Q${x + 110},${612 - h} ${x + 110},${612 - h + 8} L${x + 110},612`, fill: on ? PANEL : 'var(--neutral-200)' }}
+              transition={{ duration: 0.25 }}
+              stroke="currentColor" strokeWidth={1.4}
+            />
+            <motion.rect x={x + 12} y={on ? 593 : 599} width={8} height={8} rx={2} stroke="currentColor" strokeWidth={1}
+              initial={false} animate={{ fill: on ? CORAL : PANEL, y: on ? 592 : 598 }} transition={{ duration: 0.25 }} />
+            <motion.text x={x + 26} fontFamily="Satori, sans-serif" fontWeight={700} fontSize={11} fill="currentColor"
+              initial={false} animate={{ y: on ? 601 : 607, opacity: on ? 1 : 0.55 }} transition={{ duration: 0.25 }}>{label}</motion.text>
+          </g>
         );
       })}
-      {/* Contador de usuarios */}
-      <R x={1271} y={713} w={86} h={44} r={8} i={11} fill={PANEL} />
-      <motion.text x={1314} y={742} textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize={18} fill="var(--neutral-500)"
+      {/* Contador de usuarios (o Guardar, en individual), centrado en el alto del panel */}
+      <motion.rect x={1271} y={671} width={86} height={44} rx={8} stroke="currentColor" strokeWidth={1.6}
+        initial={false}
+        animate={{ fill: step === 'yours' ? 'var(--teal-700)' : PANEL, opacity: step === 'yours' ? [1, 0.75, 1] : 1 }}
+        transition={step === 'yours' ? { opacity: { duration: 1.4, repeat: Infinity }, fill: { duration: 0.3 } } : { duration: 0.3 }} />
+      <motion.text x={1314} y={step === 'yours' ? 697 : 700} textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize={step === 'yours' ? 14 : 18}
+        fill={step === 'yours' ? 'var(--neutral-50)' : 'var(--neutral-500)'} fontWeight={step === 'yours' ? 700 : 400}
         key={`u-${modeIndex}-${step}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-        {live ? ['128', '001', '128'][modeIndex] : '128'}
+        {step === 'yours' ? 'GUARDAR' : live ? ['128', '001', '128'][modeIndex] : '128'}
       </motion.text>
     </g>
   );

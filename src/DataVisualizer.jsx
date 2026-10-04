@@ -70,7 +70,7 @@ export default function DataVisualizer({ compact = false, hint = null }) {
   const modeLabels = {
     'colectivo': 'MODO COLECTIVO',
     'individual': 'MODO INDIVIDUAL',
-    'sandbox': 'MODO Y SI...?'
+    'sandbox': 'MODO ESPECULATIVO'
   };
   
   const geo = compact ? GEOMETRY.compact : GEOMETRY.desktop;
@@ -574,15 +574,16 @@ export default function DataVisualizer({ compact = false, hint = null }) {
             title="Entradas"
             jacks={[
               { id: 'vis-in-1', type: 'input', activeColor: connections.out1 ? 'blue-500' : null },
-              { id: 'vis-in-2', type: 'input', activeColor: connections.out2 ? 'orange-500' : null },
+              // Espectro muestra una sola variable: la segunda entrada queda deshabilitada (50 %)
+              { id: 'vis-in-2', type: 'input', activeColor: connections.out2 ? 'orange-500' : null, disabled: visualizationMode === 'spectrum' },
             ]}
           />
           <div className="flex flex-col gap-space-4 pb-[2px] pointer-events-none">
             {inputRows.map(({ channel, meta }, i) => (
-              <div key={channel.key} className="flex items-center gap-space-6">
+              <div key={channel.key} className={`flex items-center gap-space-6 ${i === 1 && visualizationMode === 'spectrum' ? 'opacity-50' : ''}`}>
                 <span className="w-[6px] h-[6px] rounded-pill shrink-0" style={{ backgroundColor: meta ? channel.hex : 'var(--neutral-300)' }} />
                 <span className={`type-micro max-w-[170px] truncate ${meta ? 'text-text-secondary' : 'text-text-disabled'}`}>
-                  {i + 1} · {meta ? meta.label : 'Vacío'}
+                  {i + 1} · {meta ? meta.label : (i === 1 && visualizationMode === 'spectrum' ? 'No se usa en Espectro' : 'Vacío')}
                 </span>
               </div>
             ))}

@@ -27,7 +27,9 @@ const LedButton = ({
   value,
   onChange
 }) => {
-  const { mode, values, setValue: setGlobalValue, averages, visualizationMode, routingOutputs, toggleRoutingSource, missingFields } = useAppContext();
+  const { mode, values, setValue: setGlobalValue, averages, visualizationMode, routingOutputs, toggleRoutingSource, missingFields, isRouteBlocked } = useAppContext();
+  // Atenuado (50 %) cuando su dato no se puede conectar en la vista actual
+  const routeBlocked = isRouteBlocked(compId);
 
   const isRoutingMode = mode === 'colectivo' && visualizationMode !== 'general';
   let routeColor = null;
@@ -81,7 +83,7 @@ const LedButton = ({
   if (variant === 'group') {
     return (
       <div
-        className={`relative w-[60px] h-[14px] shrink-0 cursor-pointer select-none ${isHovered ? 'z-50' : ''}`}
+        className={`${routeBlocked ? 'opacity-50 pointer-events-none ' : ''}relative w-[60px] h-[14px] shrink-0 cursor-pointer select-none ${isHovered ? 'z-50' : ''}`}
         onClick={toggle}
         onPointerEnter={handlePointerEnter}
         onPointerLeave={handlePointerLeave}
@@ -113,7 +115,7 @@ const LedButton = ({
 
   return (
     <div
-      className={`relative shrink-0 flex items-center justify-center cursor-pointer select-none transition-[background-color,box-shadow] duration-standard ${isPad ? 'rounded-sm border border-border-subtle' : 'rounded-xs'} ${surface} ${baseClass} ${isHovered ? 'z-50' : ''}`}
+      className={`${routeBlocked ? 'opacity-50 pointer-events-none ' : ''}relative shrink-0 flex items-center justify-center cursor-pointer select-none transition-[background-color,box-shadow] duration-standard ${isPad ? 'rounded-sm border border-border-subtle' : 'rounded-xs'} ${surface} ${baseClass} ${isHovered ? 'z-50' : ''}`}
       style={{ boxShadow: [shadow, ring].filter(Boolean).join(', ') }}
       onClick={toggle}
       onPointerEnter={handlePointerEnter}

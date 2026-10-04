@@ -55,7 +55,7 @@ const Jack = ({
   return (
     <div
       ref={jackRef}
-      className={`relative size-[20px] shrink-0 rounded-pill z-10 touch-none ${disabled ? 'pointer-events-none opacity-disabled grayscale' : ''} ${className}`}
+      className={`relative size-[20px] shrink-0 rounded-pill z-10 touch-none ${disabled ? 'pointer-events-none opacity-50' : ''} ${className}`}
       onPointerDown={handleMouseDown}
       style={{ cursor: disabled ? 'not-allowed' : (canDrag ? 'grab' : 'default') }}
     >

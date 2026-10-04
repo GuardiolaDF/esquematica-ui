@@ -15,9 +15,10 @@ const OutputPanel = ({ jacks, title = 'Salidas', className = '' }) => (
 );
 
 // Jacks de salida de un módulo: el 1 (azul) y el 2 (naranja) se activan cuando su salida está ruteada a ese módulo.
-export const moduleOutputJacks = (modulePrefix, routingOutputs) => [
+// Con una sola entrada (Espectro) el jack 2 queda deshabilitado al 50 %.
+export const moduleOutputJacks = (modulePrefix, routingOutputs, maxInputs = 2) => [
   { id: `out-${modulePrefix}-0`, type: 'output', activeColor: routingOutputs?.out1?.startsWith(`${modulePrefix}-`) ? 'blue-500' : null },
-  { id: `out-${modulePrefix}-1`, type: 'output', activeColor: routingOutputs?.out2?.startsWith(`${modulePrefix}-`) ? 'orange-500' : null },
+  { id: `out-${modulePrefix}-1`, type: 'output', activeColor: routingOutputs?.out2?.startsWith(`${modulePrefix}-`) ? 'orange-500' : null, disabled: maxInputs < 2 },
 ];
 
 export default OutputPanel;

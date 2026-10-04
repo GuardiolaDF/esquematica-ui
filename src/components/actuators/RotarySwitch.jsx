@@ -24,7 +24,9 @@ const RotarySwitch = ({
   sideLabelRadius = SIDE_LABEL_RADIUS
 }) => {
   const startStep = initialStep !== undefined ? initialStep : Math.floor(angles.length / 2);
-  const { mode, values, setValue: setGlobalValue, averages, visualizationMode, routingOutputs, toggleRoutingSource, missingFields } = useAppContext();
+  const { mode, values, setValue: setGlobalValue, averages, visualizationMode, routingOutputs, toggleRoutingSource, missingFields, isRouteBlocked } = useAppContext();
+  // Atenuado (50 %) cuando su dato no se puede conectar en la vista actual
+  const routeBlocked = isRouteBlocked(compId);
 
   const isRoutingMode = mode === 'colectivo' && visualizationMode !== 'general';
   let routeColor = null;
@@ -98,7 +100,7 @@ const RotarySwitch = ({
 
   return (
     <div
-      className={`relative aspect-square shrink-0 [container-type:inline-size] ${sizeClass} ${className} ${isHovered ? 'z-50' : ''} cursor-pointer touch-none select-none`}
+      className={`${routeBlocked ? 'opacity-50 pointer-events-none ' : ''}relative aspect-square shrink-0 [container-type:inline-size] ${sizeClass} ${className} ${isHovered ? 'z-50' : ''} cursor-pointer touch-none select-none`}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={endDrag}

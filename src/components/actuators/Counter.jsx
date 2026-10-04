@@ -3,6 +3,7 @@ import { useHover } from '../../contexts/HoverContext';
 import { useAppContext } from '../../contexts/AppContext';
 import stepperUp from '../../assets/figma/stepper-up.svg';
 import stepperDown from '../../assets/figma/stepper-down.svg';
+import { channelById } from '../../design/channels';
 
 // Figma: Components › Component 2 / stepper-1 (2166:593) — 48×62.
 // Pantalla de 40×48 (background/sunken, radius/md, border/subtle, sombras interiores) con el número en JetBrains Mono 20 px
@@ -10,7 +11,9 @@ import stepperDown from '../../assets/figma/stepper-down.svg';
 const SCREEN_SHADOW = 'inset -2px -2px 1px rgba(250,248,248,0.5), inset 2px 2px 1px rgba(0,0,0,0.25)';
 
 const Counter = ({ label, compId, className = '' }) => {
-  const { mode, values, setValue: setGlobalValue, averages, distributions, missingFields } = useAppContext();
+  const { mode, values, setValue: setGlobalValue, averages, distributions, missingFields, isRouteBlocked, isRoutingMode, routingOutputs, toggleRoutingSource } = useAppContext();
+  // Atenuado (50 %) cuando su dato no se puede conectar en la vista actual
+  const routeBlocked = isRouteBlocked(compId);
 
   const [localValue, setLocalValue] = useState(0);
   const { hoveredId, setHoveredId } = useHover();
@@ -20,8 +23,16 @@ const Counter = ({ label, compId, className = '' }) => {
   const isHovered = (compId && hoveredId === compId) || localHover;
   const isMissing = !isReadOnly && missingFields?.includes(compId);
 
+  // Ruteo (vistas con cables): tocar el contador lo elige como salida
+  let routeColor = null;
+  if (isRoutingMode && compId) {
+    if (routingOutputs.out1 === compId) routeColor = 'blue-500';
+    else if (routingOutputs.out2 === compId) routeColor = 'orange-500';
+  }
+
   let ring = null;
-  if (isHovered) ring = '0 0 0 2px #39787D61'; // Effects/Focus/Soft
+  if (routeColor) ring = `0 0 0 2px ${channelById(routeColor).hex}, 0 0 8px rgba(${channelById(routeColor).rgb},0.8)`;
+  else if (isHovered) ring = '0 0 0 2px #39787D61'; // Effects/Focus/Soft
   else if (isMissing) ring = '0 0 0 1.5px #BF6F5B'; // action/destructive/default
 
   // Colectivo: lo que la muestra (filtrada) "suele" responder → mediana, que no se deja arrastrar por respuestas extremas
@@ -73,7 +84,8 @@ const Counter = ({ label, compId, className = '' }) => {
 
   return (
     <div
-      className={`relative w-[48px] h-[62px] shrink-0 select-none ${isHovered ? 'z-50' : ''} ${className}`}
+      className={`${routeBlocked ? 'opacity-50 pointer-events-none ' : ''}relative w-[48px] h-[62px] shrink-0 select-none ${isHovered ? 'z-50' : ''} ${className}`}
+      onPointerDown={isRoutingMode && compId ? (e) => { e.preventDefault(); toggleRoutingSource(compId); } : undefined}
       onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}
     >

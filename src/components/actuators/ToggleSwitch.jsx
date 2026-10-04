@@ -32,7 +32,9 @@ const ToggleSwitch = ({
   onLabel = "Sí",
   offLabel = "No"
 }) => {
-  const { mode, values, setValue: setGlobalValue, averages, visualizationMode, routingOutputs, toggleRoutingSource, missingFields } = useAppContext();
+  const { mode, values, setValue: setGlobalValue, averages, visualizationMode, routingOutputs, toggleRoutingSource, missingFields, isRouteBlocked } = useAppContext();
+  // Atenuado (50 %) cuando su dato no se puede conectar en la vista actual
+  const routeBlocked = isRouteBlocked(compId);
 
   const isRoutingMode = mode === 'colectivo' && visualizationMode !== 'general';
   let routeColor = null;
@@ -82,7 +84,7 @@ const ToggleSwitch = ({
 
   return (
     <div
-      className={`${sizeClass} aspect-square shrink-0 relative [container-type:inline-size] cursor-pointer select-none ${isHovered ? 'z-50' : ''} ${className}`}
+      className={`${routeBlocked ? 'opacity-50 pointer-events-none ' : ''}${sizeClass} aspect-square shrink-0 relative [container-type:inline-size] cursor-pointer select-none ${isHovered ? 'z-50' : ''} ${className}`}
       onClick={toggle}
       onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}

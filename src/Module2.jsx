@@ -49,7 +49,7 @@ const StatusCell = ({ icon, iconBox, gap, title, compId, className = '' }) => (
 );
 
 const Module2 = () => {
-  const { mode, routingOutputs } = useAppContext();
+  const { mode, routingOutputs, maxInputs } = useAppContext();
 
   return (
     <ModuleShell disabled={mode === 'colectivo'}>
@@ -117,7 +117,7 @@ const Module2 = () => {
                   </div>
                 ))}
               </div>
-              <OutputPanel jacks={moduleOutputJacks('mod2', routingOutputs)} />
+              <OutputPanel jacks={moduleOutputJacks('mod2', routingOutputs, maxInputs)} />
             </div>
           </div>
         </div>

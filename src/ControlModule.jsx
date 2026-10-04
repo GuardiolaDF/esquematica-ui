@@ -24,6 +24,8 @@ const padIcons = [
   SiMubi, SiInstagram, FaAmazon, SiKick
 ];
 
+const PLATFORM_NAMES = ['YouTube', 'Spotify', 'HBO', 'Netflix', 'Stremio', 'TikTok', 'Disney+', 'Twitch', 'Mubi', 'Instagram', 'Amazon', 'Kick'];
+
 const MEDIOS = ['Cine', 'Libros', 'Podcasts', 'Música', 'Series', 'Videojuegos', 'Otros'];
 
 const REFERENCIAS = [
@@ -33,7 +35,11 @@ const REFERENCIAS = [
 ];
 
 const ControlModule = () => {
-  const { activePlatform, setActivePlatform, mode, routingOutputs } = useAppContext();
+  const { activePlatform, setActivePlatform, mode, routingOutputs, maxInputs, values } = useAppContext();
+  // Plataformas: el pad elige la plataforma y el fader de al lado carga sus horas. El fader lleva el nombre de la
+  // plataforma elegida y, en modo individual, cada pad con horas cargadas muestra un punto.
+  const answering = mode !== 'colectivo';
+  const activeIndex = Math.max(0, parseInt(activePlatform.split('-')[1], 10) - 10);
   const { hoveredId } = useHover();
 
   // Si algún pad de plataforma está en hover se ilumina el fader de horas
@@ -75,15 +81,18 @@ const ControlModule = () => {
                 <div className="grid grid-cols-4 grid-rows-3 gap-space-4 w-[107px] h-[80px]">
                   {padIcons.map((Icon, i) => {
                     const compId = `mod1-${10 + i}`;
+                    const hasHours = answering && values[compId] > 0;
                     return (
-                      <LedButton
-                        key={compId}
-                        baseClass="w-full h-full"
-                        icon={Icon}
-                        compId={compId}
-                        value={activePlatform === compId}
-                        onChange={() => setActivePlatform(compId)}
-                      />
+                      <div key={compId} className="relative w-full h-full" title={PLATFORM_NAMES[i]}>
+                        <LedButton
+                          baseClass="w-full h-full"
+                          icon={Icon}
+                          compId={compId}
+                          value={activePlatform === compId}
+                          onChange={() => setActivePlatform(compId)}
+                        />
+                        {hasHours && <span className="absolute -top-[2px] -right-[2px] w-[6px] h-[6px] rounded-pill bg-teal-600 border border-neutral-0 pointer-events-none z-[60]" />}
+                      </div>
                     );
                   })}
                 </div>
@@ -91,9 +100,9 @@ const ControlModule = () => {
                   orientation="vertical"
                   initialValue={50}
                   compId={activePlatform}
-                  trackClass={`w-[16px] h-[71px] rounded-pill transition-shadow duration-standard ${isPadHovered ? 'shadow-focus-soft' : ''}`}
-                  label="Hs. X día"
-                  labelClass="text-text-muted"
+                  trackClass={`w-[16px] h-[71px] rounded-pill transition-shadow duration-standard ${isPadHovered || answering ? 'shadow-focus-soft' : ''}`}
+                  label={PLATFORM_NAMES[activeIndex]}
+                  labelClass={answering ? 'text-text-accent' : 'text-text-muted'}
                 />
               </div>
             </div>
@@ -148,7 +157,7 @@ const ControlModule = () => {
                   ))}
                 </div>
               </div>
-              <OutputPanel jacks={moduleOutputJacks('mod1', routingOutputs)} />
+              <OutputPanel jacks={moduleOutputJacks('mod1', routingOutputs, maxInputs)} />
             </div>
           </div>
         </div>

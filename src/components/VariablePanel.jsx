@@ -4,6 +4,52 @@ import { dbMap } from '../dbMap';
 import { variableInfo, cellCode, responseStats } from '../variableInfo';
 import { dbMetadata } from '../dbMap';
 import { trackReading, stressPercent } from '../dataTransforms';
+import { answerGuide, gestureText } from '../answerGuide';
+
+// Lectura en palabras de un valor 0–100 entre los dos extremos del control
+const verbal = (v, g) => {
+  if (v === undefined || v === null) return 'Sin responder';
+  if (g.kind === 'toggle') return v >= 50 ? 'Sí' : 'No';
+  if (v <= 15) return g.low;
+  if (v >= 85) return g.high;
+  if (v < 40) return `Más bien ${g.low.toLowerCase()}`;
+  if (v > 60) return `Más bien ${g.high.toLowerCase()}`;
+  return 'Intermedio';
+};
+
+// Guía de respuesta (modo individual / especulativo): qué gesto hacer, qué significa cada extremo y qué estás
+// respondiendo ahora. Va pegada debajo del panel de la variable.
+const AnswerGuide = ({ compId, value, width }) => {
+  const g = answerGuide[compId];
+  if (!g) return null;
+  const isCounter = g.kind === 'counter';
+  const current = isCounter
+    ? (value === undefined ? 'Sin responder' : `${Math.round(value)} ${g.unit}`)
+    : verbal(value, g);
+  const pos = value === undefined || isCounter ? null : Math.max(0, Math.min(100, value));
+  return (
+    <div className="rounded-md bg-surface-subtle shadow-elevation-02 px-[11px] pt-[6px] pb-[7px] flex flex-col gap-[5px]" style={{ width }}>
+      <div className="flex items-baseline justify-between gap-space-8">
+        <span className="font-body font-bold text-[8px] leading-[10px] text-text-accent whitespace-nowrap">{gestureText(g)}</span>
+        <span className={`font-heading font-bold text-[10px] leading-[12px] whitespace-nowrap ${value === undefined ? 'text-text-disabled' : 'text-text-primary'}`}>{current}</span>
+      </div>
+      {!isCounter && (
+        <div className="flex items-center gap-[6px]">
+          <span className="font-body text-[7px] leading-[8px] text-text-muted whitespace-nowrap">{g.low}</span>
+          <div className="relative flex-1 h-[4px] rounded-pill bg-neutral-200">
+            {pos !== null && (
+              <>
+                <div className="absolute left-0 top-0 bottom-0 rounded-pill bg-coral-300 transition-[width] duration-fast" style={{ width: `${pos}%` }} />
+                <div className="absolute top-1/2 w-[9px] h-[9px] -translate-x-1/2 -translate-y-1/2 rounded-pill bg-coral-500 border-[1.5px] border-neutral-0 shadow-elevation-01 transition-[left] duration-fast" style={{ left: `${pos}%` }} />
+              </>
+            )}
+          </div>
+          <span className="font-body text-[7px] leading-[8px] text-text-muted whitespace-nowrap">{g.high}</span>
+        </div>
+      )}
+    </div>
+  );
+};
 
 // Figma: main-chart-panel › «Variable seleccionada» (2316:1381) — 297×63, surface/subtle, radius/md, Effects/Elevation/03.
 //   · código: celda del Excel de donde sale la variable (p. ej. DO-1)
@@ -46,7 +92,10 @@ const VariablePanel = ({ compId, compact = false, emptyText = 'Pasá el cursor p
   const question = info?.question
     || (fallbackLabel ? `¿${fallbackLabel}?` : emptyText);
 
+  const showGuide = !compact && compId && mode !== 'colectivo' && answerGuide[compId];
+
   return (
+    <div className="flex flex-col gap-[4px]">
     <div className={`relative h-[63px] rounded-md bg-surface-subtle shadow-elevation-03 overflow-clip select-none ${compact ? 'w-[229px]' : 'w-[297px]'}`}>
       <span className="absolute left-[11px] top-[7px] font-body font-bold text-[8px] leading-[14px] text-text-disabled whitespace-nowrap">
         Variable seleccionada
@@ -87,6 +136,8 @@ const VariablePanel = ({ compId, compact = false, emptyText = 'Pasá el cursor p
           {percent === null ? '–' : reading ? percent : `${percent}%`}
         </span>
       </div>
+    </div>
+    {showGuide && <AnswerGuide compId={compId} value={values[compId]} width={L.w} />}
     </div>
   );
 };

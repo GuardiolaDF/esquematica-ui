@@ -35,7 +35,9 @@ const Fader = ({
   value,
   onChange
 }) => {
-  const { mode, values, setValue: setGlobalValue, averages, visualizationMode, routingOutputs, toggleRoutingSource, missingFields } = useAppContext();
+  const { mode, values, setValue: setGlobalValue, averages, visualizationMode, routingOutputs, toggleRoutingSource, missingFields, isRouteBlocked } = useAppContext();
+  // Atenuado (50 %) cuando su dato no se puede conectar en la vista actual
+  const routeBlocked = isRouteBlocked(compId);
   const isVertical = orientation === 'vertical';
 
   const isRoutingMode = mode === 'colectivo' && visualizationMode !== 'general';
@@ -102,7 +104,7 @@ const Fader = ({
 
   return (
     <div
-      className={`relative ${trackClass} cursor-pointer touch-none select-none`}
+      className={`${routeBlocked ? 'opacity-50 pointer-events-none ' : ''}relative ${trackClass} cursor-pointer touch-none select-none`}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={endDrag}

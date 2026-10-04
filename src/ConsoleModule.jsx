@@ -14,9 +14,10 @@ const ROUTE_RING = Object.fromEntries(Object.entries(CHANNELS).map(([id, c]) => 
 // Lista de opciones de selección única (cuadrado de estado + etiqueta, Figma: Frame 58)
 const VerticalPads = ({ options, value, onChange, disabled, compId, gap = 5 }) => {
   const { setHoveredId } = useHover();
-  const { mode, visualizationMode, routingOutputs, toggleRoutingSource } = useAppContext();
+  const { mode, visualizationMode, routingOutputs, toggleRoutingSource, canRoute } = useAppContext();
 
-  const isRoutingMode = mode === 'colectivo' && visualizationMode !== 'general';
+  // Solo se rutea si la variable es conectable en esta vista; si no, el pad sigue funcionando como filtro
+  const isRoutingMode = mode === 'colectivo' && visualizationMode !== 'general' && !!compId && canRoute(compId);
   let routeColor = null;
   if (isRoutingMode && compId) {
     if (routingOutputs.out1 === compId) routeColor = 'blue-500';
@@ -57,15 +58,37 @@ const VerticalPads = ({ options, value, onChange, disabled, compId, gap = 5 }) =
   );
 };
 
-// Selector de modo (Figma: Component 35 — pad de 24 px + nombre en Satori Bold 7 px)
-const ModeButton = ({ label, active, onClick }) => (
-  <div className="relative w-[39px] h-[38px] shrink-0 cursor-pointer select-none" onClick={onClick} role="button" aria-pressed={active}>
-    <span className="absolute -inset-[4px]" />
-    <span
-      className={`absolute left-0 top-0 w-[24px] h-[24px] rounded-sm border border-border-subtle transition-[background-color,box-shadow] duration-standard ${active ? 'bg-coral-400' : 'bg-surface-subtle hover:bg-coral-200'}`}
-      style={{ boxShadow: active ? '6px 8px 20px rgba(45,45,45,0.22), -4px -4px 10px rgba(255,255,255,0.9)' : '2px 2px 5px rgba(45,45,45,0.15), -2px -2px 4px #FFFFFF' }}
-    />
-    <span className="absolute left-0 top-[24px] font-heading font-bold text-[7px] leading-[14px] text-text-secondary whitespace-nowrap pointer-events-none">{label}</span>
+// Solapas de modo: sobresalen del borde superior del panel de control, en el centro, como las fichas de un fichero.
+// La activa tiene el mismo fondo que el panel y se funde con él; las otras quedan detrás, más bajas y apagadas.
+const MODE_TABS = [
+  { id: 'colectivo', label: 'Colectivo' },
+  { id: 'individual', label: 'Individual' },
+  { id: 'sandbox', label: 'Especulativo' },
+];
+
+const ModeTabs = ({ mode, setMode }) => (
+  <div role="tablist" aria-label="Modo" className="absolute left-1/2 -translate-x-1/2 bottom-[calc(100%-3px)] z-20 flex items-end gap-[3px]">
+    {MODE_TABS.map((m) => {
+      const active = mode === m.id;
+      return (
+        <button
+          key={m.id}
+          type="button"
+          role="tab"
+          aria-selected={active}
+          onClick={() => setMode(m.id)}
+          className={`relative w-[112px] flex items-center justify-center gap-[7px] rounded-t-lg font-heading font-bold text-[11px] leading-none uppercase tracking-label select-none cursor-pointer transition-[height,background-color,color] duration-standard focus-visible:outline-none focus-visible:shadow-focus-soft ${
+            active
+              ? 'h-[33px] pb-[3px] bg-background-base text-text-primary'
+              : 'h-[26px] pb-[3px] bg-neutral-200 text-text-muted hover:text-text-secondary hover:bg-neutral-100'
+          }`}
+          style={{ boxShadow: active ? '-2px -3px 6px rgba(255,255,255,0.8), 2px -3px 8px rgba(45,45,45,0.10)' : 'inset 0 -4px 6px -4px rgba(45,45,45,0.18)' }}
+        >
+          <span className={`w-[7px] h-[7px] rounded-xs border border-border-subtle transition-colors duration-standard ${active ? 'bg-coral-400' : 'bg-surface-subtle'}`} />
+          {m.label}
+        </button>
+      );
+    })}
   </div>
 );
 
@@ -90,16 +113,12 @@ export default function ConsoleModule({ isCol, compact = false }) {
   const isColective = isCol ?? mode === 'colectivo';
   const matchCount = Math.max(0, ...Object.values(distributions || {}).map(arr => arr?.length || 0));
 
-  const modes = [
-    { id: 'colectivo', label: 'Colectivo' },
-    { id: 'individual', label: 'Individual' },
-    { id: 'sandbox', label: 'Especulativo' },
-  ];
-
   const edadOptions = [{ label: '18-22', value: '18-22' }, { label: '23-25', value: '23-25' }, { label: '26-28', value: '26-28' }, { label: '29-32', value: '29-32' }, { label: '+33', value: '33+' }];
   const off = (active) => (active ? '' : 'opacity-muted pointer-events-none');
 
   return (
+    <div className="relative w-full h-full">
+    {!compact && <ModeTabs mode={mode} setMode={setMode} />}
     <ModuleShell isCol={isCol} moduleNumber={0}>
       {/* Los filtros se reparten el ancho disponible; modos y Usuarios quedan fijos a la derecha (Figma: gap mínimo 40). */}
       {/* En la versión de bolsillo (compact) solo quedan Promedio, Edad y Trabajo. */}
@@ -192,45 +211,45 @@ export default function ConsoleModule({ isCol, compact = false }) {
 
         {!compact && (
         <>
-        {/* Modos + Usuarios */}
-        <div className="w-[121px] shrink-0 flex flex-col items-end justify-center gap-[34px]">
-          <div className="relative w-[121px] h-[38px]">
-            {modes.map((m, i) => (
-              <div key={m.id} className="absolute top-0" style={{ left: i * 41 }}>
-                <ModeButton label={m.label} active={mode === m.id} onClick={() => setMode(m.id)} />
-              </div>
-            ))}
-
-            {/* Guardar: solo en modo individual, debajo de los modos. Sube tus respuestas a la base y vuelve al colectivo. */}
-            {mode === 'individual' && (
-              <button
-                type="button"
-                onClick={handleSave}
-                disabled={isSaving}
-                className={`absolute left-0 right-0 top-[44px] h-[22px] rounded-md type-micro-label uppercase flex items-center justify-center cursor-pointer select-none transition-[background-color,box-shadow,color] duration-fast disabled:cursor-default focus-visible:outline-none focus-visible:shadow-focus-soft ${
-                  missingCount || saveFailed
-                    ? 'bg-status-danger-background text-status-danger-foreground'
-                    : 'bg-action-primary-default text-action-primary-text hover:bg-action-primary-hover active:bg-action-primary-pressed'
-                }`}
-                style={{ boxShadow: missingCount || saveFailed ? undefined : '2px 2px 5px rgba(45,45,45,0.25), -2px -2px 4px #FFFFFF' }}
-                aria-live="polite"
-              >
-                {isSaving ? 'Enviando…' : saveFailed ? 'Error · reintentar' : missingCount ? `Faltan ${missingCount} datos` : 'Guardar'}
-              </button>
-            )}
-          </div>
-
-          <div className={`relative w-[80px] h-[51px] transition-opacity duration-slow ${isColective ? '' : 'opacity-disabled'}`}>
-            <span className="absolute left-[6px] top-0 font-heading font-bold text-[8px] leading-[14px] text-icon-secondary">Usuarios</span>
-            <div className="absolute inset-x-0 top-[11px] h-[40px] rounded-md bg-display-foreground flex items-center justify-center" style={{ boxShadow: 'inset 1px 2px 4px rgba(45,45,45,0.22), inset -1px -1px 2px rgba(255,255,255,0.78)' }}>
-              <span className="font-body text-[20px] leading-none text-text-muted">{(matchCount || 0).toString().padStart(3, '0')}</span>
-            </div>
-          </div>
-        </div>
+        {/* Reserva el ancho de la columna derecha (Usuarios / Guardar), que va centrada en el alto del panel */}
+        <div className="w-[100px] shrink-0" />
 
         </>
         )}
       </div>
+
+      {!compact && (
+        <div className="absolute right-[21px] top-0 bottom-0 w-[100px] flex flex-col items-end justify-center">
+          {mode === 'individual' ? (
+            // Guardar: sube tus respuestas a la base y vuelve al colectivo con tu lectura sobre la del grupo
+            <div className="relative w-[100px] h-[55px]">
+              <span className="absolute left-[6px] top-0 font-heading font-bold text-[8px] leading-[14px] text-icon-secondary">Tus respuestas</span>
+              <button
+                type="button"
+                onClick={handleSave}
+                disabled={isSaving}
+                className={`absolute inset-x-0 top-[13px] h-[40px] rounded-md px-space-8 font-heading font-bold text-[11px] leading-[13px] uppercase tracking-label flex items-center justify-center text-center cursor-pointer select-none transition-[background-color,box-shadow,color] duration-fast disabled:cursor-default focus-visible:outline-none focus-visible:shadow-focus-soft ${
+                  missingCount || saveFailed
+                    ? 'bg-status-danger-background text-status-danger-foreground'
+                    : 'bg-action-primary-default text-action-primary-text hover:bg-action-primary-hover active:bg-action-primary-pressed active:shadow-inset-pressed'
+                }`}
+                style={{ boxShadow: missingCount || saveFailed ? undefined : '3px 3px 8px rgba(45,45,45,0.28), -2px -2px 6px #FFFFFF' }}
+                aria-live="polite"
+              >
+                {isSaving ? 'Enviando…' : saveFailed ? 'Error · reintentar' : missingCount ? `Faltan ${missingCount} datos` : 'Guardar'}
+              </button>
+            </div>
+          ) : (
+            <div className="relative w-[80px] h-[51px]">
+              <span className="absolute left-[6px] top-0 font-heading font-bold text-[8px] leading-[14px] text-icon-secondary">Usuarios</span>
+              <div className="absolute inset-x-0 top-[11px] h-[40px] rounded-md bg-display-foreground flex items-center justify-center" style={{ boxShadow: 'inset 1px 2px 4px rgba(45,45,45,0.22), inset -1px -1px 2px rgba(255,255,255,0.78)' }}>
+                <span className="font-body text-[20px] leading-none text-text-muted">{(matchCount || 0).toString().padStart(3, '0')}</span>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </ModuleShell>
+    </div>
   );
 }

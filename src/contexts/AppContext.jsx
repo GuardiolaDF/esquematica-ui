@@ -192,29 +192,44 @@ Object.keys(data.values || {}).forEach(dbKey => {
   const [visualizationMode, setVisualizationMode] = useState('general'); // 'general', 'spectrum', 'relation', 'association'
   const [routingOutputs, setRoutingOutputs] = useState({ out1: null, out2: null });
 
-  const toggleRoutingSource = (compId) => {
+  // Ruteo con cables (modo colectivo, vistas distintas de General):
+  //  · cada vista acepta solo ciertos tipos de dato (dbMetadata[compId].visualizations)
+  //  · Espectro muestra una sola variable → una sola entrada (out1)
+  const isRoutingMode = mode === 'colectivo' && visualizationMode !== 'general';
+  const maxInputs = visualizationMode === 'spectrum' ? 1 : 2;
+  const canRoute = (compId) => {
     const meta = dbMetadata[compId];
-    if (!meta || !meta.routable) return;
+    return !!(meta && meta.routable && meta.visualizations?.includes(visualizationMode));
+  };
+  // Control que no se puede conectar en la vista actual (se muestra atenuado y no responde)
+  const isRouteBlocked = (compId) => isRoutingMode && !!compId && compId.startsWith('mod') && !canRoute(compId);
+
+  const toggleRoutingSource = (compId) => {
+    if (!canRoute(compId)) return;
 
     setRoutingOutputs(prev => {
-      // If already selected, deselect it
+      // Si ya estaba elegido, se suelta
       if (prev.out1 === compId) return { ...prev, out1: null };
       if (prev.out2 === compId) return { ...prev, out2: null };
-      
-      // If not selected, assign to first available slot
+      // Espectro: una sola entrada, la nueva elección reemplaza a la anterior
+      if (maxInputs === 1) return { out1: compId, out2: null };
       if (!prev.out1) return { ...prev, out1: compId };
       if (!prev.out2) return { ...prev, out2: compId };
-      
-      // If full, do nothing
       return prev;
     });
   };
 
-  // Ensure routing clears when going back to 'general'
+  // Al cambiar de vista: General suelta todo; en las demás se sueltan las variables que esa vista no acepta
   useEffect(() => {
     if (visualizationMode === 'general') {
       setRoutingOutputs({ out1: null, out2: null });
+      return;
     }
+    setRoutingOutputs(prev => {
+      const keep = (id) => (id && dbMetadata[id]?.visualizations?.includes(visualizationMode) ? id : null);
+      const next = { out1: keep(prev.out1), out2: visualizationMode === 'spectrum' ? null : keep(prev.out2) };
+      return next.out1 === prev.out1 && next.out2 === prev.out2 ? prev : next;
+    });
   }, [visualizationMode]);
 
   // When switching modes, if we go to individual/sandbox, or visualization mode goes to 'general', we might want to reset routing.
@@ -238,7 +253,8 @@ Object.keys(data.values || {}).forEach(dbKey => {
       showSavedOverlay,
       missingFields,
       visualizationMode, setVisualizationMode,
-      routingOutputs, toggleRoutingSource, setRoutingOutputs
+      routingOutputs, toggleRoutingSource, setRoutingOutputs,
+      isRoutingMode, maxInputs, canRoute, isRouteBlocked
     }}>
       {children}
     </AppContext.Provider>

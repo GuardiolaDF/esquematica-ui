@@ -28,7 +28,7 @@ const STATE_TOGGLES = [
 ];
 
 const Module3 = () => {
-  const { mode, routingOutputs } = useAppContext();
+  const { mode, routingOutputs, maxInputs } = useAppContext();
 
   return (
     <ModuleShell disabled={mode === 'colectivo'}>
@@ -125,7 +125,7 @@ const Module3 = () => {
                   <div className="flex items-end justify-center gap-[13px]">
                     {STATE_TOGGLES.map(t => <LabeledToggle key={t.id} label={t.label} compId={t.id} align={t.align} />)}
                   </div>
-                  <OutputPanel jacks={moduleOutputJacks('mod3', routingOutputs)} />
+                  <OutputPanel jacks={moduleOutputJacks('mod3', routingOutputs, maxInputs)} />
                 </div>
               </div>
             </div>

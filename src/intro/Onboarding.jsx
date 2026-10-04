@@ -31,19 +31,19 @@ const STEPS = [
     id: 'console',
     kicker: 'Panel de control',
     title: 'Modos y filtros',
-    body: 'Elegí el modo —Colectivo, Individual o Especulativo— y filtrá por edad, trabajo, país o vivienda para ver cómo cambia la señal. El contador muestra cuántas personas quedan en la muestra.',
+    body: 'Las solapas de arriba del panel cambian el modo: Colectivo, Individual o Especulativo. Con los filtros recortás la muestra por edad, trabajo, país o vivienda y ves cómo cambia la señal; el contador muestra cuántas personas quedan.',
   },
   {
     id: 'cables',
     kicker: 'Cables',
     title: 'Cruzá dos variables',
-    body: 'En las vistas Espectro, Relación y Asociación, conectá con cables las salidas de los módulos a las entradas del visualizador para comparar una pregunta con otra.',
+    body: 'En las vistas Espectro, Relación y Asociación, tocá un control para elegirlo y arrastrá un cable desde la salida de su módulo hasta la entrada del visualizador. Los controles que esa vista no puede mostrar quedan atenuados.',
   },
   {
     id: 'yours',
     kicker: 'Tu turno',
-    title: 'Ahora probalo',
-    body: 'En modo Individual los controles son tuyos: respondé moviéndolos y mirá cómo se ve tu lectura al lado de la del grupo.',
+    title: 'Sumá tus respuestas',
+    body: 'En la solapa Individual los controles son tuyos: al pasar por cada uno, el panel te dice cómo responder. Cuando termines, tocá Guardar —a la derecha del panel de control— y tus respuestas se suman a la base de datos del colectivo.',
   },
 ];
 
