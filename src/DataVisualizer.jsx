@@ -57,7 +57,7 @@ export default function DataVisualizer({ compact = false, hint = null }) {
   }, []);
 
   const { hoveredId, setHoveredId } = useHover();
-  const { mode, values, distributions, averages, showSavedOverlay, visualizationMode, filteredSetups, setVisualizationMode, routingOutputs } = useAppContext();
+  const { mode, values, distributions, averages, showSavedOverlay, visualizationMode, filteredSetups, allSetups, setVisualizationMode, routingOutputs } = useAppContext();
   const { connections } = useCables();
   
   const [lastHoveredText, setLastHoveredText] = useState("");
@@ -90,11 +90,15 @@ export default function DataVisualizer({ compact = false, hint = null }) {
   // Quienes dieron la misma respuesta se reparten dentro de su casillero según su índice: en vez de un bloque,
   // un degradé que va de relax a estrés. La respuesta sigue siendo legible (nadie sale de su casillero).
   const swarmPrep = useMemo(() => {
-    const n = filteredSetups.length;
-    const scored = filteredSetups.map((s, idx) => ({ idx, s: stressIndex(s) ?? 50, tie: (Math.sin(idx * 12.9898) + 1) / 2 }));
+    // El ranking se calcula sobre TODA la población, no sobre la muestra filtrada: así quien tiene un índice bajo
+    // cae a la izquierda de su respuesta tanto en el colectivo completo como en un recorte (si el ranking fuera
+    // relativo a la muestra, cada recorte se estiraría al rango completo y desaparecería la diferencia entre grupos).
+    const pop = allSetups || filteredSetups;
+    const scored = pop.map((setup, idx) => ({ setup, s: stressIndex(setup) ?? 50, tie: (Math.sin(idx * 12.9898) + 1) / 2 }));
     scored.sort((a, b) => (a.s - b.s) || (a.tie - b.tie));
-    const rank = new Array(n);
-    scored.forEach((x, k) => { rank[x.idx] = n > 1 ? k / (n - 1) : 0.5; });
+    const byDoc = new Map();
+    scored.forEach((x, k) => byDoc.set(x.setup, scored.length > 1 ? k / (scored.length - 1) : 0.5));
+    const rank = filteredSetups.map((setup) => byDoc.get(setup) ?? 0.5);
 
     const bins = {};
     Object.keys(dbMap).forEach((compId) => {
@@ -127,7 +131,7 @@ export default function DataVisualizer({ compact = false, hint = null }) {
       bins[compId] = widths;
     });
     return { rank, bins };
-  }, [filteredSetups]);
+  }, [filteredSetups, allSetups]);
 
   const dots = useMemo(() => {
     const d = [];
@@ -422,12 +426,6 @@ export default function DataVisualizer({ compact = false, hint = null }) {
             </div>
           ) : (
             <>
-              <div className="absolute top-[35%] left-[4%] font-heading font-bold text-[13px] uppercase tracking-label text-text-secondary z-10 pointer-events-none">
-                + Relax
-              </div>
-              <div className="absolute top-[35%] right-[4%] font-heading font-bold text-[13px] uppercase tracking-label text-text-secondary z-10 pointer-events-none">
-                + Estrés
-              </div>
 
               {/* 3. PANEL DE VARIABLE */}
               <div className="absolute left-[7px] top-[16px] z-10 pointer-events-none">
@@ -557,6 +555,19 @@ export default function DataVisualizer({ compact = false, hint = null }) {
           );
         })()}
         
+        {/* Extremos del vúmetro: por encima de las esquinas del arco (en coordenadas del SVG, así nunca se superponen) */}
+        {!compact && (() => {
+          const L = polarToCartesian(cx, cy, boundaries[3], startAngle);
+          const R = polarToCartesian(cx, cy, boundaries[3], endAngle);
+          const common = { fill: P.neutral[700], fontFamily: 'Satori, sans-serif', fontWeight: 700, fontSize: 11, letterSpacing: 0.4, className: 'pointer-events-none select-none' };
+          return (
+            <>
+              <text x={L.x - 6} y={L.y - 36} textAnchor="start" {...common}>+ RELAX</text>
+              <text x={R.x + 6} y={R.y - 36} textAnchor="end" {...common}>+ ESTRÉS</text>
+            </>
+          );
+        })()}
+
         {/* Center Pivot Point Cover (Offscreen) */}
         {!compact && <circle cx={cx} cy={cy} r="16" fill={P.neutral[800]} stroke={P.neutral[900]} strokeWidth="4" />}
       </svg>

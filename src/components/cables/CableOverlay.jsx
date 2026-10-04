@@ -57,13 +57,10 @@ const Cable = ({ x1, y1, x2, y2, color }) => {
   const d = `M ${x1} ${y1} C ${pts[0].x} ${pts[0].y} ${pts[1].x} ${pts[1].y} ${x2} ${y2}`;
   return (
     <g>
-      {/* Cuerpo del cable: borde oscuro + color + brillo, para que tenga volumen */}
-      <path d={d} fill="none" stroke="rgba(45,45,45,0.35)" strokeWidth="8" strokeLinecap="round" />
+      {/* Color plano (sin luces ni sombras): lo único realista es el movimiento */}
       <path d={d} fill="none" stroke={color.hex} strokeWidth="6" strokeLinecap="round" />
-      <path d={d} fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5" strokeLinecap="round" transform="translate(-1 -1.5)" />
-      {/* Fichas en los extremos */}
       {[[x1, y1], [x2, y2]].map(([x, y], i) => (
-        <circle key={i} cx={x} cy={y} r="7" fill={color.hex} stroke="rgba(45,45,45,0.55)" strokeWidth="1.5" />
+        <circle key={i} cx={x} cy={y} r="6" fill={color.hex} />
       ))}
     </g>
   );
@@ -120,7 +117,6 @@ const CableOverlay = () => {
   return (
     <svg 
       className="fixed inset-0 w-full h-full pointer-events-none z-[100]" 
-      style={{ filter: 'drop-shadow(0 3px 4px rgba(45,45,45,0.3))' }}
     >
       {/* Established Connections */}
       {connections.out1 && out1Jack && in1Jack && renderCable(out1Jack.x, out1Jack.y, in1Jack.x, in1Jack.y, 'blue-500', 'c1')}
