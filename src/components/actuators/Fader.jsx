@@ -104,7 +104,7 @@ const Fader = ({
 
   return (
     <div
-      className={`${routeBlocked ? 'opacity-50 pointer-events-none ' : ''}relative ${trackClass} cursor-pointer touch-none select-none`}
+      className={`${routeBlocked ? 'opacity-50 pointer-events-none ' : ''}${isMissing ? 'is-missing ' : ''}relative ${trackClass} cursor-pointer touch-none select-none`}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={endDrag}

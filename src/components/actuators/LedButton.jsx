@@ -58,10 +58,15 @@ const LedButton = ({
     isOn = values[compId] === 100 || values[compId] === true;
   }
 
+  // Cuadrado de estado sin responder (modo individual): hueco, distinto de «No» (relleno oscuro) y de «Sí» (coral).
+  // El primer toque lo pasa a Sí; después alterna Sí ↔ No.
+  const isUnset = variant === 'status' && !Icon && !isReadOnly && !isRoutingMode && !!compId && value === undefined && values[compId] === undefined;
+  const isAnswered = variant === 'status' && !Icon && !isReadOnly && !isRoutingMode && !!compId && !isUnset;
+
   const toggle = () => {
     if (isRoutingMode && compId) { toggleRoutingSource(compId); return; }
     if (isReadOnly && compId) return;
-    const next = !isOn;
+    const next = isUnset ? true : !isOn;
     setLocalIsOn(next);
     if (onChange) onChange(next ? 100 : 0);
     else if (compId) setGlobalValue(compId, next ? 100 : 0);
@@ -76,7 +81,7 @@ const LedButton = ({
   // Anillo de estado (ruteo / faltante) sumado a la sombra propia
   let ring = null;
   if (routeColor) ring = `0 0 0 2px rgb(${ROUTE_RGB[routeColor]}), 0 0 12px rgba(${ROUTE_RGB[routeColor]},0.6)`;
-  else if (isMissing && !isOn) ring = '0 0 0 1.5px #BF6F5B';
+  else if (isMissing) ring = '0 0 0 1.5px #BF6F5B';
   else if (showHover && !isPad) ring = '0 0 0 2px #39787D61';
 
   // LED de grupo + título: el LED (SVG de Figma) queda a la izquierda y el título a 20 px
@@ -109,13 +114,21 @@ const LedButton = ({
     shadow = isOn || showHover ? PAD_RAISED : PAD_REST;
     iconColor = isOn ? 'text-coral-800' : showHover ? 'text-coral-700' : 'text-text-muted';
   } else {
-    surface = isOn ? 'bg-indicator-active' : 'bg-surface-subtle';
-    shadow = isOn ? STATUS_ON : STATUS_REST;
+    if (isUnset) {
+      surface = 'bg-transparent border border-neutral-400';
+      shadow = 'none';
+    } else if (isAnswered && !isOn) {
+      surface = 'bg-neutral-600';
+      shadow = 'none';
+    } else {
+      surface = isOn ? 'bg-indicator-active' : 'bg-surface-subtle';
+      shadow = isOn ? STATUS_ON : STATUS_REST;
+    }
   }
 
   return (
     <div
-      className={`${routeBlocked ? 'opacity-50 pointer-events-none ' : ''}relative shrink-0 flex items-center justify-center cursor-pointer select-none transition-[background-color,box-shadow] duration-standard ${isPad ? 'rounded-sm border border-border-subtle' : 'rounded-xs'} ${surface} ${baseClass} ${isHovered ? 'z-50' : ''}`}
+      className={`${routeBlocked ? 'opacity-50 pointer-events-none ' : ''}${isMissing && !isPad ? 'is-missing ' : ''}relative shrink-0 flex items-center justify-center cursor-pointer select-none transition-[background-color,box-shadow] duration-standard ${isPad ? 'rounded-sm border border-border-subtle' : 'rounded-xs'} ${surface} ${baseClass} ${isHovered ? 'z-50' : ''}`}
       style={{ boxShadow: [shadow, ring].filter(Boolean).join(', ') }}
       onClick={toggle}
       onPointerEnter={handlePointerEnter}

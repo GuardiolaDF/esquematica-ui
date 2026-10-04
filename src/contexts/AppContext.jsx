@@ -125,13 +125,23 @@ Object.keys(data.values || {}).forEach(dbKey => {
   }, [mode, filters, allSetups]);
 
   const [showSavedOverlay, setShowSavedOverlay] = useState(false);
-  const [missingFields, setMissingFields] = useState([]);
+  // Preguntas obligatorias del modo individual. Quedan afuera: los filtros de la consola (la demografía sale de los
+  // filtros; algunos, como carrera o experiencia, no tienen control) y las horas por plataforma (mod1-10…mod1-21),
+  // donde no tocar una plataforma significa 0 horas.
+  const PLATFORM_HOURS = /^mod1-(1[0-9]|2[01])$/;
+  const requiredKeys = Object.keys(dbMap).filter(id => id.startsWith('mod'));
+  const requiredAnswers = requiredKeys.filter(id => !PLATFORM_HOURS.test(id));
+
+  // Tras el primer intento de guardar con respuestas pendientes se resaltan los controles que faltan. La lista se
+  // calcula en vivo: al responder uno se desmarca y el contador baja; con 0 pendientes se habilita el envío.
+  const [highlightMissing, setHighlightMissing] = useState(false);
+  const missingFields = highlightMissing ? requiredAnswers.filter(id => values[id] === undefined) : [];
 
   useEffect(() => {
     if (mode === 'individual') {
       setValues({});
       setShowSavedOverlay(false);
-      setMissingFields([]);
+      setHighlightMissing(false);
     } else if (mode === 'sandbox') {
       setValues({ ...averages });
       setShowSavedOverlay(false);
@@ -139,19 +149,14 @@ Object.keys(data.values || {}).forEach(dbKey => {
   }, [mode, averages]);
 
   const validateAndSave = async () => {
-    // Se exige responder todas las preguntas de los módulos. Quedan afuera: los filtros de la consola (la demografía
-    // sale de los filtros; algunos, como carrera o experiencia, no tienen control) y las horas por plataforma
-    // (mod1-10…mod1-21), donde no tocar una plataforma significa 0 horas.
-    const PLATFORM_HOURS = /^mod1-(1[0-9]|2[01])$/;
-    const requiredKeys = Object.keys(dbMap).filter(id => id.startsWith('mod'));
-    const missing = requiredKeys.filter(compId => !PLATFORM_HOURS.test(compId) && values[compId] === undefined);
-    
+    const missing = requiredAnswers.filter(compId => values[compId] === undefined);
+
     if (missing.length > 0) {
-      setMissingFields(missing);
+      setHighlightMissing(true);
       return 'missing'; // Faltan respuestas (no es un error de envío)
     }
-    
-    setMissingFields([]);
+
+    setHighlightMissing(false);
     setIsSaving(true);
     try {
       const dbValues = {};

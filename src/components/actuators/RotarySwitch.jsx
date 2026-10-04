@@ -100,7 +100,7 @@ const RotarySwitch = ({
 
   return (
     <div
-      className={`${routeBlocked ? 'opacity-50 pointer-events-none ' : ''}relative aspect-square shrink-0 [container-type:inline-size] ${sizeClass} ${className} ${isHovered ? 'z-50' : ''} cursor-pointer touch-none select-none`}
+      className={`${routeBlocked ? 'opacity-50 pointer-events-none ' : ''}${isMissing ? 'is-missing ' : ''}relative aspect-square shrink-0 [container-type:inline-size] ${sizeClass} ${className} ${isHovered ? 'z-50' : ''} cursor-pointer touch-none select-none`}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={endDrag}

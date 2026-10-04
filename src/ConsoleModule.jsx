@@ -227,7 +227,7 @@ export default function ConsoleModule({ isCol, compact = false }) {
               <button
                 type="button"
                 onClick={handleSave}
-                disabled={isSaving}
+                disabled={isSaving || missingCount > 0}
                 className={`absolute inset-x-0 top-[13px] h-[40px] rounded-md px-space-8 font-heading font-bold text-[11px] leading-[13px] uppercase tracking-label flex items-center justify-center text-center cursor-pointer select-none transition-[background-color,box-shadow,color] duration-fast disabled:cursor-default focus-visible:outline-none focus-visible:shadow-focus-soft ${
                   missingCount || saveFailed
                     ? 'bg-status-danger-background text-status-danger-foreground'
@@ -236,7 +236,7 @@ export default function ConsoleModule({ isCol, compact = false }) {
                 style={{ boxShadow: missingCount || saveFailed ? undefined : '3px 3px 8px rgba(45,45,45,0.28), -2px -2px 6px #FFFFFF' }}
                 aria-live="polite"
               >
-                {isSaving ? 'Enviando…' : saveFailed ? 'Error · reintentar' : missingCount ? `Faltan ${missingCount} datos` : 'Guardar'}
+                {isSaving ? 'Enviando…' : saveFailed ? 'Error · reintentar' : missingCount ? `Faltan ${missingCount} ${missingCount === 1 ? 'dato' : 'datos'}` : 'Guardar'}
               </button>
             </div>
           ) : (

@@ -84,7 +84,7 @@ const Counter = ({ label, compId, className = '' }) => {
 
   return (
     <div
-      className={`${routeBlocked ? 'opacity-50 pointer-events-none ' : ''}relative w-[48px] h-[62px] shrink-0 select-none ${isHovered ? 'z-50' : ''} ${className}`}
+      className={`${routeBlocked ? 'opacity-50 pointer-events-none ' : ''}${isMissing ? 'is-missing ' : ''}relative w-[48px] h-[62px] shrink-0 select-none ${isHovered ? 'z-50' : ''} ${className}`}
       onPointerDown={isRoutingMode && compId ? (e) => { e.preventDefault(); toggleRoutingSource(compId); } : undefined}
       onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}

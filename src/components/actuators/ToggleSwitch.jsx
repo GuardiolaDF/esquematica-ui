@@ -68,10 +68,14 @@ const ToggleSwitch = ({
     isOn = values[compId] === 100 || values[compId] === true;
   }
 
+  // Sin responder (modo individual): palanca en el medio, a las 9 del reloj, y ninguna opción marcada.
+  // El primer toque la pasa a Sí; después alterna Sí ↔ No.
+  const isUnset = !isReadOnly && !isRoutingMode && !!compId && value === undefined && values[compId] === undefined;
+
   const toggle = () => {
     if (isRoutingMode && compId) { toggleRoutingSource(compId); return; }
     if (isReadOnly && compId) return;
-    const next = !isOn;
+    const next = isUnset ? true : !isOn;
     setLocalIsOn(next);
     if (compId) setGlobalValue(compId, next ? 100 : 0);
     if (onChange) onChange(next ? 100 : 0);
@@ -84,7 +88,7 @@ const ToggleSwitch = ({
 
   return (
     <div
-      className={`${routeBlocked ? 'opacity-50 pointer-events-none ' : ''}${sizeClass} aspect-square shrink-0 relative [container-type:inline-size] cursor-pointer select-none ${isHovered ? 'z-50' : ''} ${className}`}
+      className={`${routeBlocked ? 'opacity-50 pointer-events-none ' : ''}${isMissing ? 'is-missing ' : ''}${sizeClass} aspect-square shrink-0 relative [container-type:inline-size] cursor-pointer select-none ${isHovered ? 'z-50' : ''} ${className}`}
       onClick={toggle}
       onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}
@@ -112,14 +116,14 @@ const ToggleSwitch = ({
         style={{
           left: v(14), top: v(13), width: v(12.4), height: v(3),
           transformOrigin: `${v(1.5)} 50%`,
-          transform: `rotate(${isOn ? -LEVER_ANGLE : LEVER_ANGLE}deg)`,
+          transform: `rotate(${isUnset ? 180 : isOn ? -LEVER_ANGLE : LEVER_ANGLE}deg)`,
         }}
       />
 
       {/* Sí / No */}
       <div className="absolute top-0 bottom-0 flex flex-col justify-center pointer-events-none" style={{ left: '100%', gap: v(3) }}>
-        {onLabel && <span className={optionClass(isOn)}>{onLabel}</span>}
-        {offLabel && <span className={optionClass(!isOn)}>{offLabel}</span>}
+        {onLabel && <span className={optionClass(!isUnset && isOn)}>{onLabel}</span>}
+        {offLabel && <span className={optionClass(!isUnset && !isOn)}>{offLabel}</span>}
       </div>
     </div>
   );
