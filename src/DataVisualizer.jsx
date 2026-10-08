@@ -407,8 +407,9 @@ export default function DataVisualizer({ compact = false, hint = null }) {
 
 
           {/* LOGO (arriba a la derecha) */}
-          <div className="absolute top-4 right-4 z-20">
+          <div className="absolute top-4 right-4 z-20 flex flex-col items-end gap-[3px]">
             <Logo height={36} />
+            <span className="font-body text-[8px] leading-none tracking-label text-text-muted opacity-70 select-none">Fabi Guardiola</span>
           </div>
         </>
       )}

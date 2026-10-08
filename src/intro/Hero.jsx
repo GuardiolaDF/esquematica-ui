@@ -79,6 +79,7 @@ const Hero = ({ onStart, compact = false }) => {
     return (
       <section className="fixed inset-0 bg-surface-subtle text-text-primary flex flex-col px-space-24 pt-[max(48px,env(safe-area-inset-top))] pb-[max(24px,env(safe-area-inset-bottom))]">
         <motion.span {...fadeUp(0)} className="type-label-m text-text-muted uppercase tracking-label">Versión de bolsillo</motion.span>
+        <motion.span {...fadeUp(1.8)} className="type-caption text-text-muted mt-space-4 select-none">por Fabi Guardiola</motion.span>
         <div className="flex-1 flex flex-col justify-center gap-space-24">
           <Lockup withTagline={false} />
           <motion.p {...fadeUp(1.3)} className="font-heading text-[17px] leading-[24px] text-text-secondary max-w-[300px]">
@@ -94,6 +95,13 @@ const Hero = ({ onStart, compact = false }) => {
 
   return (
     <section className="fixed inset-0 bg-surface-subtle text-text-primary overflow-hidden">
+      <motion.span
+        {...fadeUp(1.8)}
+        className="absolute type-caption text-text-muted select-none"
+        style={{ left: '6.55vw', top: 'max(24px, 5vh)' }}
+      >
+        por Fabi Guardiola
+      </motion.span>
       <div
         className="absolute"
         style={{ left: '6.55vw', top: 'max(32px, calc(59vh - min(53.5vw, 92vh) * 0.3458))', width: 'min(53.5vw, 92vh)' }}
